@@ -1,0 +1,9 @@
+{
+    "event": "suiteStart",
+    "suite": "PheroTest\\Test",
+    "tests": 2
+}{
+    "event": "testStart",
+    "suite": "PheroTest\\Test",
+    "test": "PheroTest\\Test::testSelect"
+}

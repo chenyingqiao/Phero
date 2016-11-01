@@ -1,0 +1,20 @@
+{
+    "name": "lerko/p-hero",
+    "type": "library",
+    "description": "Db library",
+    "keywords": ["database", "sql","mysql"],
+    "authors": [
+        {
+            "name": "CYQ19931115",
+            "email": "614325722@QQ.COM"
+        }
+    ],
+    "version": "1.0.0",
+    "require": {},
+    "autoload":{
+    	"psr-4": {
+	              "Phero\\": "src/Phero/",
+                        "PheroTest\\": "test/PheroTest/"
+	        }
+    }
+}
