@@ -27,18 +27,30 @@ class FieldConstraint implements interfaces\IConstraint {
 	 */
 	public function __construct($Entiy = null) {
 		$this->setFieldByEntiy($Entiy);
-		if (count($Entiy->getJoin()) > 0) {
+		$this->joinRecursion($Entiy);
+		// if (count($Entiy->getJoin()) > 0) {
+		// 	foreach ($Entiy->getJoin() as $key => $value) {
+		// 		$this->setFieldByEntiy($value[0]);
+		// 	}
+		// }
+	}
+
+	private function joinRecursion($Entiy) {
+		$joinList = $Entiy->getJoin();
+		if (count($joinList) > 0) {
 			foreach ($Entiy->getJoin() as $key => $value) {
 				$this->setFieldByEntiy($value[0]);
+				$this->joinRecursion($value[0]);
 			}
 		}
 	}
+
 	/**
 	 * 通过实体类设置field
 	 * @param [type] $Entiy [description]
 	 */
 	public function setFieldByEntiy($Entiy) {
-		$tableAlias = $this->getTableAlias($Entiy);
+		$tableAlias = $this->getName($Entiy);
 		$property = $this->getTableProperty($Entiy);
 		$fieldTemp = $Entiy->getFieldTemp();
 		$this->userSetField($Entiy);

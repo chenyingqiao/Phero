@@ -79,7 +79,11 @@ trait TConstraintTableDependent {
 	 */
 	public final function getTableOn($Entiy, $JoinEntiy, $on) {
 		$nameOfEntiy = $this->getName($Entiy);
-		$nameOfJoinEntiy = $this->getName($JoinEntiy);
+		if (is_string($JoinEntiy)) {
+			$nameOfJoinEntiy = $JoinEntiy;
+		} else {
+			$nameOfJoinEntiy = $this->getName($JoinEntiy);
+		}
 		$on = str_replace(["$", "#"], [$nameOfEntiy, $nameOfJoinEntiy], $on);
 		return $on;
 	}

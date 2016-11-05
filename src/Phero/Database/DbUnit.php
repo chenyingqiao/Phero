@@ -94,6 +94,10 @@ trait DbUnit {
 		var_dump($this->dumpSql);
 	}
 
+	public function fetchSql() {
+		return $this->dumpSql;
+	}
+
 	/**
 	 * where扩展函数
 	 * @param  [type] $function_name [description]

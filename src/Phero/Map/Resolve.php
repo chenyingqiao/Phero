@@ -1,6 +1,8 @@
 <?php
 namespace Phero\Map;
 
+use Phero\Cache\LocalFileCache;
+
 /**
  *
  */
@@ -17,14 +19,23 @@ trait Resolve {
 		} else {
 			$NodeReflection = new \ReflectionClass($NodeClass);
 		}
-		$NodeName = $NodeReflection->getName();
-		$NodeShortName = $NodeReflection->getShortName();
+		// $SelfReflectionClass = new \ReflectionClass(get_parent_class);
+		// $NodeName = get_parent_class();
 
 		/**
 		 * 这里可以通过缓存获取注解
 		 *
 		 * 缓存通过类名称（包括命名空间）作为key
 		 */
+		$parent_class_name = get_parent_class();
+		if ($parent_class_name == "ReflectionClass") {
+			$NodeKey = $this->getName();
+		} else {
+			$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+		}
+		$NodeKey = md5($NodeKey);
+		$cache = LocalFileCache::read($NodeKey);
+		if (!empty($cache)) {return $cache;}
 
 		$str = $this->getDocComment();
 		$result = preg_match_all("/@([\w]+)\[([\S]+)\]/", $str, $match);
@@ -57,6 +68,7 @@ trait Resolve {
 		/**
 		 * 这里可以缓存注解
 		 */
+		LocalFileCache::save($NodeKey, $Node);
 
 		return $Node;
 	}

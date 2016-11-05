@@ -34,14 +34,29 @@ class DataSourceConstraint implements interfaces\IConstraint {
 	public function __construct($Entiy) {
 		$this->setDatasourse($this->getTableName($Entiy), $this->getTableAlias($Entiy), null);
 		$this->userSetDataSourse($Entiy);
-		if (count($Entiy->getJoin()) > 0) {
+
+		$this->joinRecursion($Entiy);
+		// if (count($Entiy->getJoin()) > 0) {
+		// 	foreach ($Entiy->getJoin() as $key => $value) {
+		// 		$this->setJoinType($value[2]);
+		// 		$this->setDatasourse($this->getTableName($value[0]), $this->getTableAlias($value[0]), $this->getTableOn($Entiy, $value[0], $value[1]));
+		// 		$this->userSetDataSourse($value[0]);
+		// 	}
+		// }
+	}
+
+	private function joinRecursion($Entiy) {
+		$joinList = $Entiy->getJoin();
+		if (count($joinList) > 0) {
 			foreach ($Entiy->getJoin() as $key => $value) {
 				$this->setJoinType($value[2]);
 				$this->setDatasourse($this->getTableName($value[0]), $this->getTableAlias($value[0]), $this->getTableOn($Entiy, $value[0], $value[1]));
-				$this->userSetDataSourse($value[0]);
+				$this->userSetDataSourse($Entiy);
+				$this->joinRecursion($value[0]);
 			}
 		}
 	}
+
 	/**
 	 * 用户手动设置数据源
 	 * @param  [type] $Entiy [description]
@@ -56,7 +71,7 @@ class DataSourceConstraint implements interfaces\IConstraint {
 			if (!empty($jointype = $Entiy->getDatasourseJoinType())) {
 				$this->setJoinType($jointype);
 			}
-			$this->setDatasourse($value[0], $value[1], $value[2]);
+			$this->setDatasourse($value[0], $value[1], $this->getTableOn($Entiy, $value[1], $value[2]));
 		}
 	}
 

@@ -3,7 +3,7 @@ namespace PheroTest\DatabaseTest\Unit;
 use Phero\Database\DbUnit;
 
 /**
- * @map[alias=course]
+ * @Table[alias=course]
  */
 class video_course {
 	use DbUnit;

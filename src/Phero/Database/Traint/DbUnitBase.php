@@ -174,7 +174,7 @@ trait DbUnitBase {
 	 * @param  [type] $table [数据源  可以是子查询  也可以是一个表名]
 	 * @param  [type] $as    [如果是子查询就必须要有别名]
 	 * @param  [type] $on    [关联条件]
-	 * @param  [type] $join  [join方式]
+	 * @param  [type] $join  [join方式 默认内连接]
 	 */
 	public function datasourse($table, $as, $on, $join = null) {
 		$this->datasourse[] = [$table, $as, $on, $join];
@@ -235,7 +235,7 @@ trait DbUnitBase {
 	private $dumpSql;
 	//ORM
 	public function select() {
-		var_dump($this->model->getPdoDriverType());
+		// var_dump($this->model->getPdoDriverType());
 		$result = $this->model->select($this);
 		$this->dumpSql = $this->model->getSql();
 		return $result;
@@ -296,5 +296,9 @@ trait DbUnitBase {
 	}
 	public function commit() {
 		$this->model->transaction(Model::commit_transaction);
+	}
+
+	public function getModel() {
+		return $this->model;
 	}
 }
