@@ -4,6 +4,7 @@ namespace Phero\Database\Realize;
 use Phero\Database as database;
 use Phero\Database\Interfaces as interfaces;
 use Phero\System\Traint as sys_traint;
+use Phero\System as sys;
 
 /**
  * 数据库
@@ -17,16 +18,27 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	protected $pdo;
 
-	private $mode, $classname, $ctorargs;
+	private $mode, $classname;
 
 	private $error;
 
-	// public function __construct() {
-	// $dns = "mysql:host=localhost;dbname=video;charset=utf8";
-	//$dns="mysql:host=localhost;3306;dbname=video";
-	// $this->pdo = new \PDO($dns, "root", "Cyq19931115");
-	// }
-	/**
+	public function __construct($dns=null,$username=null,$password=null)
+    {
+        $this->inject();
+        if(!$this->pdo){
+            $config=sys\DI::get(database\Enum\DatabaseConfig::DatabaseConnect);
+            if(!$dns&&empty($config)){
+                throw new \Exception("没有指定链接字符串");
+            }else{
+                $dns=$config[0];
+                $username=$config[1];
+                $password=$config[2];
+                $this->pdo= new  database\PDO($dns, $username, $password);
+            }
+        }
+    }
+
+    /**
 	 * 返回影响的行数
 	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
 	 * @param  array  $data [绑定的数据]

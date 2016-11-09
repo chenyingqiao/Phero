@@ -26,9 +26,9 @@ class Model implements interfaces\IModel {
 
 	private $sql, $error;
 
-	public function __construct() {
+	public function __construct($dns=null,$username=null,$password=null) {
 		$this->help = new realize\MysqlDbHelp();
-		$this->IConstraintBuild = new realize\MysqlConstraintBuild();
+		$this->IConstraintBuild = new realize\MysqlConstraintBuild($dns, $username, $password);
 	}
 
 	public function insert($Entiy, $is_replace = false) {

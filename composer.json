@@ -13,8 +13,8 @@
     "require": {},
     "autoload":{
     	"psr-4": {
-	              "Phero\\": "src/Phero/",
-                        "PheroTest\\": "test/PheroTest/"
+            "Phero\\": "src/Phero/",
+            "PheroTest\\": "test/PheroTest/"
 	        }
     }
 }

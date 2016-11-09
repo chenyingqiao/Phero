@@ -13,9 +13,9 @@ use Phero\Map\Note as note;
 class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	use traint\TConstraintTableDependent;
 
-	private $where;
+	protected $where;
 
-	private $bindData;
+	private $bindData=[];
 	private $enableAlias = true;
 	private $Entiy;
 	/**
@@ -53,17 +53,20 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		return $this->where;
 	}
 
+	protected function getBuildData($Entiy){
+	    return $Entiy->getWhere();
+    }
+
 	/**
 	 * 用户手动设置的查询条件
 	 * @param  [type] $Entiy [数组方式的where的各种条件]
 	 * @return [type]        [description]
 	 */
 	public function userSetWhere($Entiy, $group = 0) {
-		$where = $Entiy->getWhere();
+		$where = $this->getBuildData($Entiy);
 		// var_dump($where);
 		$i = 0;
 		foreach ($where as $key => &$value) {
-			$rand = rand();
 
 			if (isset($value['from'])) {
 				$from = $value['from'];
@@ -75,7 +78,11 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 			$contype = ($i == count($where) - 1) ? "" : $value[3];
 			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
 			$bindValue = $this->setBindDataAndGetBindKey($value[0], $value[1], $from, $compare);
-			$this->setWhere($from, $value[0], $bindValue, $compare, $contype, $value['group']);
+            $group=null;
+            if(!empty($value['group'])){
+                $group=$value["group"];
+            }
+			$this->setWhere($from, $value[0], $bindValue, $compare, $contype, $group);
 			$i++;
 		}
 	}
@@ -120,7 +127,7 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	}
 
 	/**
-	 * 添加绑定数据的数据列  返回s相应的value
+	 * 添加绑定数据的数据列  返回相应的value
 	 * @param [type] $key     [description]
 	 * @param [type] $values  [description]
 	 * @param [type] $from    [description]

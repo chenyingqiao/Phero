@@ -1,7 +1,9 @@
 <?php
 namespace Phero\Map;
 
+use Phero\Cache as cache;
 use Phero\Cache\LocalFileCache;
+use Phero\System as sys;
 
 /**
  *
@@ -27,15 +29,18 @@ trait Resolve {
 		 *
 		 * 缓存通过类名称（包括命名空间）作为key
 		 */
-		$parent_class_name = get_parent_class();
-		if ($parent_class_name == "ReflectionClass") {
-			$NodeKey = $this->getName();
-		} else {
-			$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
-		}
-		$NodeKey = md5($NodeKey);
-		$cache = LocalFileCache::read($NodeKey);
-		if (!empty($cache)) {return $cache;}
+		if(sys\DI::get(cache\Enum\CacheConfig::injectCache)){
+            $parent_class_name = get_parent_class();
+            if ($parent_class_name == "ReflectionClass") {
+                $NodeKey = $this->getName();
+            } else {
+                $NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+            }
+            $NodeKey = md5($NodeKey);
+            $cache = LocalFileCache::read($NodeKey);
+            if (!empty($cache)) {return $cache;}
+        }
+
 
 		$str = $this->getDocComment();
 		$result = preg_match_all("/@([\w]+)\[([\S]+)\]/", $str, $match);
@@ -68,7 +73,9 @@ trait Resolve {
 		/**
 		 * 这里可以缓存注解
 		 */
-		LocalFileCache::save($NodeKey, $Node);
+        if(sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
+            LocalFileCache::save($NodeKey, $Node);
+        }
 
 		return $Node;
 	}

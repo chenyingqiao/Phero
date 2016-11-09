@@ -64,6 +64,7 @@ trait DbUnitBase {
 	}
 	//查询条件列表
 	protected $where = [];
+    protected $having = [];
 	protected $join = [];
 	//数据源join方式
 	protected $datasourseJoinType;
@@ -77,6 +78,7 @@ trait DbUnitBase {
 	protected $order;
 
 	protected $whereGroup = false;
+    protected $havingGroup=false;
 	/**
 	 * Constraint自定义
 	 * @var array
@@ -92,6 +94,7 @@ trait DbUnitBase {
 	public function getGroup() {return $this->groupBy;}
 	public function getLimit() {return $this->limit;}
 	public function getOrder() {return $this->order;}
+	public function getHaving(){return $this->having;}
 	/**
 	 * 获取单独添加数据源时设置的Join类型
 	 * @return [type] [description]
@@ -126,6 +129,21 @@ trait DbUnitBase {
 		$this->where[] = $where;
 		return $this;
 	}
+
+	public function having($having, $from = null, $group = false){
+        if (!isset($having) || count($having) < 2) {
+            return;
+        }
+        if (isset($from)) {
+            $having['from'] = $from;
+        }
+        $group = $this->whereGroup;
+        if ($group !== false) {
+            $having['group'] = $group;
+        }
+        $this->having[] = $having;
+        return $this;
+    }
 
 	/**
 	 * 批量设置where
@@ -251,6 +269,7 @@ trait DbUnitBase {
 		}
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
+        return $result;
 	}
 	/**
 	 * [通过本实体类删除数据]

@@ -43,11 +43,11 @@ trait TInject {
 				// }
 				if (!empty($inject->di)) {
 					$DI = new NodeReflectionClass(new DI());
-					$injs = $DI->getProperty("injs");
-					$injs->setAccessible(true);
-					$injs = $injs->getValue();
-					if ($injs[$inject->di] != null && $injs != null) {
-						$this->$property_ref = $injs[$inject->di];
+//					$injs = $DI->getProperty("injs");
+//					$injs->setAccessible(true);
+//					$injs = $injs->getValue();
+					if (DI::get($inject->di)!= null && $injs != null) {
+						$this->$property_ref = DI::get($inject->di);
 					}
 				}
 				// if (!empty($inject->class)) {

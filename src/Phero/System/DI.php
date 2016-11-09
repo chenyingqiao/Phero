@@ -16,4 +16,13 @@ class DI {
 	public static function inj($key, $instance) {
 		DI::$injs[$key] = $instance;
 	}
+
+    /**
+     * 获取di容器中的对象
+     * @param $key
+     * @return mixed
+     */
+	public static function get($key){
+	    return array_key_exists($key,DI::$injs)?DI::$injs[$key]:null;
+    }
 }
