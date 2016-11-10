@@ -127,14 +127,39 @@ class video_course {
 
 ## 查询
 
+### 开始使用
+* 方式1
+```php
+$dns = "mysql:host=localhost;dbname=video;charset=utf8";
+$config[]=$dns;
+$config[]="root";
+$config[]="Cyq19931115";
+DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns, 'root', 'Cyq19931115'));
+DI::inj(database\Enum\DatabaseConfig::DatabaseConnect,$config);
+```
+
+* 方式2
+```php
+$dns = "mysql:host=localhost;dbname=video;charset=utf8";
+DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns, 'root', 'Cyq19931115'));
+```
+
 ### 查询所有列video_cat表中的列
 
 ```php
 $video_cat=new video_cat();
 $value=$video_user->select();//value就是video_cat查询出来的结果
 
+```
+
+```sql
 相当于:
-> select  cd.uid,cd.username,cd.password from video_user
+  select
+  	cd.uid,
+  	cd.username,
+  	cd.password
+  from
+  	video_user
 ```
 
 ### 查询表中的部分列
@@ -147,20 +172,43 @@ $value=$video_user->select();
 > select id,name from video_user;
 ```
 
+```sql
+相当于:
+select
+	id,
+	name
+from
+	video_user;
+```
+
 
 ### 条件查询(where)
 
 * 简单的where
 ```php
-    $video_user=new test\video_user("*");
+    $video_user=new test\video_user(["uid","username"]);
     $video_user->order('uid',database\Enum\OrderType::desc);
     $video_user->whereOrEqGroupStart("uid", 4)->whereInGroupEnd("uid", [2, 3, 1]);
     $video_user->group("password");
     $video_user->having(["password","many_test"]);
     $video_user->select();
+```
 
+```sql
 相当于:
-    > select  cd.uid,cd.username from video_user as cd where  (cd.uid = 4 or  cd.uid in (2, 3, 1)) having  cd.password = 'many_test'  order by cd.uid desc;
+select
+	cd.uid,
+	cd.username
+from
+	video_user as cd
+where
+	(
+		cd.uid = 4 or cd.uid in(2,3,1)
+	)
+having
+	cd.password = 'many_test'
+order by
+	cd.uid desc;
 ```
 
 * 条件查询的组合
@@ -192,8 +240,45 @@ $value=$video_cat->select();
 
 
 ## 插入
-。。。。。
+
+### 普通插入
+
+```php
+//这是一种赋值方式
+$video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+//或者通过字段直接赋值
+$video_user->username="this is fuck";
+$video_user->password="123455";
+$insert = $video_user->insert();
+```
+
+### 批量插入
+
+```php
+$video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+ $video_user2 = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+//批量插入
+$entiy = [$video_user, $video_user2];
+$model = new Model();
+$model->insert($entiy);
+```
+
+### 事务插入
+
+```php
+//这是一种赋值方式
+$video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+//或者通过字段直接赋值
+$video_user->username="this is fuck";
+$video_user->password="123455";
+//true表示开启事务
+$insert = $video_user->insert(true);
+//提交事务
+$video_user->commit();
+```
+
 ## 更新
-。。。。。
+
+
 ## 删除
-。。。。。
+
