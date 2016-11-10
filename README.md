@@ -282,3 +282,134 @@ $video_user->commit();
 
 ## 删除
 
+
+
+
+# 实例测试文件
+
+```php
+<?php
+require_once "vendor/autoload.php";
+
+use PheroTest\DatabaseTest\Unit as unit;
+use Phero\System\DI;
+use Phero\Database as database;
+
+/**
+ * 注入pdo实例【没有注入将无法使用】
+ * @var string
+ */
+$dns = "mysql:host=localhost;dbname=video;charset=utf8";
+$config[]=$dns;
+$config[]="root";
+$config[]="Cyq19931115";
+DI::inj(database\Enum\DatabaseConfig::DatabaseConnect,$config);
+
+//DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns, 'root', 'Cyq19931115'));
+
+
+/******************************************
+ * 测试普通单个查询
+ * @var video_user
+ *****************************************/
+$video_user = new unit\video_user();
+//$video_user->group("uid");
+//$video_user->limit(2, 5);
+$video_user->order('uid',database\Enum\OrderType::desc);
+$video_user->group("password");
+$video_user->having(["password","many_test"]);
+//$video_user->fieldTemp(['username' => "SUBSTRING(? FROM 2) as subUsername", 'password' => "SUBSTRING(? FROM 2) as subPassword"]);
+//// 设置列模板之后原来的列就会消失-----要如下手动添加
+//$video_user->field(["username", "password"]);
+//$video_user->field("count(case when username='ying' then username end) as 'asdf'");
+//$video_user->BIN("password");
+$video_user->whereOrEqGroupStart("uid", 4)->whereInGroupEnd("uid", [2, 3, 1]);
+$user = $video_user->select();
+//$user = $video_user->find();
+var_dump($user);
+$video_user->dumpSql();
+
+/******************************************
+ * 测试内外链接
+ * @var video_user
+ *****************************************/
+$video_cat = new unit\video_cat(['id', 'name']); //===>可以输入要的列
+$video_course = new unit\video_course(['course_id', 'name', 'video_path', "difficulty_id"]);
+$video_cat->join($video_course, "$.id=#.cat_id");
+$video_course->join(new unit\video_difficulty(['id', 'name']), "$.difficulty_id=#.id");
+$video_cat_join_course = $video_cat->select();
+var_dump($video_cat_join_course);
+$video_cat->dumpSql();
+var_dump($video_cat->getModel()->getError());
+
+/******************************************
+ * 测试删除
+ * @var video_user
+ *****************************************/
+$video_user = new video_user();
+$video_user->where(['uid', 8]);
+var_dump($video_user->delete());
+
+/******************************************
+ * 测试插入
+ * @var video_user
+ *****************************************/
+$video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+$video_user->username="this is fuck";
+$video_user->password="123455";
+//true表示开启事务
+$insert = $video_user->insert();
+ //嵌套事务
+$insert = $video_user->insert(true);
+$video_user->commit();
+ //嵌套事务
+$video_user->commit();
+var_dump($video_user->getError());
+$video_user->dumpSql();
+var_dump($insert);
+
+/******************************************
+ * 测试数据更新
+ * @var video_user
+ *****************************************/
+$video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+$video_user->where(['uid', 4]);
+$update = $video_user->update();
+var_dump($update);
+var_dump($video_user->getModel()->getError());
+
+/******************************************
+ *测试数据替换
+ * @var video_user
+ *****************************************/
+ $video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+ $video_user2 = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
+//批量插入
+ $entiy = [$video_user, $video_user2];
+ $model = new Model();
+ $model->insert($entiy);
+ var_dump($model->getError());
+//ORM 插入
+ $result = $video_user->replace();
+ var_dump($result);
+
+/******************************************
+ *依赖注入测试
+ * @var video_user
+ *****************************************/
+ $injectTest = new InjectTest();
+ var_dump($injectTest);
+
+/******************************************
+ *手动设置数据源测试
+ * @var video_user
+ *****************************************/
+$video_cat = new unit\video_cat(['id', 'name']); //===>可以输入要的列
+$video_cat->field("course.id");
+$video_cat->datasourse("(select * from video_course)", "course", "#.cat_id=$.id");
+$data = $video_cat->select();
+var_dump($data);
+$video_cat->dumpSql();
+echo $video_cat->fetchSql();
+
+```
