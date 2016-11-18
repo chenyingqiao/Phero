@@ -1,7 +1,54 @@
 #Phero数据库查询
 
-##开始
->现在我们有几张表（都要引入DbUnit）
+## 安装
+
+> git安装 `git clone https://github.com/chenyingqiao/Phero.git`
+
+> composer 安装 `composer require lerko/p-hero`
+
+
+
+## 开始
+
+### 在入口脚本注入PDO
+
+> 方法1
+
+```php
+use Phero\System\DI;
+use Phero\Database as database;
+
+$config[]="mysql:host=localhost;dbname=video;charset=utf8";//链接字符串
+$config[]="root";//用户名
+$config[]="Cyq19931115";//密码
+DI::inj(database\Enum\DatabaseConfig::DatabaseConnect,$config);//注入
+```
+
+> 方法2
+
+```php
+use Phero\System\DI;
+use Phero\Database as database;
+
+$dns = "mysql:host=localhost;dbname=video;charset=utf8";
+DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns, 'root', 'Cyq19931115'));
+```
+
+> 接下来就可以建立实体类 然后愉快的使用了
+
+### 直接执行sql语句
+
+*	exec(sql,bindData) 插入数据
+*	query(sql,bindData) 读取数据
+
+```php
+$help=new database\Realize\MysqlDbHelp();
+$data=$help->query("select * from video_cat where id=:id",["id",1]);
+```
+
+
+### 新建实体类
+> 现在我们有几张表（都要`use DbUnit`）
 
 `video_cat`表  `(视频种类表)`
 
@@ -122,44 +169,26 @@ class video_course {
 ```
 
 ### 注解
-   1. @Table    表别名
-   2. @Field    列的类型,列的别名
+   1. @Table[alias=###]    表别名
+   2. @Field[alias=###,type=[string|int]]    列的别名,列的类型
 
 ## 查询
-
-### 开始使用
-* 方式1
-```php
-$dns = "mysql:host=localhost;dbname=video;charset=utf8";
-$config[]=$dns;
-$config[]="root";
-$config[]="Cyq19931115";
-DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns, 'root', 'Cyq19931115'));
-DI::inj(database\Enum\DatabaseConfig::DatabaseConnect,$config);
-```
-
-* 方式2
-```php
-$dns = "mysql:host=localhost;dbname=video;charset=utf8";
-DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns, 'root', 'Cyq19931115'));
-```
 
 ### 查询所有列video_cat表中的列
 
 ```php
 $video_cat=new video_cat();
-$value=$video_user->select();//value就是video_cat查询出来的结果
-
+$video_user->select();//value就是video_cat查询出来的结果
 ```
 
 ```sql
 相当于:
   select
-  	cd.uid,
-  	cd.username,
-  	cd.password
+  	cat.uid,
+  	cat.username,
+  	cat.password
   from
-  	video_user
+  	video_user as cat
 ```
 
 ### 查询表中的部分列
@@ -167,24 +196,21 @@ $value=$video_user->select();//value就是video_cat查询出来的结果
 ```php
 $video_cat=new video_cat(['id','name']);  //===>可以输入要的列
 $value=$video_user->select();
-
-相当于:
-> select id,name from video_user;
 ```
 
 ```sql
 相当于:
 select
-	id,
-	name
+	cd.id,
+	cd.name
 from
-	video_user;
+	video_user as cd;
 ```
 
 
 ### 条件查询(where)
 
-* 简单的where
+> 简单的where
 ```php
     $video_user=new test\video_user(["uid","username"]);
     $video_user->order('uid',database\Enum\OrderType::desc);
@@ -211,8 +237,9 @@ order by
 	cd.uid desc;
 ```
 
-* 条件查询的组合
-    1.  where\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
+> 条件查询的组合
+
+    1. where\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
     2. whereAnd\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
     3. whereOr\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
     
@@ -247,7 +274,7 @@ $value=$video_cat->select();
 //这是一种赋值方式
 $video_user = new unit\video_user(["username" => "asdfs" . rand(), "password" => "1234" . rand()]);
 //或者通过字段直接赋值
-$video_user->username="this is fuck";
+$video_user->username="fuck";
 $video_user->password="123455";
 $insert = $video_user->insert();
 ```
@@ -279,9 +306,39 @@ $video_user->commit();
 
 ## 更新
 
+### 普通更新
 
-## 删除
+```php
+$video_user = new unit\video_user(["username" => "asdfs", "password" => "1234"]);
+$video_user->where(['uid', 4]);
+$update = $video_user->update();
+```
 
+```sql
+相当于
+update
+	video_user as cd
+set
+	username = asdfs,
+	password = 1234
+where
+	cd.uid = 4;
+```
+
+
+# 删除
+
+### 普通删除
+```php
+$video_user = new unit\video_user();
+$video_user->whereEq("uid",4);
+$video_user->delete();
+```
+
+```sql
+相当于
+delete from video_user where uid = 4;
+```
 
 
 

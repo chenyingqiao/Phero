@@ -10,17 +10,17 @@ class video_user {
 	use DbUnit;
 	/**
 	 * @Primary
-	 * @DbType[type=int]
+	 * @Field[type=int]
 	 * @var [type]
 	 */
 	public $uid;
 	/**
-	 * @DbType[type=string]
+	 * @Field[alias=um,type=string]
 	 * @var [type]
 	 */
 	public $username;
 	/**
-	 * @DbType[type=string]
+	 * @Field[alias=pwd,type=string]
 	 * @var [type]
 	 */
 	public $password;

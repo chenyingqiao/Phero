@@ -9,16 +9,16 @@ use Phero\Database\Realize as realize;
  */
 class Model implements interfaces\IModel {
 
-	const fetch_arr_number = \PDO::FETCH_NUM;
-	const fetch_arr_key = \PDO::FETCH_ASSOC;
-	const fetch_arr_numberAkey = \PDO::FETCH_BOTH;
-	const fetch_obj = \PDO::FETCH_CLASS;
+	const fetch_arr_number = \PDO::FETCH_NUM;//只有数值键
+	const fetch_arr_key = \PDO::FETCH_ASSOC;//只有文本键
+	const fetch_arr_numberAkey = \PDO::FETCH_BOTH;//返回的是数值键和文本键都有
+	const fetch_obj = \PDO::FETCH_CLASS;//返回结果是类集合
 
 	const begin_transaction = 1;
 	const rollback_transaction = 2;
 	const commit_transaction = 3;
 
-	private $mode = self::fetch_arr_key, $classname = "Phero\Database\DbUnit";
+	private $mode = self::fetch_arr_key, $classname = "Phero\\Database\\DbUnit";
 
 	protected $help;
 
@@ -53,12 +53,12 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
-		$std = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData());
-		$data = [];
-
-		while ($result = $std->fetch($this->mode)) {
-			$data[] = $result;
-		}
+		$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData());
+//		$data = [];
+//
+//		while ($result = $std->fetch($this->mode)) {
+//			$data[] = $result;
+//		}
 		return $data;
 	}
 	public function update($Entiy) {

@@ -48,17 +48,13 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-			foreach ($data as $key => $value) {
-				$sql->bindValue($value[0], $value[1], $value[2]);
-			}
+            $this->bindData($sql,$data);
 			$sql->execute();
 			$this->errorMessage($sql);
 		} else {
 			if ($sql instanceof \PDOStatement) {
 				$this->PDOStatementFactory($sql);
-				foreach ($data as $key => $value) {
-					$sql->bindValue($value[0], $value[1], $value[2]);
-				}
+                $this->bindData($sql,$data);
 				$sql->execute();
 				$this->errorMessage($sql);
 			} else {
@@ -77,25 +73,41 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-			foreach ($data as $key => $value) {
-				$sql->bindValue($value[0], $value[1], $value[2]);
-			}
+            $this->bindData($sql,$data);
 			$sql->execute();
 			$this->errorMessage($sql);
 		} else {
 			if ($sql instanceof \PDOStatement) {
 				$this->PDOStatementFactory($sql);
-				foreach ($data as $key => $value) {
-					$sql->bindValue($value[0], $value[1], $value[2]);
-				}
+				$this->bindData($sql,$data);
 				$sql->execute();
 				$this->errorMessage($sql);
 			} else {
 				return array();
 			}
 		}
-		return $sql;
+		$result_data=[];
+        while ($result = $sql->fetch($this->mode)) {
+            $result_data[] = $result;
+        }
+		return $result_data;
 	}
+
+	private function bindData(&$sql,$data=[]){
+        foreach ($data as $key => $value) {
+            if(is_array($value)){
+                $sql->bindValue($value[0], $value[1], $value[2]);
+            }else{
+                if(isset($data[2])){
+                    $sql->bindValue($data[0],$data[1],$data[2]);
+                }else{
+                    $sql->bindValue($data[0],$data[1]);
+                }
+                return;
+            }
+        }
+    }
+
 	public function PDOStatementFactory(&$PDOStatement) {
 		if ($this->mode != database\Model::fetch_obj) {
 			$PDOStatement->setFetchMode($this->mode);
