@@ -13,6 +13,9 @@
 ### 在入口脚本注入PDO
 
 > 方法1
+配置Config.php文件
+
+> 方法2
 
 ```php
 use Phero\System\DI;
@@ -24,7 +27,7 @@ $config[]="Cyq19931115";//密码
 DI::inj(database\Enum\DatabaseConfig::DatabaseConnect,$config);//注入
 ```
 
-> 方法2
+> 方法3
 
 ```php
 use Phero\System\DI;
@@ -43,7 +46,11 @@ DI::inj(database\Enum\DatabaseConfig::pdo_instance, new Phero\Database\PDO($dns,
 
 ```php
 $help=new database\Realize\MysqlDbHelp();
-$data=$help->query("select * from video_cat where id=:id",["id",1]);
+$data=$help->query("select * from video_cat where id=:id ",["id",1]);
+$effect=$help->exec("update video_cat set id=:id where name=:name",[
+    ['id',1],
+    ['name','视频']
+]);
 ```
 
 
