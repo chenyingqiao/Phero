@@ -86,6 +86,8 @@ trait DbUnitBase {
 	protected $field = [];
 	protected $datasourse = [];
 
+    protected $distinct=false;
+
 	public function getWhere() {return $this->where;}
 	public function getJoin() {return $this->join;}
 	public function getFieldTemp() {return $this->fieldTemp;}
@@ -95,6 +97,7 @@ trait DbUnitBase {
 	public function getLimit() {return $this->limit;}
 	public function getOrder() {return $this->order;}
 	public function getHaving(){return $this->having;}
+	public function getDistinct(){return $this->distinct;}
 	/**
 	 * 获取单独添加数据源时设置的Join类型
 	 * @return [type] [description]
@@ -250,11 +253,15 @@ trait DbUnitBase {
 		return $this;
 	}
 
+	public function distinct(){
+        $this->distinct=true;
+    }
+
 	private $dumpSql;
 	//ORM
-	public function select() {
+	public function select($callback=null) {
 		// var_dump($this->model->getPdoDriverType());
-		$result = $this->model->select($this);
+		$result = $this->model->select($this,$callback);
 		$this->dumpSql = $this->model->getSql();
 		return $result;
 	}

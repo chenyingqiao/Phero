@@ -18,6 +18,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	protected $pdo;
 
+    protected $pdo_servlet;
+
 	private $mode, $classname;
 
 	private $error;
@@ -25,6 +27,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	public function __construct($dns=null,$username=null,$password=null)
     {
         $this->inject();
+
+        $this->getPdoByConfig();
+
         if(!$this->pdo){
             $config=sys\DI::get(database\Enum\DatabaseConfig::DatabaseConnect);
             if(!$dns&&empty($config)){
@@ -63,13 +68,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		return $sql->rowCount();
 	}
-	/**
-	 * 返回结果集
-	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
-	 * @param  array  $data [绑定的数据]
-	 * @return [type]       [返回结果集]
-	 */
-	public function query($sql, $data = []) {
+
+    /**
+     * 返回结果集
+     * @param  [type] $sql  [PDOStatement对象或者是sql语句]
+     * @param  array  $data [绑定的数据]
+     * @return array [返回结果集]
+     */
+	public function query($sql, $data = [],$callback=null) {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -88,7 +94,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$result_data=[];
         while ($result = $sql->fetch($this->mode)) {
-            $result_data[] = $result;
+            if(isset($callback)){
+                $callback($result);
+            }else{
+                $result_data[] = $result;
+            }
         }
 		return $result_data;
 	}
@@ -141,4 +151,20 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	public function getDbConn() {
 		return $this->pdo;
 	}
+
+	private function getPdoByConfig(){
+	    $file_path=dirname(dirname(dirname(__FILE__)));
+	    $config=null;
+	    if(is_file("$file_path/Config.php")){
+            $config= require_once "$file_path/Config.php";
+        }
+        if($config){
+            if(array_key_exists("dsn",$config)){
+                $this->pdo=new database\PDO($config['dsn'],$config['username'],$config['password']);
+            }else{
+                $dsn=$config['type'].":host=".$config['host'].";dbname=".$config['dbname'].";charset=".$config['charset'];
+                $this->pdo=new database\PDO($dsn,$config['username'],$config['password']);
+            }
+        }
+    }
 }

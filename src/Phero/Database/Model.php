@@ -47,18 +47,13 @@ class Model implements interfaces\IModel {
 	 * 子查询
 	 * 表链接
 	 * @param  [type] $entiy [description]
+     * @param  [type] $callback [description]
 	 * @return [type]        [description]
 	 */
-	public function select($Entiy) {
+	public function select($Entiy,$callback=null) {
 		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
-		// var_dump($sql);
 		$this->sql = $sql;
-		$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData());
-//		$data = [];
-//
-//		while ($result = $std->fetch($this->mode)) {
-//			$data[] = $result;
-//		}
+		$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData(),$callback);
 		return $data;
 	}
 	public function update($Entiy) {
