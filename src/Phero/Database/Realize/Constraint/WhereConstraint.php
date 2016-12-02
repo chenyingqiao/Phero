@@ -8,7 +8,7 @@ use Phero\Database\Traint as traint;
 use Phero\Map\Note as note;
 
 /**
- *where约束累
+ *where约束
  */
 class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	use traint\TConstraintTableDependent;
@@ -59,7 +59,8 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 
 	/**
 	 * 用户手动设置的查询条件
-	 * @param  [type] $Entiy [数组方式的where的各种条件]
+	 * @param  [type] $Entiy [要设置where的实体类,实体类中带where的数据]
+     * @param  [type] $group [where分组]
 	 * @return [type]        [description]
 	 */
 	public function userSetWhere($Entiy, $group = 0) {
@@ -74,10 +75,17 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 				//取得默认的表名或者是表的别名
 				$from = $this->getName($Entiy);
 			}
+
 			//这里设置表的默认where链接方式
 			$contype = ($i == count($where) - 1) ? "" : $value[3];
 			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
-			$bindValue = $this->setBindDataAndGetBindKey($value[0], $value[1], $from, $compare);
+            if(is_object($value[1])){
+                $bindValues=$value[1]->fetchSql();
+                $this->bindData= array_merge($this->bindData,$bindValues);
+                $bindValue="(".rtrim($value[1]->sql(),";").")";
+            }else{
+                $bindValue = $this->setBindDataAndGetBindKey($value[0], $value[1], $from, $compare);
+            }
             $group=null;
             if(!empty($value['group'])){
                 $group=$value["group"];
@@ -128,10 +136,10 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 
 	/**
 	 * 添加绑定数据的数据列  返回相应的value
-	 * @param [type] $key     [description]
-	 * @param [type] $values  [description]
-	 * @param [type] $from    [description]
-	 * @param [type] $compare [description]
+	 * @param [type] $key     [bindvalue的key]
+	 * @param [type] $values  [bindvalue的value]
+	 * @param [type] $from    [表名]
+	 * @param [type] $compare [比较符号]
 	 */
 	public function setBindDataAndGetBindKey($key, $values, $from, $compare) {
 		if ($compare == enum\Where::between) {

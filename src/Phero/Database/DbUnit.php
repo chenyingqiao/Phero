@@ -90,13 +90,6 @@ trait DbUnit {
 		return $this;
 	}
 
-	public function dumpSql() {
-		var_dump($this->dumpSql);
-	}
-
-	public function fetchSql() {
-		return $this->dumpSql;
-	}
 
 	/**
 	 * where扩展函数

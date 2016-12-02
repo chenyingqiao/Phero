@@ -121,4 +121,16 @@ class Model implements interfaces\IModel {
 	public function getError() {
 		return $this->help->error();
 	}
+
+    /**
+     * @param $Entiy 实体类
+     * @return array 返回sql对应的bindValue数据
+     */
+    public function fetchSql($Entiy)
+    {
+        // TODO: Implement fetchSql() method.
+        $sql = $this->IConstraintBuild->buildSelectSql($Entiy);
+        $this->sql = $sql;
+        return  $this->IConstraintBuild->getBindData();
+    }
 }

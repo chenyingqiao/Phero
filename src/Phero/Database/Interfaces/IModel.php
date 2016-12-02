@@ -14,6 +14,7 @@ interface IModel {
 	public function getPdo();
 	public function getPdoDriverType();
 	public function getError();
+    public function fetchSql($Entiy);
 	// public function qurey();
 	// public function exec();
 	// public function lazySelect();

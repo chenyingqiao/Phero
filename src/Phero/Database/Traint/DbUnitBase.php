@@ -317,6 +317,15 @@ trait DbUnitBase {
 		return $result;
 	}
 
+    /**
+     * @return array 绑定的value数组
+     */
+	public function fetchSql(){
+	    $bindValues=  $this->model->fetchSql($this);
+        $this->dumpSql=$this->model->getSql();
+	    return $bindValues;
+    }
+
 	public function rollback() {
 		$this->model->transaction(Model::rollback_transaction);
 	}
@@ -327,4 +336,13 @@ trait DbUnitBase {
 	public function getModel() {
 		return $this->model;
 	}
+
+
+    public function dumpSql() {
+        var_dump($this->dumpSql);
+    }
+
+    public function sql() {
+        return $this->dumpSql;
+    }
 }

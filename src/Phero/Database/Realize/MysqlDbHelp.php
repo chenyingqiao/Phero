@@ -156,9 +156,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	    $file_path=dirname(dirname(dirname(__FILE__)));
 	    $config=null;
 	    if(is_file("$file_path/Config.php")){
-            $config= require_once "$file_path/Config.php";
+            $config= require "$file_path/Config.php";
         }
-        if($config){
+        if(is_array($config)){
             if(array_key_exists("dsn",$config)){
                 $this->pdo=new database\PDO($config['dsn'],$config['username'],$config['password']);
             }else{
