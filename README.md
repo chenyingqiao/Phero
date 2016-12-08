@@ -13,9 +13,6 @@
 ### 在入口脚本注入PDO
 
 > 方法1
-配置Config.php文件
-
-> 方法2
 
 ```php
 use Phero\System\DI;
@@ -27,7 +24,7 @@ $config[]="Cyq19931115";//密码
 DI::inj(database\Enum\DatabaseConfig::DatabaseConnect,$config);//注入
 ```
 
-> 方法3
+> 方法2
 
 ```php
 use Phero\System\DI;
