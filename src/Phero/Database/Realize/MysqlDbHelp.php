@@ -3,8 +3,8 @@ namespace Phero\Database\Realize;
 
 use Phero\Database as database;
 use Phero\Database\Interfaces as interfaces;
-use Phero\System\Traint as sys_traint;
 use Phero\System as sys;
+use Phero\System\Traint as sys_traint;
 
 /**
  * 数据库
@@ -18,32 +18,31 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	protected $pdo;
 
-    protected $pdo_servlet;
+	protected $pdo_servlet;
 
 	private $mode, $classname;
 
 	private $error;
 
-	public function __construct($dns=null,$username=null,$password=null)
-    {
-        $this->inject();
+	public function __construct($dns = null, $username = null, $password = null) {
+		$this->inject();
 
-        $this->getPdoByConfig();
+		// $this->getPdoByConfig();
 
-        if(!$this->pdo){
-            $config=sys\DI::get(database\Enum\DatabaseConfig::DatabaseConnect);
-            if(!$dns&&empty($config)){
-                throw new \Exception("没有指定链接字符串");
-            }else{
-                $dns=$config[0];
-                $username=$config[1];
-                $password=$config[2];
-                $this->pdo= new  database\PDO($dns, $username, $password);
-            }
-        }
-    }
+		if (!$this->pdo) {
+			$config = sys\DI::get(database\Enum\DatabaseConfig::DatabaseConnect);
+			if (!$dns && empty($config)) {
+				throw new \Exception("没有指定链接字符串");
+			} else {
+				$dns = $config[0];
+				$username = $config[1];
+				$password = $config[2];
+				$this->pdo = new database\PDO($dns, $username, $password);
+			}
+		}
+	}
 
-    /**
+	/**
 	 * 返回影响的行数
 	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
 	 * @param  array  $data [绑定的数据]
@@ -53,13 +52,13 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-            $this->bindData($sql,$data);
+			$this->bindData($sql, $data);
 			$sql->execute();
 			$this->errorMessage($sql);
 		} else {
 			if ($sql instanceof \PDOStatement) {
 				$this->PDOStatementFactory($sql);
-                $this->bindData($sql,$data);
+				$this->bindData($sql, $data);
 				$sql->execute();
 				$this->errorMessage($sql);
 			} else {
@@ -69,54 +68,54 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		return $sql->rowCount();
 	}
 
-    /**
-     * 返回结果集
-     * @param  [type] $sql  [PDOStatement对象或者是sql语句]
-     * @param  array  $data [绑定的数据]
-     * @return array [返回结果集]
-     */
-	public function query($sql, $data = [],$callback=null) {
+	/**
+	 * 返回结果集
+	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
+	 * @param  array  $data [绑定的数据]
+	 * @return array [返回结果集]
+	 */
+	public function query($sql, $data = [], $callback = null) {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-            $this->bindData($sql,$data);
+			$this->bindData($sql, $data);
 			$sql->execute();
 			$this->errorMessage($sql);
 		} else {
 			if ($sql instanceof \PDOStatement) {
 				$this->PDOStatementFactory($sql);
-				$this->bindData($sql,$data);
+				$this->bindData($sql, $data);
 				$sql->execute();
 				$this->errorMessage($sql);
 			} else {
 				return array();
 			}
 		}
-		$result_data=[];
-        while ($result = $sql->fetch($this->mode)) {
-            if(isset($callback)){
-                $callback($result);
-            }else{
-                $result_data[] = $result;
-            }
-        }
+		$result_data = [];
+		while ($result = $sql->fetch($this->mode)) {
+			if (isset($callback)) {
+				$callback($result);
+			} else {
+				$result_data[] = $result;
+			}
+		}
 		return $result_data;
 	}
 
-	private function bindData(&$sql,$data=[]){
-        foreach ($data as $key => $value) {
-            if(is_array($value)){
-                $sql->bindValue($value[0], $value[1], $value[2]);
-            }else{
-                if(isset($data[2])){
-                    $sql->bindValue($data[0],$data[1],$data[2]);
-                }else{
-                    $sql->bindValue($data[0],$data[1]);
-                }
-                return;
-            }
-        }
-    }
+	private function bindData(&$sql, $data = []) {
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$sql->bindValue($value[0], $value[1], $value[2]);
+			} else {
+				if (isset($data[2])) {
+					$sql->bindValue($data[0], $data[1], $data[2]);
+				} else {
+					$sql->bindValue($data[0], $data[1]);
+				}
+				return;
+			}
+		}
+	}
 
 	public function PDOStatementFactory(&$PDOStatement) {
 		if ($this->mode != database\Model::fetch_obj) {
@@ -152,19 +151,19 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		return $this->pdo;
 	}
 
-	private function getPdoByConfig(){
-	    $file_path=dirname(dirname(dirname(__FILE__)));
-	    $config=null;
-	    if(is_file("$file_path/Config.php")){
-            $config= require "$file_path/Config.php";
-        }
-        if(is_array($config)){
-            if(array_key_exists("dsn",$config)){
-                $this->pdo=new database\PDO($config['dsn'],$config['username'],$config['password']);
-            }else{
-                $dsn=$config['type'].":host=".$config['host'].";dbname=".$config['dbname'].";charset=".$config['charset'];
-                $this->pdo=new database\PDO($dsn,$config['username'],$config['password']);
-            }
-        }
-    }
+	private function getPdoByConfig() {
+		$file_path = dirname(dirname(dirname(__FILE__)));
+		$config = null;
+		if (is_file("$file_path/Config.php")) {
+			$config = require "$file_path/Config.php";
+		}
+		if (is_array($config)) {
+			if (array_key_exists("dsn", $config)) {
+				$this->pdo = new database\PDO($config['dsn'], $config['username'], $config['password']);
+			} else {
+				$dsn = $config['type'] . ":host=" . $config['host'] . ";dbname=" . $config['dbname'] . ";charset=" . $config['charset'];
+				$this->pdo = new database\PDO($dsn, $config['username'], $config['password']);
+			}
+		}
+	}
 }
