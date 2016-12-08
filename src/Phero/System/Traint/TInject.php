@@ -44,9 +44,9 @@ trait TInject {
 				if (!empty($inject->di)) {
 					$DI = new NodeReflectionClass(new DI());
 //					$injs = $DI->getProperty("injs");
-//					$injs->setAccessible(true);
-//					$injs = $injs->getValue();
-					if (DI::get($inject->di)!= null && $injs != null) {
+					//					$injs->setAccessible(true);
+					//					$injs = $injs->getValue();
+					if (DI::get($inject->di) != null) {
 						$this->$property_ref = DI::get($inject->di);
 					}
 				}
