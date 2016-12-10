@@ -20,17 +20,21 @@ trait DbUnit {
 		return $model->select($this);
 	}
 
-	public function polymerization($field, $keyword = "count") {
+	public function polymerization($field, $keyword = "COUNT") {
 		if (is_array($field)) {
 			$temp_arr = [];
 			foreach ($field as $key => $value) {
-				$temp_arr[$value] = $keyword . "(?)";
+				$temp_arr[$value] = $keyword . "(?) as " . $keyword;
 			}
 			$this->fieldTemp($temp_arr);
 		} else if (is_string($field)) {
-			$this->fieldTemp([$field => $keyword . "(?)"]);
+			$this->fieldTemp([$field => $keyword . "(?) as " . $keyword]);
 		}
 	}
+	/**
+	 * 直接返回数量
+	 * @param [type] $field [description]
+	 */
 	public function COUNT($field) {
 		$this->polymerization($field, "COUNT");
 		return $this;
@@ -89,7 +93,6 @@ trait DbUnit {
 		$this->polymerization($field, "SQRT");
 		return $this;
 	}
-
 
 	/**
 	 * where扩展函数

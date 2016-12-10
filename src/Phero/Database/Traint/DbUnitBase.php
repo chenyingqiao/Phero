@@ -54,7 +54,7 @@ trait DbUnitBase {
 		}
 	}
 
-	private function allFalse() {
+	protected function allFalse() {
 		$NodeReflectionClass = new NodeReflectionClass($this);
 		$propertys = $NodeReflectionClass->getPropertieNames();
 		//初始化所有的值未false
@@ -64,7 +64,7 @@ trait DbUnitBase {
 	}
 	//查询条件列表
 	protected $where = [];
-    protected $having = [];
+	protected $having = [];
 	protected $join = [];
 	//数据源join方式
 	protected $datasourseJoinType;
@@ -78,7 +78,7 @@ trait DbUnitBase {
 	protected $order;
 
 	protected $whereGroup = false;
-    protected $havingGroup=false;
+	protected $havingGroup = false;
 	/**
 	 * Constraint自定义
 	 * @var array
@@ -86,7 +86,7 @@ trait DbUnitBase {
 	protected $field = [];
 	protected $datasourse = [];
 
-    protected $distinct=false;
+	protected $distinct = false;
 
 	public function getWhere() {return $this->where;}
 	public function getJoin() {return $this->join;}
@@ -96,8 +96,8 @@ trait DbUnitBase {
 	public function getGroup() {return $this->groupBy;}
 	public function getLimit() {return $this->limit;}
 	public function getOrder() {return $this->order;}
-	public function getHaving(){return $this->having;}
-	public function getDistinct(){return $this->distinct;}
+	public function getHaving() {return $this->having;}
+	public function getDistinct() {return $this->distinct;}
 	/**
 	 * 获取单独添加数据源时设置的Join类型
 	 * @return [type] [description]
@@ -133,20 +133,20 @@ trait DbUnitBase {
 		return $this;
 	}
 
-	public function having($having, $from = null, $group = false){
-        if (!isset($having) || count($having) < 2) {
-            return;
-        }
-        if (isset($from)) {
-            $having['from'] = $from;
-        }
-        $group = $this->whereGroup;
-        if ($group !== false) {
-            $having['group'] = $group;
-        }
-        $this->having[] = $having;
-        return $this;
-    }
+	public function having($having, $from = null, $group = false) {
+		if (!isset($having) || count($having) < 2) {
+			return;
+		}
+		if (isset($from)) {
+			$having['from'] = $from;
+		}
+		$group = $this->whereGroup;
+		if ($group !== false) {
+			$having['group'] = $group;
+		}
+		$this->having[] = $having;
+		return $this;
+	}
 
 	/**
 	 * 批量设置where
@@ -253,15 +253,15 @@ trait DbUnitBase {
 		return $this;
 	}
 
-	public function distinct(){
-        $this->distinct=true;
-    }
+	public function distinct() {
+		$this->distinct = true;
+	}
 
 	private $dumpSql;
 	//ORM
-	public function select($callback=null) {
+	public function select($callback = null) {
 		// var_dump($this->model->getPdoDriverType());
-		$result = $this->model->select($this,$callback);
+		$result = $this->model->select($this, $callback);
 		$this->dumpSql = $this->model->getSql();
 		return $result;
 	}
@@ -276,7 +276,7 @@ trait DbUnitBase {
 		}
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
-        return $result;
+		return $result;
 	}
 	/**
 	 * [通过本实体类删除数据]
@@ -317,14 +317,14 @@ trait DbUnitBase {
 		return $result;
 	}
 
-    /**
-     * @return array 绑定的value数组
-     */
-	public function fetchSql(){
-	    $bindValues=  $this->model->fetchSql($this);
-        $this->dumpSql=$this->model->getSql();
-	    return $bindValues;
-    }
+	/**
+	 * @return array 绑定的value数组
+	 */
+	public function fetchSql() {
+		$bindValues = $this->model->fetchSql($this);
+		$this->dumpSql = $this->model->getSql();
+		return $bindValues;
+	}
 
 	public function rollback() {
 		$this->model->transaction(Model::rollback_transaction);
@@ -337,12 +337,11 @@ trait DbUnitBase {
 		return $this->model;
 	}
 
+	public function dumpSql() {
+		var_dump($this->dumpSql);
+	}
 
-    public function dumpSql() {
-        var_dump($this->dumpSql);
-    }
-
-    public function sql() {
-        return $this->dumpSql;
-    }
+	public function sql() {
+		return $this->dumpSql;
+	}
 }
