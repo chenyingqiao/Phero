@@ -9,10 +9,10 @@ use Phero\Database\Realize as realize;
  */
 class Model implements interfaces\IModel {
 
-	const fetch_arr_number = \PDO::FETCH_NUM;//只有数值键
-	const fetch_arr_key = \PDO::FETCH_ASSOC;//只有文本键
-	const fetch_arr_numberAkey = \PDO::FETCH_BOTH;//返回的是数值键和文本键都有
-	const fetch_obj = \PDO::FETCH_CLASS;//返回结果是类集合
+	const fetch_arr_number = \PDO::FETCH_NUM; //只有数值键
+	const fetch_arr_key = \PDO::FETCH_ASSOC; //只有文本键
+	const fetch_arr_numberAkey = \PDO::FETCH_BOTH; //返回的是数值键和文本键都有
+	const fetch_obj = \PDO::FETCH_CLASS; //返回结果是类集合
 
 	const begin_transaction = 1;
 	const rollback_transaction = 2;
@@ -26,7 +26,7 @@ class Model implements interfaces\IModel {
 
 	private $sql, $error;
 
-	public function __construct($dns=null,$username=null,$password=null) {
+	public function __construct($dns = null, $username = null, $password = null) {
 		$this->help = new realize\MysqlDbHelp();
 		$this->IConstraintBuild = new realize\MysqlConstraintBuild($dns, $username, $password);
 	}
@@ -47,13 +47,13 @@ class Model implements interfaces\IModel {
 	 * 子查询
 	 * 表链接
 	 * @param  [type] $entiy [description]
-     * @param  [type] $callback [description]
+	 * @param  [type] $callback [description]
 	 * @return [type]        [description]
 	 */
-	public function select($Entiy,$callback=null) {
+	public function select($Entiy, $callback = null) {
 		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
 		$this->sql = $sql;
-		$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData(),$callback);
+		$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData(), $callback);
 		return $data;
 	}
 	public function update($Entiy) {
@@ -80,6 +80,10 @@ class Model implements interfaces\IModel {
 		$this->mode = $mode;
 		$this->classname = empty($classname) ? $this->classname : $classname;
 		return $this;
+	}
+
+	public function getFetchMode() {
+		return $this->mode;
 	}
 
 	public function getSql() {
@@ -122,15 +126,14 @@ class Model implements interfaces\IModel {
 		return $this->help->error();
 	}
 
-    /**
-     * @param $Entiy 实体类
-     * @return array 返回sql对应的bindValue数据
-     */
-    public function fetchSql($Entiy)
-    {
-        // TODO: Implement fetchSql() method.
-        $sql = $this->IConstraintBuild->buildSelectSql($Entiy);
-        $this->sql = $sql;
-        return  $this->IConstraintBuild->getBindData();
-    }
+	/**
+	 * @param $Entiy 实体类
+	 * @return array 返回sql对应的bindValue数据
+	 */
+	public function fetchSql($Entiy) {
+		// TODO: Implement fetchSql() method.
+		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
+		$this->sql = $sql;
+		return $this->IConstraintBuild->getBindData();
+	}
 }

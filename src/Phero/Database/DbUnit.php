@@ -16,8 +16,7 @@ trait DbUnit {
 	//只查询一条
 	public function find() {
 		$this->limit(1);
-		$model = new Model();
-		return $model->select($this);
+		return $this->select()[0];
 	}
 
 	public function polymerization($field, $keyword = "COUNT") {
@@ -36,8 +35,17 @@ trait DbUnit {
 	 * @param [type] $field [description]
 	 */
 	public function COUNT($field) {
+		$this->allFalse();
+		$this->$field = true;
 		$this->polymerization($field, "COUNT");
-		return $this;
+		$data = $this->find();
+		var_dump($data);
+		$this->initField($this->values_cache, $this->inifalse);
+		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
+			return $data[0];
+		} else {
+			return $data["COUNT"];
+		}
 	}
 	public function SUM($field) {
 		$this->polymerization($field, "SUM");

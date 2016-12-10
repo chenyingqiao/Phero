@@ -27,30 +27,39 @@ trait DbUnitBase {
 	 */
 	public function __construct($values = null, $IniFalse = true) {
 		$this->model = new Model();
+		$this->values_cache = $values;
+		$this->inifalse = $IniFalse;
 		if (isset($values)) {
-			//判断是否吧除了需要初始化的值之外的数据设置成false[就是不需要查询]
-			if ($IniFalse && count($values) > 0 || $values == false) {
-				$this->allFalse();
-				// if (is_string($values)) {
-				// 	$this->field($values);
-				// }
-			}
-			if (is_array($values)) {
-				$setFiled = false;
-				$keys = array_keys($values);
-				//判断是否是数值key的数组
-				if (is_numeric($keys[0])) {
-					$setFiled = true;
-				}
-				foreach ($values as $key => $value) {
-					if ($setFiled) {
-						$this->$value = true;
-					} else {
-						$this->$key = $value;
-					}
-				}
-			}
+			$this->initField($values, $IniFalse);
+		}
+	}
 
+	protected $values_cache, $inifalse;
+
+	/**
+	 * 初始化列
+	 * @param  [type] $values [description]
+	 * @return [type]         [description]
+	 */
+	protected function initField($values, $IniFalse) {
+		//判断是否吧除了需要初始化的值之外的数据设置成false[就是不需要查询]
+		if ($IniFalse && count($values) > 0 || $values == false) {
+			$this->allFalse();
+		}
+		if (is_array($values)) {
+			$setFiled = false;
+			$keys = array_keys($values);
+			//判断是否是数值key的数组
+			if (is_numeric($keys[0])) {
+				$setFiled = true;
+			}
+			foreach ($values as $key => $value) {
+				if ($setFiled) {
+					$this->$value = true;
+				} else {
+					$this->$key = $value;
+				}
+			}
 		}
 	}
 
