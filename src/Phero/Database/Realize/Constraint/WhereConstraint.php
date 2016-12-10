@@ -15,7 +15,7 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 
 	protected $where;
 
-	private $bindData=[];
+	private $bindData = [];
 	private $enableAlias = true;
 	private $Entiy;
 	/**
@@ -53,14 +53,14 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		return $this->where;
 	}
 
-	protected function getBuildData($Entiy){
-	    return $Entiy->getWhere();
-    }
+	protected function getBuildData($Entiy) {
+		return $Entiy->getWhere();
+	}
 
 	/**
 	 * 用户手动设置的查询条件
 	 * @param  [type] $Entiy [要设置where的实体类,实体类中带where的数据]
-     * @param  [type] $group [where分组]
+	 * @param  [type] $group [where分组]
 	 * @return [type]        [description]
 	 */
 	public function userSetWhere($Entiy, $group = 0) {
@@ -79,17 +79,17 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 			//这里设置表的默认where链接方式
 			$contype = ($i == count($where) - 1) ? "" : $value[3];
 			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
-            if(is_object($value[1])){
-                $bindValues=$value[1]->fetchSql();
-                $this->bindData= array_merge($this->bindData,$bindValues);
-                $bindValue="(".rtrim($value[1]->sql(),";").")";
-            }else{
-                $bindValue = $this->setBindDataAndGetBindKey($value[0], $value[1], $from, $compare);
-            }
-            $group=null;
-            if(!empty($value['group'])){
-                $group=$value["group"];
-            }
+			if (is_object($value[1])) {
+				$bindValues = $value[1]->fetchSql();
+				$this->bindData = array_merge($this->bindData, $bindValues);
+				$bindValue = "(" . rtrim($value[1]->sql(), ";") . ")";
+			} else {
+				$bindValue = $this->setBindDataAndGetBindKey($value[0], $value[1], $from, $compare);
+			}
+			$group = null;
+			if (!empty($value['group'])) {
+				$group = $value["group"];
+			}
 			$this->setWhere($from, $value[0], $bindValue, $compare, $contype, $group);
 			$i++;
 		}
