@@ -39,7 +39,6 @@ trait DbUnit {
 		$this->$field = true;
 		$this->polymerization($field, "COUNT");
 		$data = $this->find();
-		var_dump($data);
 		$this->initField($this->values_cache, $this->inifalse);
 		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
 			return $data[0];
