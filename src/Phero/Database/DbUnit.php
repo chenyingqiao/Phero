@@ -35,14 +35,12 @@ trait DbUnit {
 	 * @param [type] $field [description]
 	 */
 	public function COUNT($field) {
-		$classes = get_class($this);
-		$classes = new $classes;
-		$classes->allFalse();
-		$classes->$field = true;
-		$classes->polymerization($field, "COUNT");
-		$data = $classes->find();
-		$this->dumpSql = $classes->sql();
-		if ($classes->getModel()->getFetchMode() == Model::fetch_arr_number) {
+		$this->allFalse();
+		$this->$field = true;
+		$this->polymerization($field, "COUNT");
+		$data = $this->find();
+		$this->dumpSql = $this->sql();
+		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
 			return $data[0];
 		} else {
 			return $data["COUNT"];
