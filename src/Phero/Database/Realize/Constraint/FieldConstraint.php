@@ -28,11 +28,6 @@ class FieldConstraint implements interfaces\IConstraint {
 	public function __construct($Entiy = null) {
 		$this->setFieldByEntiy($Entiy);
 		$this->joinRecursion($Entiy);
-		// if (count($Entiy->getJoin()) > 0) {
-		// 	foreach ($Entiy->getJoin() as $key => $value) {
-		// 		$this->setFieldByEntiy($value[0]);
-		// 	}
-		// }
 	}
 
 	private function joinRecursion($Entiy) {
@@ -56,14 +51,16 @@ class FieldConstraint implements interfaces\IConstraint {
 		$this->userSetField($Entiy);
 		foreach ($property as $key => $value) {
 			$fieldName = $value->getName();
-			if ($Entiy->$fieldName === false) {
-				//属性值未true的才添加到field
-				continue;
-			}
 			$temp = null;
 			if (!empty($fieldTemp[$fieldName])) {
 				$temp = $fieldTemp[$fieldName];
+                $Entiy->$fieldName=true;
 			}
+
+            if ($Entiy->$fieldName === false) {
+                //属性值未true的才添加到field
+                continue;
+            }
 			$as = $value->getNode(new note\Field())->alias;
 			$this->setField($fieldName, $tableAlias, $as, $temp);
 		}
@@ -75,9 +72,10 @@ class FieldConstraint implements interfaces\IConstraint {
 	 */
 	private function userSetField($Entiy) {
 		$field = $Entiy->getField();
+        $tableAlias = $this->getName($Entiy);
 		if (count($field) > 0) {
 			foreach ($field as $key => $value) {
-				$this->setField($value, null, null, null);
+				$this->setField($value, $tableAlias, null, null);
 			}
 		}
 	}
@@ -134,10 +132,6 @@ class FieldConstraint implements interfaces\IConstraint {
 			}
 
 			$i == count($this->fieldList) - 1 ? $split = " " : $split = ",";
-			// $CountLengthOfValue=count($value);
-			// if($CountLengthOfValue==0){
-			// 	continue;
-			// }
 
 			$table = is_numeric($key) ? "" : $key . ".";
 			$name = !empty($value[0]) ? $value[0] : "";

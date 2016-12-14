@@ -51,6 +51,14 @@ trait TConstraintTableDependent {
 	}
 
 	public final function getTablePropertySingle($Entiy, $propertyName) {
+	    $propertys= $this->getTableProperty($Entiy);
+        $nams=[];
+        foreach ($propertys as $key=>$value){
+            $nams[]=$value->getName();
+        }
+        if(!in_array($propertyName,$nams)){
+            return false;
+        }
 		$NodeReflectionClass = new NodeReflectionClass($Entiy);
 		return $NodeReflectionClass->getProperty($propertyName);
 	}
@@ -68,6 +76,9 @@ trait TConstraintTableDependent {
 	 */
 	public final function getTablePropertyNode($Entiy, $propertyName, $nodeClass) {
 		$property = $this->getTablePropertySingle($Entiy, $propertyName);
+        if($property==false){
+            return false;
+        }
 		return $property->resolve($nodeClass);
 	}
 

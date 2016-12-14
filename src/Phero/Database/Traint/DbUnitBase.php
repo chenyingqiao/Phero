@@ -127,7 +127,7 @@ trait DbUnitBase {
 	 * @param  [type] $from  [来自那个表  如果是多表链接的话]
 	 * @return [type]        [description]
 	 */
-	public function where($where, $from = null, $group = false) {
+	public function where($where, $from = null, $group = false,$whereTemp="") {
 		if (!isset($where) || count($where) < 2) {
 			return;
 		}
@@ -138,6 +138,9 @@ trait DbUnitBase {
 		if ($group !== false) {
 			$where['group'] = $group;
 		}
+		if(!empty($whereTemp)){
+		    $where['temp']=$whereTemp;
+        }
 		$this->where[] = $where;
 		return $this;
 	}
@@ -189,14 +192,29 @@ trait DbUnitBase {
 		return $this;
 	}
 
-	public function field($field) {
+	public function field($field,$temp="") {
+        $temp_arr=[];
+        $has_temp=false;
+        if(!empty($temp)){
+            $has_temp=true;
+        }
 		if (is_array($field)) {
+            if(count($field)!=count($temp)&&is_array($temp_arr)){
+                throw new \Exception("field and temp length not equle");
+            }
 			foreach ($field as $key => $value) {
-				$this->field[] = $value;
+			    if(!$has_temp)
+				    $this->field[] = $value;
+                else
+                $temp_arr[$value]=$temp[$key];
 			}
 		} else {
-			$this->field[] = $field;
+		    if (!$has_temp)
+			    $this->field[] = $field;
+            else
+                $temp_arr[$field]=$temp;
 		}
+        $this->fieldTemp($temp_arr);
 		return $this;
 	}
 	/**

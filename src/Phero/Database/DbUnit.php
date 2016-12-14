@@ -103,11 +103,12 @@ trait DbUnit {
 
 	/**
 	 * where扩展函数
-	 * @param  [type] $function_name [description]
-	 * @param  [type] $argument      [description]
+	 * @param  [type] $function_name [调用的函数名称]
+	 * @param  [type] $argument      [调用where的参数 每个调用都不一样]
 	 * @return [type]                [description]
 	 */
 	public function __call($function_name, $argument) {
+	    //后接 or 或
 		if (strstr($function_name, "whereOr")) {
 			if (strstr($function_name, "Group")) {
 				$reg = '/whereOr(\w+)Group(\w+)/';
@@ -124,10 +125,18 @@ trait DbUnit {
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
 					$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_]);
 				} else {
+                    if(count($argument)==4){
+                        //字段名 字段值 字段比较符号 字段函数模板
+                        $this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::or_],null,false,$argument[3]);
+                    }else{
+                        $this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::or_]);
+                    }
 					$this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::or_]);
 				}
 			}
-		} else if (strstr($function_name, "And")) {
+		}
+		//后接 并 and
+		else if (strstr($function_name, "And")) {
 			if (strstr($function_name, "Group")) {
 				$reg = '/whereAnd(\w+)Group(\w+)/';
 				$matched = preg_match($reg, $function_name, $matcher);
@@ -143,10 +152,17 @@ trait DbUnit {
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
 					$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_]);
 				} else {
-					$this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::and_]);
+				    if(count($argument)==4){
+                        //字段名 字段值 字段比较符号 字段函数模板
+                        $this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::and_],null,false,$argument[3]);
+                    }else{
+                        $this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::and_]);
+                    }
 				}
 			}
-		} else if (!strstr($function_name, "And") && !strstr($function_name, "Or") && substr($function_name, 0, 5) == "where") {
+		}
+		//没有后接where
+		else if (!strstr($function_name, "And") && !strstr($function_name, "Or") && substr($function_name, 0, 5) == "where") {
 			if (strstr($function_name, "Group")) {
 				$reg = '/where(\w+)Group(\w+)/';
 				$matched = preg_match($reg, $function_name, $matcher);
@@ -160,7 +176,12 @@ trait DbUnit {
 				if (!empty($matcher[1])) {
 					$compser = strtolower($matcher[1]);
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
-					$this->where([$argument[0], $argument[1], enum\Where::get($compser)]);
+                    if(count($argument)==3){
+                        //字段名 字段值 字段函数模板
+                        $this->where([$argument[0], $argument[1], enum\Where::get($compser)],null,false,$argument[2]);
+                    }else{
+                        $this->where([$argument[0], $argument[1], enum\Where::get($compser)]);
+                    }
 				}
 			}
 		}

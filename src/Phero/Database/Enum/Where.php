@@ -40,6 +40,8 @@ class Where {
 			return Where::ge;
 		} else if ($key == 'regexp') {
 			return Where::regexp;
-		}
+		}else{
+		    return "";
+        }
 	}
 }
