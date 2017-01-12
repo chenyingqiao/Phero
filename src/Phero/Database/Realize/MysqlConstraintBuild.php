@@ -25,7 +25,7 @@ class MysqlConstraintBuild implements interfaces\IConstraintBuild, interfaces\IB
 	CONST Set = 'set'; //key=value格式的sql语句
 	CONST Where = 'where';
 	CONST Limit = 'limit';
-    CONST Having='having';
+	CONST Having = 'having';
 
 	private $constraints = array();
 
@@ -53,22 +53,22 @@ class MysqlConstraintBuild implements interfaces\IConstraintBuild, interfaces\IB
 			$this->addItem(new constraint\GroupConstraint($Entiy));
 			$this->addItem(new constraint\LimitConstraint($Entiy));
 			$this->addItem(new constraint\OrderConstraint($Entiy));
-            $this->addItem(new constraint\HavingConstraint($Entiy));
+			$this->addItem(new constraint\HavingConstraint($Entiy));
 		}
 
-		$distanct="";
-        if($Entiy->getDistinct()){$distanct="distinct";}
+		$distanct = "";
+		if ($Entiy->getDistinct()) {$distanct = "distinct";}
 
-		$sql = "select " .$distanct. $this->fragment(MysqlConstraintBuild::Field)
-            . $this->fragment(MysqlConstraintBuild::DataSource)
-            . $this->fragment(MysqlConstraintBuild::Where)
-            . $this->fragment(MysqlConstraintBuild::Grouping)
-            . $this->fragment(MysqlConstraintBuild::Having)
-            . $this->fragment(MysqlConstraintBuild::Order)
-            . $this->fragment(MysqlConstraintBuild::Limit) . ';';
-        $bindData1=$this->constraints[MysqlConstraintBuild::Where]->getBindData();
-        $bindData2=$this->constraints[MysqlConstraintBuild::Having]->getBindData();
-		$this->bindData = array_merge($bindData1,$bindData2);
+		$sql = "select " . $distanct . $this->fragment(MysqlConstraintBuild::Field)
+		. $this->fragment(MysqlConstraintBuild::DataSource)
+		. $this->fragment(MysqlConstraintBuild::Where)
+		. $this->fragment(MysqlConstraintBuild::Grouping)
+		. $this->fragment(MysqlConstraintBuild::Having)
+		. $this->fragment(MysqlConstraintBuild::Order)
+		. $this->fragment(MysqlConstraintBuild::Limit) . ';';
+		$bindData1 = $this->constraints[MysqlConstraintBuild::Where]->getBindData();
+		$bindData2 = $this->constraints[MysqlConstraintBuild::Having]->getBindData();
+		$this->bindData = array_merge($bindData1, $bindData2);
 		return $sql;
 	}
 	/**

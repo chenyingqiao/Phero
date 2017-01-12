@@ -24,6 +24,15 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	private $error;
 
+    /**
+     * MysqlDbHelp constructor.
+     * 对pdo进行初始化
+     * 支持主从数据库
+     * @param null $dns
+     * @param null $username
+     * @param null $password
+     * @throws \Exception
+     */
 	public function __construct($dns = null, $username = null, $password = null) {
 		$this->inject();
 
@@ -41,6 +50,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			}
 		}
 	}
+
+
 
 	/**
 	 * 返回影响的行数

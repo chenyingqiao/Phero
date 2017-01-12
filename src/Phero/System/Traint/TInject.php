@@ -36,25 +36,12 @@ trait TInject {
 			if (!empty($inject)) {
 				$class = null;
 				$property_ref = $value->getName();
-				// if (!empty($inject->super)) {
-				// 	if ($class instanceof $inject->super) {
-				// 		throw new Exception("不是超类", 1);
-				// 	}
-				// }
 				if (!empty($inject->di)) {
 					$DI = new NodeReflectionClass(new DI());
-//					$injs = $DI->getProperty("injs");
-					//					$injs->setAccessible(true);
-					//					$injs = $injs->getValue();
 					if (DI::get($inject->di) != null) {
 						$this->$property_ref = DI::get($inject->di);
 					}
 				}
-				// if (!empty($inject->class)) {
-				// 	$class = $inject->class; //实现类
-				// 	$class = new $class();
-				// 	$this->$property_ref = $class;
-				// }
 			}
 		}
 	}

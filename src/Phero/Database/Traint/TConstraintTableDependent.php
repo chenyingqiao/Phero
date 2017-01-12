@@ -51,14 +51,14 @@ trait TConstraintTableDependent {
 	}
 
 	public final function getTablePropertySingle($Entiy, $propertyName) {
-	    $propertys= $this->getTableProperty($Entiy);
-        $nams=[];
-        foreach ($propertys as $key=>$value){
-            $nams[]=$value->getName();
-        }
-        if(!in_array($propertyName,$nams)){
-            return false;
-        }
+		$propertys = $this->getTableProperty($Entiy);
+		$nams = [];
+		foreach ($propertys as $key => $value) {
+			$nams[] = $value->getName();
+		}
+		if (!in_array($propertyName, $nams)) {
+			return false;
+		}
 		$NodeReflectionClass = new NodeReflectionClass($Entiy);
 		return $NodeReflectionClass->getProperty($propertyName);
 	}
@@ -76,9 +76,9 @@ trait TConstraintTableDependent {
 	 */
 	public final function getTablePropertyNode($Entiy, $propertyName, $nodeClass) {
 		$property = $this->getTablePropertySingle($Entiy, $propertyName);
-        if($property==false){
-            return false;
-        }
+		if ($property == false) {
+			return false;
+		}
 		return $property->resolve($nodeClass);
 	}
 
@@ -97,10 +97,6 @@ trait TConstraintTableDependent {
 		}
 		$on = str_replace(["$", "#"], [$nameOfEntiy, $nameOfJoinEntiy], $on);
 		return $on;
-	}
-
-	public final function getTableWhere() {
-
 	}
 	/**
 	 * 取得实体类的类型是不是string

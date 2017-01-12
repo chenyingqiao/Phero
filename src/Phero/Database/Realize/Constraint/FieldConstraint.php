@@ -121,7 +121,7 @@ class FieldConstraint implements interfaces\IConstraint {
 	 * @return [type] [description]
 	 */
 	public function getSqlFragment() {
-		$sql = " ";
+		$sql = "";
 		$i = 0;
 		// var_dump($this->fieldList);
 		foreach ($this->fieldList as $key => $value) {

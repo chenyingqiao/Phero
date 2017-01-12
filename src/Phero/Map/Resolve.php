@@ -30,6 +30,7 @@ trait Resolve {
 		 * 缓存通过类名称（包括命名空间）作为key
 		 */
 		if(sys\DI::get(cache\Enum\CacheConfig::injectCache)){
+		    //有注入缓存注解才会进行注解缓存
             $parent_class_name = get_parent_class();
             if ($parent_class_name == "ReflectionClass") {
                 $NodeKey = $this->getName();

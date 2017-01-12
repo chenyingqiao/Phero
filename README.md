@@ -195,6 +195,15 @@ $video_user->select();//value就是video_cat查询出来的结果
   	video_user as cat
 ```
 
+### 查询取值方式
+
+```php
+//select可以使用函数进行数据的遍历
+$user_list = $video_user->select(function($item){
+        var_dump($item);
+});
+```
+
 ### 查询表中的部分列
 
 ```php
@@ -211,10 +220,12 @@ from
 	video_user as cd;
 ```
 
+### 
+
 
 ### 条件查询(where)
 
-> 简单的where
+> 简单的where(GroupStart GroupEnd标示一个where组)
 ```php
     $video_user=new test\video_user(["uid","username"]);
     $video_user->order('uid',database\Enum\OrderType::desc);
@@ -241,11 +252,34 @@ order by
 	cd.uid desc;
 ```
 
-> 条件查询的组合
+### where函数模板
 
-    1. where\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
-    2. whereAnd\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
-    3. whereOr\[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge\]([列],[值])
+> where 列使用函数模板
+
+```php
+$video_user = new unit\video_user();
+$user_list = $video_user->whereN("uid", null, "ASCII(?)")->select();
+var_dump($user_list);
+```
+
+```sql
+SELECT
+    cd.uid,
+    cd.username AS um,
+    cd.password AS pwd
+FROM
+    video_user AS cd
+WHERE
+    ASCII(cd.uid);
+```
+
+> 条件查询的组合{N或者随意字符串标示不使用比较符号:使用函数模板的时候使用}
+
+    *使用函数模板 第二个参数一定要传 *
+
+    1. where[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge,N或者随意字符串]{GroupStart|GroupEnd}([列],[值],[函数模板])
+    2. whereAnd[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge,N或者随意字符串]{GroupStart|GroupEnd}([列],[值],[函数模板])
+    3. whereOr[Eq,Neq,In,Not_in,Between,Like,Lt,Lr,Gt,Ge,N或者随意字符串]{GroupStart|GroupEnd}([列],[值],[函数模板])
     
     
 ### 关联查询
@@ -265,8 +299,21 @@ $video_cat=new video_cat();
             A->select(); //完成3表链接
  * @type {[type]}
  */
+//===========3表链接============
 $video_cat->join(new video_course(['course_id','name','video_path']),"$.id=#.cat_id");
 $value=$video_cat->select();
+
+//===========3表链接============
+$video_cat = new unit\video_cat(['id', 'name']); //===>可以输入要的列
+$video_course = new unit\video_course(['course_id', 'name', 'video_path', "difficulty_id"]);
+$video_cat->join($video_course, "$.id=#.cat_id");
+$video_course->join(new unit\video_difficulty(['id', 'name']), "$.difficulty_id=#.id");
+$video_cat_join_course = $video_cat->select();
+var_dump($video_cat_join_course);
+//打印sql
+var_dump($video_cat->sql());
+//打印错误信息
+var_dump($video_cat->getModel()->getError());
 ```
 
 
