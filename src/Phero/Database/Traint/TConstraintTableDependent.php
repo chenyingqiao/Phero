@@ -2,6 +2,7 @@
 namespace Phero\Database\Traint;
 use Phero\Map\NodeReflectionClass;
 use Phero\Map\NodeReflectionProperty;
+use Phero\Map\Note\Field;
 use Phero\Map\Note\Table;
 
 trait TConstraintTableDependent {
@@ -47,7 +48,14 @@ trait TConstraintTableDependent {
 	 */
 	public final function getTableProperty($Entiy) {
 		$NodeReflectionClass = new NodeReflectionClass($Entiy);
-		return $NodeReflectionClass->getProperties();
+		$property = $NodeReflectionClass->getProperties();
+		$propertys = [];
+		foreach ($property as $value) {
+			if ($value->resolve(new Field())) {
+				$propertys[] = $value;
+			}
+		}
+		return $propertys;
 	}
 
 	public final function getTablePropertySingle($Entiy, $propertyName) {

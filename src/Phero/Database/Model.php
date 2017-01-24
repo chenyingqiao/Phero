@@ -33,7 +33,6 @@ class Model implements interfaces\IModel {
 
 	public function insert($Entiy, $is_replace = false) {
 		$sql = $this->IConstraintBuild->buildInsertSql($Entiy, $is_replace);
-		// var_dump($sql);
 		$this->sql = $sql;
 		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $return;
@@ -47,13 +46,18 @@ class Model implements interfaces\IModel {
 	 * 子查询
 	 * 表链接
 	 * @param  [type] $entiy [description]
-	 * @param  [type] $callback [description]
+	 * @param  [type] $yield [description]
 	 * @return [type]        [description]
 	 */
-	public function select($Entiy, $callback = null) {
+	public function select($Entiy, $yield = false) {
 		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
 		$this->sql = $sql;
-		$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData(), $callback);
+		$this->help->setEntiy($Entiy);
+		if ($yield) {
+			$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData());
+		} else {
+			$data = $this->help->setFetchMode($this->mode, $this->classname)->queryResultArray($sql, $this->IConstraintBuild->getBindData());
+		}
 		return $data;
 	}
 	public function update($Entiy) {

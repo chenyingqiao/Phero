@@ -7,8 +7,7 @@ use Phero\Database\Traint\DbUnitBase;
 /**
  * 实体化数据的载入载体
  */
-trait DbUnit {
-	use DbUnitBase;
+class DbUnit extends DbUnitBase {
 	public function __set($key, $value) {
 		$this->$key = $value;
 	}
@@ -19,25 +18,30 @@ trait DbUnit {
 		return $this->select()[0];
 	}
 
-	public function polymerization($field, $keyword = "COUNT") {
+	public function polymerization($field, $keyword = "COUNT", $distanct = false) {
 		if (is_array($field)) {
 			$temp_arr = [];
+			if ($distanct) {
+				$split = "(distanct ?) as";
+			} else {
+				$split = "(?) as";
+			}
 			foreach ($field as $key => $value) {
-				$temp_arr[$value] = $keyword . "(?) as " . $keyword;
+				$temp_arr[$value] = $keyword . $split . $keyword;
 			}
 			$this->fieldTemp($temp_arr);
 		} else if (is_string($field)) {
-			$this->fieldTemp([$field => $keyword . "(?) as " . $keyword]);
+			$this->fieldTemp([$field => $keyword . $split . $keyword]);
 		}
 	}
 	/**
 	 * 直接返回数量
 	 * @param [type] $field [description]
 	 */
-	public function COUNT($field) {
+	public function COUNT($field, $distanct = false) {
 		$this->allFalse();
 		$this->$field = true;
-		$this->polymerization($field, "COUNT");
+		$this->polymerization($field, "COUNT", $distanct);
 		$data = $this->find();
 		$this->dumpSql = $this->sql();
 		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {

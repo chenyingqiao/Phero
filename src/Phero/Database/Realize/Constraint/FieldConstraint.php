@@ -54,13 +54,13 @@ class FieldConstraint implements interfaces\IConstraint {
 			$temp = null;
 			if (!empty($fieldTemp[$fieldName])) {
 				$temp = $fieldTemp[$fieldName];
-                $Entiy->$fieldName=true;
+				$Entiy->$fieldName = true;
 			}
 
-            if ($Entiy->$fieldName === false) {
-                //属性值未true的才添加到field
-                continue;
-            }
+			if ($Entiy->$fieldName === false) {
+				//属性值未true的才添加到field
+				continue;
+			}
 			$as = $value->getNode(new note\Field())->alias;
 			$this->setField($fieldName, $tableAlias, $as, $temp);
 		}
@@ -72,7 +72,7 @@ class FieldConstraint implements interfaces\IConstraint {
 	 */
 	private function userSetField($Entiy) {
 		$field = $Entiy->getField();
-        $tableAlias = $this->getName($Entiy);
+		$tableAlias = $this->getName($Entiy);
 		if (count($field) > 0) {
 			foreach ($field as $key => $value) {
 				$this->setField($value, $tableAlias, null, null);

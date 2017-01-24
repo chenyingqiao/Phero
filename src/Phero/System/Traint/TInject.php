@@ -19,6 +19,16 @@ trait TInject {
 	public final function inject() {
 		$NodeReflection = new NodeReflectionClass($this);
 		$propertys = $NodeReflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED);
+		$propertys_static = $NodeReflection->getStaticProperties();
+		$propertys = array_merge($propertys, $propertys_static);
+		$this->autoInject($propertys);
+	}
+
+	public static final function injectStatic() {
+		$NodeReflection = new NodeReflectionClass(self);
+		$propertys = $NodeReflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED);
+		$propertys_static = $NodeReflection->getStaticProperties();
+		$propertys = array_merge($propertys, $propertys_static);
 		$this->autoInject($propertys);
 	}
 
@@ -37,7 +47,6 @@ trait TInject {
 				$class = null;
 				$property_ref = $value->getName();
 				if (!empty($inject->di)) {
-					$DI = new NodeReflectionClass(new DI());
 					if (DI::get($inject->di) != null) {
 						$this->$property_ref = DI::get($inject->di);
 					}

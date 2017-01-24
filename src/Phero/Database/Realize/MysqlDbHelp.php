@@ -3,55 +3,35 @@ namespace Phero\Database\Realize;
 
 use Phero\Database as database;
 use Phero\Database\Interfaces as interfaces;
-use Phero\System as sys;
-use Phero\System\Traint as sys_traint;
+use Phero\Database\Realize\PdoWarehouse;
+use Phero\Database\Traint\TRelation;
 
 /**
  * 数据库
  */
 class MysqlDbHelp implements interfaces\IDbHelp {
-	use sys_traint\TInject;
+	use TRelation;
 
-	/**
-	 * @Inject[di=pdo_instance]
-	 * @var [type]
-	 */
 	protected $pdo;
-
-	protected $pdo_servlet;
 
 	private $mode, $classname;
 
 	private $error;
 
-    /**
-     * MysqlDbHelp constructor.
-     * 对pdo进行初始化
-     * 支持主从数据库
-     * @param null $dns
-     * @param null $username
-     * @param null $password
-     * @throws \Exception
-     */
+	private $entiy;
+
+	/**
+	 * MysqlDbHelp constructor.
+	 * 对pdo进行初始化
+	 * 支持主从数据库
+	 * @param null $dns
+	 * @param null $username
+	 * @param null $password
+	 * @throws \Exception
+	 */
 	public function __construct($dns = null, $username = null, $password = null) {
-		$this->inject();
 
-		// $this->getPdoByConfig();
-
-		if (!$this->pdo) {
-			$config = sys\DI::get(database\Enum\DatabaseConfig::DatabaseConnect);
-			if (!$dns && empty($config)) {
-				throw new \Exception("没有指定链接字符串");
-			} else {
-				$dns = $config[0];
-				$username = $config[1];
-				$password = $config[2];
-				$this->pdo = new database\PDO($dns, $username, $password);
-			}
-		}
 	}
-
-
 
 	/**
 	 * 返回影响的行数
@@ -60,6 +40,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]       [返回影响的行数]
 	 */
 	public function exec($sql, $data = []) {
+		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -85,7 +66,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @param  array  $data [绑定的数据]
 	 * @return array [返回结果集]
 	 */
-	public function query($sql, $data = [], $callback = null) {
+	public function queryResultArray($sql, $data = []) {
+		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -104,13 +86,48 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$result_data = [];
 		while ($result = $sql->fetch($this->mode)) {
-			if (isset($callback)) {
-				$callback($result);
-			} else {
-				$result_data[] = $result;
+			if (is_array($result)) {
+				$entiy_fill = $this->fillEntiy($this->entiy, $result);
+				var_dump($entiy_fill->cat_id);
+				$entiy_fill->rel();
+				$relation_data = $this->relation_select($entiy_fill);
+				var_dump($relation_data);
+				$entiy_fill->sql();
 			}
+			$result = array_merge($result, $relation_data);
+			$result_data[] = $result;
 		}
 		return $result_data;
+	}
+
+	/**
+	 * 返回结果集
+	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
+	 * @param  array  $data [绑定的数据]
+	 * @return array [返回结果集]
+	 */
+	public function query($sql, $data = []) {
+		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
+		$data = $data == null ? [] : $data;
+		if (is_string($sql)) {
+			$sql = $this->pdo->prepare($sql);
+			$this->bindData($sql, $data);
+			$sql->execute();
+			$this->errorMessage($sql);
+		} else {
+			if ($sql instanceof \PDOStatement) {
+				$this->PDOStatementFactory($sql);
+				$this->bindData($sql, $data);
+				$sql->execute();
+				$this->errorMessage($sql);
+			} else {
+				yield null;
+			}
+		}
+		while ($result = $sql->fetch($this->mode)) {
+			yield $result;
+		}
+		yield null;
 	}
 
 	private function bindData(&$sql, $data = []) {
@@ -158,23 +175,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			$this->error .= $value . "	";
 		}
 	}
-	public function getDbConn() {
-		return $this->pdo;
+	public function setEntiy($entiy) {
+		$this->entiy = $entiy;
 	}
 
-	private function getPdoByConfig() {
-		$file_path = dirname(dirname(dirname(__FILE__)));
-		$config = null;
-		if (is_file("$file_path/Config.php")) {
-			$config = require "$file_path/Config.php";
-		}
-		if (is_array($config)) {
-			if (array_key_exists("dsn", $config)) {
-				$this->pdo = new database\PDO($config['dsn'], $config['username'], $config['password']);
-			} else {
-				$dsn = $config['type'] . ":host=" . $config['host'] . ";dbname=" . $config['dbname'] . ";charset=" . $config['charset'];
-				$this->pdo = new database\PDO($dsn, $config['username'], $config['password']);
-			}
-		}
+	public function getDbConn() {
+		return $this->pdo;
 	}
 }

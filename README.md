@@ -12,7 +12,7 @@
 
 ### 在入口脚本注入PDO
 
-> 方法1
+> 方法1 
 
 ```php
 use Phero\System\DI;

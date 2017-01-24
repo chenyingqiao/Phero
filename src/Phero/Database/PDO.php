@@ -5,7 +5,7 @@ namespace Phero\Database;
  *支持事务嵌套的pdo
  */
 class PDO extends \PDO {
-	protected $transactionCount = 0;
+	protected $transactionCounter = 0;
 
 	public function beginTransaction() {
 		if (!$this->transactionCounter++) {

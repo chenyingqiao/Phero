@@ -29,22 +29,24 @@ trait Resolve {
 		 *
 		 * 缓存通过类名称（包括命名空间）作为key
 		 */
-		if(sys\DI::get(cache\Enum\CacheConfig::injectCache)){
-		    //有注入缓存注解才会进行注解缓存
-            $parent_class_name = get_parent_class();
-            if ($parent_class_name == "ReflectionClass") {
-                $NodeKey = $this->getName();
-            } else {
-                $NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
-            }
-            $NodeKey = md5($NodeKey);
-            $cache = LocalFileCache::read($NodeKey);
-            if (!empty($cache)) {return $cache;}
-        }
-
+		if (sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
+			//有注入缓存注解才会进行注解缓存
+			$parent_class_name = get_parent_class();
+			if ($parent_class_name == "ReflectionClass") {
+				$NodeKey = $this->getName();
+			} else {
+				$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+			}
+			$NodeKey = md5($NodeKey);
+			$cache = LocalFileCache::read($NodeKey);
+			if (!empty($cache)) {return $cache;}
+		}
 
 		$str = $this->getDocComment();
-		$result = preg_match_all("/@([\w]+)\[([\S]+)\]/", $str, $match);
+		$NodeName = $NodeReflection->getName();
+		$NodeName = explode('\\', $NodeName);
+		$NodeName = $NodeName[count($NodeName) - 1];
+		$result = preg_match_all("/@$NodeName(\[([\S]+){0,}\]){0,}/", $str, $match);
 
 		//没有找到注解
 		if (empty($result)) {
@@ -57,7 +59,22 @@ trait Resolve {
 		$ParamMap = [];
 		foreach ($ResolveNodeParam as $key => $value) {
 			$param = explode('=', $value);
-			$ParamMap[$param[0]] = $param[1];
+			if (isset($param[1])) {
+				if (strstr($param[1], '|')) {
+					//v|v|v  或者 v:k|v:k|v:k
+					$param_v = explode('|', $param[1]);
+					$param_kv = [];
+					foreach ($param_v as $key => $value) {
+						if (strstr($value, ':')) {
+							$kv = explode(':', $value);
+							$param_kv[$kv[0]] = $kv[1];
+							unset($param_v[$key]);
+						}
+					}
+					$param[1] = array_merge($param_v, $param_kv);
+				}
+				$ParamMap[$param[0]] = $param[1];
+			}
 		}
 		$ReflectionPropertys = $NodeReflection->getProperties(\ReflectionProperty::IS_PUBLIC);
 		$ParamMapKeys = array_keys($ParamMap); //参数的key
@@ -74,9 +91,9 @@ trait Resolve {
 		/**
 		 * 这里可以缓存注解
 		 */
-        if(sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
-            LocalFileCache::save($NodeKey, $Node);
-        }
+		if (sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
+			LocalFileCache::save($NodeKey, $Node);
+		}
 
 		return $Node;
 	}

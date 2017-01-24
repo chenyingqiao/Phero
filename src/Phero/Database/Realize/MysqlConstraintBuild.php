@@ -133,7 +133,6 @@ class MysqlConstraintBuild implements interfaces\IConstraintBuild, interfaces\IB
 		$sql = "delete from " . $this->getTableName($Entiy) . $this->fragment(MysqlConstraintBuild::Where) . ";";
 		$bindData1 = $this->constraints[MysqlConstraintBuild::Where]->getBindData();
 		$this->bindData = $bindData1;
-		var_dump($bindData1);
 		return $sql;
 	}
 

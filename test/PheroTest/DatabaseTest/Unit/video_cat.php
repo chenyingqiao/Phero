@@ -5,8 +5,7 @@ use Phero\Database\DbUnit;
 /**
  * @Table[alias=cat]
  */
-class video_cat {
-	use DbUnit;
+class video_cat extends DbUnit {
 	/**
 	 * [$id description]
 	 * @var [type]

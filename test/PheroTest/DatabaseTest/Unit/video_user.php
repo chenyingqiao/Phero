@@ -8,6 +8,7 @@ use Phero\Database\DbUnit;
  */
 class video_user {
 	use DbUnit;
+
 	/**
 	 * @Primary
 	 * @Field[type=int]
@@ -20,7 +21,7 @@ class video_user {
 	 */
 	public $username;
 	/**
-	 * @Field[alias=pwd,type=string]
+	 * @Field
 	 * @var [type]
 	 */
 	public $password;
