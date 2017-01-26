@@ -20,7 +20,7 @@ class Field {
 	 *  	[datetime]
 	 * @var [type]
 	 */
-	public $type = \PDO::PARAM_STR;
+	public $type = self::String;
 
 	public static function typeTrunPdoType($type) {
 		if ($type == "string") {
@@ -29,4 +29,7 @@ class Field {
 			return \PDO::PARAM_INT;
 		}
 	}
+
+    CONST String='string';
+    CONST Int='int';
 }

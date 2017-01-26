@@ -5,8 +5,7 @@ use Phero\Database\DbUnit;
 /**
  *
  */
-class video_difficulty {
-	use DbUnit;
+class video_difficulty extends DbUnit {
 	/**
 	 * @Field[alias=diff_id]
 	 * @var [type]

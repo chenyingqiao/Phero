@@ -18,6 +18,7 @@ class Model implements interfaces\IModel {
 	const rollback_transaction = 2;
 	const commit_transaction = 3;
 
+	//obj无法使用
 	private $mode = self::fetch_arr_key, $classname = "Phero\\Database\\DbUnit";
 
 	protected $help;
@@ -26,9 +27,9 @@ class Model implements interfaces\IModel {
 
 	private $sql, $error;
 
-	public function __construct($dns = null, $username = null, $password = null) {
+	public function __construct() {
 		$this->help = new realize\MysqlDbHelp();
-		$this->IConstraintBuild = new realize\MysqlConstraintBuild($dns, $username, $password);
+		$this->IConstraintBuild = new realize\MysqlConstraintBuild();
 	}
 
 	public function insert($Entiy, $is_replace = false) {
@@ -99,7 +100,7 @@ class Model implements interfaces\IModel {
 	 * @param  [type] $type [description]
 	 * @return [type]       [description]
 	 */
-	public function transaction($type) {
+	private function transaction($type) {
 		$pdo = $this->help->getDbConn();
 		if ($type == self::begin_transaction) {
 			if ($pdo->inTransaction()) {
@@ -113,6 +114,16 @@ class Model implements interfaces\IModel {
 		} elseif ($type == self::commit_transaction) {
 			$pdo->commit();
 		}
+	}
+
+	public function begin() {
+		$this->transaction(self::begin_transaction);
+	}
+	public function rollback() {
+		$this->transaction(self::rollback_transaction);
+	}
+	public function commit() {
+		$this->transaction(self::commit_transaction);
 	}
 	/**
 	 * 取得pdo
@@ -139,5 +150,9 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
 		$this->sql = $sql;
 		return $this->IConstraintBuild->getBindData();
+	}
+
+	public static function M() {
+		return new Model();
 	}
 }

@@ -2,7 +2,9 @@
 namespace Phero\Database\Realize;
 
 use Phero\Database as database;
+use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
+use Phero\Database\Interfaces\IRelation;
 use Phero\Database\Realize\PdoWarehouse;
 use Phero\Database\Traint\TRelation;
 
@@ -21,19 +23,6 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	private $entiy;
 
 	/**
-	 * MysqlDbHelp constructor.
-	 * 对pdo进行初始化
-	 * 支持主从数据库
-	 * @param null $dns
-	 * @param null $username
-	 * @param null $password
-	 * @throws \Exception
-	 */
-	public function __construct($dns = null, $username = null, $password = null) {
-
-	}
-
-	/**
 	 * 返回影响的行数
 	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
 	 * @param  array  $data [绑定的数据]
@@ -44,15 +33,10 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-			$this->bindData($sql, $data);
-			$sql->execute();
-			$this->errorMessage($sql);
+			$this->sql_bind_execute($sql, $data);
 		} else {
 			if ($sql instanceof \PDOStatement) {
-				$this->PDOStatementFactory($sql);
-				$this->bindData($sql, $data);
-				$sql->execute();
-				$this->errorMessage($sql);
+				$this->sql_bind_execute($sql, $data);
 			} else {
 				return 0;
 			}
@@ -71,31 +55,17 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-			$this->bindData($sql, $data);
-			$sql->execute();
-			$this->errorMessage($sql);
+			$this->sql_bind_execute($sql, $data);
 		} else {
 			if ($sql instanceof \PDOStatement) {
-				$this->PDOStatementFactory($sql);
-				$this->bindData($sql, $data);
-				$sql->execute();
-				$this->errorMessage($sql);
+				$this->sql_bind_execute($sql, $data);
 			} else {
 				return array();
 			}
 		}
 		$result_data = [];
 		while ($result = $sql->fetch($this->mode)) {
-			if (is_array($result)) {
-				$entiy_fill = $this->fillEntiy($this->entiy, $result);
-				var_dump($entiy_fill->cat_id);
-				$entiy_fill->rel();
-				$relation_data = $this->relation_select($entiy_fill);
-				var_dump($relation_data);
-				$entiy_fill->sql();
-			}
-			$result = array_merge($result, $relation_data);
-			$result_data[] = $result;
+			$result_data[] = $this->select_relation($result);
 		}
 		return $result_data;
 	}
@@ -111,21 +81,16 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
-			$this->bindData($sql, $data);
-			$sql->execute();
-			$this->errorMessage($sql);
+			$this->sql_bind_execute($sql, $data);
 		} else {
 			if ($sql instanceof \PDOStatement) {
-				$this->PDOStatementFactory($sql);
-				$this->bindData($sql, $data);
-				$sql->execute();
-				$this->errorMessage($sql);
+				$this->sql_bind_execute($sql, $data);
 			} else {
 				yield null;
 			}
 		}
 		while ($result = $sql->fetch($this->mode)) {
-			yield $result;
+			yield $this->select_relation($result);
 		}
 		yield null;
 	}
@@ -181,5 +146,39 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	public function getDbConn() {
 		return $this->pdo;
+	}
+
+	/**
+	 * 解析获取关联的数据
+	 * 并且合并到原始数据中
+	 * @param  [type] $result [description]
+	 * @return [type]         [description]
+	 */
+	private function select_relation($result) {
+		$entiy_fill = $this->fillEntiy($this->entiy, $result);
+		if ($entiy_fill instanceof IRelation) {
+			$entiy_fill->rel(RelType::select, $entiy_fill);
+		}
+		$relation_data = $this->relation_select($entiy_fill);
+		if (is_array($result)) {
+			$result = array_merge($result, $relation_data);
+		} else if (is_object($result)) {
+			foreach ($relation_data as $key => $value) {
+				$result->$key = $value;
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * 绑定sql数据并且执行sql
+	 * @param  string $value [description]
+	 * @return [type]        [description]
+	 */
+	private function sql_bind_execute(&$sql, $data) {
+		$this->PDOStatementFactory($sql);
+		$this->bindData($sql, $data);
+		$sql->execute();
+		$this->errorMessage($sql);
 	}
 }

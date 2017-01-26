@@ -15,7 +15,11 @@ class DbUnit extends DbUnitBase {
 	//只查询一条
 	public function find() {
 		$this->limit(1);
-		return $this->select()[0];
+		$data = $this->select();
+		if (isset($data[0])) {
+			return $data[0];
+		}
+		return [];
 	}
 
 	public function polymerization($field, $keyword = "COUNT", $distanct = false) {

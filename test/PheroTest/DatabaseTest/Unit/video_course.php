@@ -1,6 +1,7 @@
 <?php
 namespace PheroTest\DatabaseTest\Unit;
 use Phero\Database\DbUnit;
+use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces\IRelation;
 
 /**
@@ -9,77 +10,67 @@ use Phero\Database\Interfaces\IRelation;
 class video_course extends DbUnit implements IRelation {
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $course_id;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $name;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $anthor;
 	/**
 	 * @Field
-	 * @var [type]
+	 * @Foreign[rel=cat]
 	 */
 	public $cat_id;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $direction_id;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $difficulty_id;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $intreduce;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $video_path;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $cover;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $create_time;
 	/**
 	 * @Field
-	 * @var [type]
 	 */
 	public $update_time;
 	/**
-	 * @Relation
-	 * @var [type]
+	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\video_cat,key=id]
+	 * @Entiy[field=name]
 	 */
 	public $cat;
 
-	// public function __construct() {
-	// 	parent::__construct();
-	// 	$this->cat = (new video_cat())->whereEq("id", $this->cat_id);
-	// }
+	/**
+	 * 关联
+	 */
+	public function rel($type, $entiy) {
+		switch ($type) {
+		case RelType::select:
+			echo "rel";
+			break;
 
-	private $video_cat;
-	public function rel() {
-		$this->video_cat = new video_cat();
-		$this->video_cat->whereEq("id", 1);
-		$this->cat = $this->video_cat;
-	}
-	public function sql() {
-		$this->video_cat->dumpSql();
+		default:
+			# code...
+			break;
+		}
 	}
 }

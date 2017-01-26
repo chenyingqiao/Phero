@@ -6,8 +6,7 @@ use Phero\Database\DbUnit;
 /**
  * @Table[alias=cd]
  */
-class video_user {
-	use DbUnit;
+class video_user extends DbUnit {
 
 	/**
 	 * @Primary

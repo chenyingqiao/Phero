@@ -2,5 +2,5 @@
 namespace Phero\Database\Interfaces;
 
 interface IRelation {
-	public function rel();
+	public function rel($type, $entiy);
 }
