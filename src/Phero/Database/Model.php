@@ -27,7 +27,16 @@ class Model implements interfaces\IModel {
 
 	private $sql, $error;
 
-	public function __construct() {
+	private static $model;
+	public function getInstance() {
+		if (!Model::$model) {
+			Model::$model = new Model();
+		}
+		Model::$model->IConstraintBuild = new realize\MysqlConstraintBuild();
+		return Model::$model;
+	}
+
+	private function __construct() {
 		$this->help = new realize\MysqlDbHelp();
 		$this->IConstraintBuild = new realize\MysqlConstraintBuild();
 	}
@@ -100,7 +109,7 @@ class Model implements interfaces\IModel {
 	 * @param  [type] $type [description]
 	 * @return [type]       [description]
 	 */
-	private function transaction($type) {
+	public function transaction($type) {
 		$pdo = $this->help->getDbConn();
 		if ($type == self::begin_transaction) {
 			if ($pdo->inTransaction()) {
@@ -115,22 +124,15 @@ class Model implements interfaces\IModel {
 			$pdo->commit();
 		}
 	}
-
-	public function begin() {
-		$this->transaction(self::begin_transaction);
-	}
-	public function rollback() {
-		$this->transaction(self::rollback_transaction);
-	}
-	public function commit() {
-		$this->transaction(self::commit_transaction);
-	}
 	/**
 	 * 取得pdo
 	 * @return [type] [description]
 	 */
 	public function getPdo() {
 		return $this->help->getDbConn();
+	}
+	public function getHelp() {
+		return $this->help;
 	}
 
 	public function getPdoDriverType() {
@@ -150,9 +152,5 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
 		$this->sql = $sql;
 		return $this->IConstraintBuild->getBindData();
-	}
-
-	public static function M() {
-		return new Model();
 	}
 }

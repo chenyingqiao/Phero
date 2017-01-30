@@ -22,6 +22,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	private $entiy;
 
+	public function __construct() {
+		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
+		$this->mode = database\Model::fetch_arr_key;
+	}
+
 	/**
 	 * 返回影响的行数
 	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
@@ -30,6 +35,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	public function exec($sql, $data = []) {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
+
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -117,7 +123,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		if (!empty($this->mode) && !empty($this->classname) && $this->mode == database\Model::fetch_obj) {
 			$PDOStatement->setFetchMode($this->mode, $this->classname);
 		}
-		$this->mode = null;
+		$this->mode = database\Model::fetch_arr_key;
 		$this->classname = null;
 	}
 	/**

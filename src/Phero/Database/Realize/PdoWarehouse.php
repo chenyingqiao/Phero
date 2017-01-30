@@ -41,12 +41,19 @@ class PdoWarehouse {
 		$this->inject();
 		if (is_array($this->pdo)) {
 			if ($pattern == 0) {
-				return $this->pdo_hit->hit($this->pdo['servlet']);
+				$pdo = $this->pdo_hit->hit($this->pdo['servlet']);
+
 			} else {
-				return $this->pdo['master'];
+				$pdo = $this->pdo['master'];
 			}
+		} else {
+			$pdo = $this->pdo;
 		}
-		return $this->pdo;
+		$charset = 'utf8';
+		$pdo->exec("set names $charset");
+		$pdo->exec("set character_set_client=$charset");
+		$pdo->exec("set character_set_results=$charset");
+		return $pdo;
 	}
 	private static function init($config) {
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);

@@ -16,6 +16,7 @@ class Where {
 	CONST gt = " > ";
 	CONST ge = " >= ";
 	CONST regexp = " regexp ";
+	CONST is = " is ";
 
 	public static function get($key) {
 		if ($key == "eq_") {
@@ -40,8 +41,10 @@ class Where {
 			return Where::ge;
 		} else if ($key == 'regexp') {
 			return Where::regexp;
-		}else{
-		    return "";
-        }
+		} else if ($key == 'is') {
+			return Where::is;
+		} else {
+			return "";
+		}
 	}
 }

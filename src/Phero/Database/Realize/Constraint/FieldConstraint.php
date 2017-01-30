@@ -61,7 +61,11 @@ class FieldConstraint implements interfaces\IConstraint {
 				//属性值未true的才添加到field
 				continue;
 			}
-			$as = $value->getNode(new note\Field())->alias;
+			if ($Entiy->have_as) {
+				$as = $value->getNode(new note\Field())->alias;
+			} else {
+				$as = null;
+			}
 			$this->setField($fieldName, $tableAlias, $as, $temp);
 		}
 	}

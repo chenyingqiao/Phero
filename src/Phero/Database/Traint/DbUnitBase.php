@@ -4,14 +4,22 @@ namespace Phero\Database\Traint;
 use Phero\Database\Enum as enum;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Model;
-use Phero\Map\NodeReflectionClass;
+use Phero\Database\Traint\TConstraintTableDependent;
 
 /**
  * 用来设置数据库实体类的一些携带数据
  * 以及基础功能
  */
 class DbUnitBase {
+	use TConstraintTableDependent;
 	private $model;
+
+	/**
+	 * 列是否需要as
+	 * @var [type]
+	 */
+	public $have_as = true;
+
 	/**
 	 * 初始化实体类中的数据
 	 * 可以是属性名和数据
@@ -23,18 +31,38 @@ class DbUnitBase {
 	 *                          false :禁用原本所有的数据
 	 *                          null :不填
 	 * ]
-	 * @param boolean $IniFalse [反向设置false]
+	 * @param boolean $IniFalse [反向设置false false表示的是这个列不出现在select列表中]
 	 */
 	public function __construct($values = null, $IniFalse = true) {
-		$this->model = new Model();
+		$this->model = Model::getInstance();
 		$this->values_cache = $values;
 		$this->inifalse = $IniFalse;
-		if (isset($values)) {
-			$this->initField($values, $IniFalse);
-		}
+		// if (isset($values)) {
+		// 	$this->initField($values, $IniFalse);
+		// }
 	}
 
 	protected $values_cache, $inifalse;
+
+	protected function unit_new() {
+		$this->model = Model::getInstance();
+		$this->where = [];
+		$this->having = [];
+		$this->join = [];
+		$this->datasourseJoinType = null;
+		$this->fieldTemp = [];
+		$this->groupBy = null;
+		$this->limit = null;
+		$this->order = null;
+		$this->whereGroup = false;
+		$this->havingGroup = false;
+		$this->field = [];
+		$this->datasourse = [];
+		$this->distinct = false;
+		//不管是查询还是插入都会把字段值全部重置成null
+		//select存储的field描述存储在一个values_cache变量中
+		$this->allNull();
+	}
 
 	/**
 	 * 初始化列
@@ -43,9 +71,9 @@ class DbUnitBase {
 	 */
 	protected function initField($values, $IniFalse) {
 		//判断是否吧除了需要初始化的值之外的数据设置成false[就是不需要查询]
-		if ($IniFalse && count($values) > 0 || $values == false) {
-			$this->allFalse();
-		}
+		// if ($IniFalse && count($values) > 0 || $values == false) {
+		// 	$this->allFalse();
+		// }
 		if (is_array($values)) {
 			$setFiled = false;
 			$keys = array_keys($values);
@@ -63,12 +91,26 @@ class DbUnitBase {
 		}
 	}
 
+	/**
+	 * 查询的时候反向取消所有的列
+	 * @return [type] [description]
+	 */
 	protected function allFalse() {
-		$NodeReflectionClass = new NodeReflectionClass($this);
-		$propertys = $NodeReflectionClass->getPropertieNames();
-		//初始化所有的值未false
+		$propertys = $this->getTablePropertyNames($this);
+		//初始化所有的值null
 		foreach ($propertys as $key => $value) {
 			$this->$value = false;
+		}
+	}
+	/**
+	 * 数据插入的时候初始化为null
+	 * @return [type] [description]
+	 */
+	protected function allNull() {
+		$propertys = $this->getTablePropertyNames($this);
+		//初始化所有的值null
+		foreach ($propertys as $key => $value) {
+			$this->$value = null;
 		}
 	}
 	//查询条件列表
@@ -88,8 +130,9 @@ class DbUnitBase {
 
 	protected $whereGroup = false;
 	protected $havingGroup = false;
+
 	/**
-	 * Constraint自定义
+	 * 用户主动设置的列
 	 * @var array
 	 */
 	protected $field = [];
@@ -160,26 +203,6 @@ class DbUnitBase {
 		return $this;
 	}
 
-	/**
-	 * 批量设置where
-	 * 一次批量是一个分组
-	 * @param  Array  $wheres [
-	 *                       ×数据库字段---index:0
-	 *                       ×value数据---index:1
-	 *                       -可选
-	 *                       		比较符号 可选---index:2(默认未等号)
-	 *                       		下个字段连接符---index:3(默认为空字符串)]
-	 *                       		所属的表或者表的别名
-	 * @param  [type] $from   [description]
-	 * @return [type]         [description]
-	 */
-	// public function wheres(Array $wheres) {
-	// 	$group = count($this->where);
-	// 	foreach ($wheres as $key => $value) {
-	// 		$from = isset($value[4]) ? $value[4] : null;
-	// 		$this->where($value, $from, $group);
-	// 	}
-	// }
 	/**
 	 * 表链接
 	 * $on 通过这样的替换符号标示
@@ -291,8 +314,10 @@ class DbUnitBase {
 	private $dumpSql;
 	//ORM
 	public function select($yield = false) {
+		$this->initField($this->values_cache, $this->inifalse);
 		$result = $this->model->select($this, $yield);
 		$this->dumpSql = $this->model->getSql();
+		$this->unit_new();
 		return $result;
 	}
 	/**
@@ -306,6 +331,7 @@ class DbUnitBase {
 		}
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
+		$this->unit_new();
 		return $result;
 	}
 	/**
@@ -319,6 +345,7 @@ class DbUnitBase {
 		}
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
+		$this->unit_new();
 		return $result;
 	}
 	/**
@@ -332,6 +359,7 @@ class DbUnitBase {
 		}
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
+		$this->unit_new();
 		return $result;
 	}
 
@@ -344,6 +372,7 @@ class DbUnitBase {
 		}
 		$result = $this->model->insert($this, true);
 		$this->dumpSql = $this->model->getSql();
+		$this->unit_new();
 		return $result;
 	}
 
@@ -353,7 +382,12 @@ class DbUnitBase {
 	public function fetchSql() {
 		$bindValues = $this->model->fetchSql($this);
 		$this->dumpSql = $this->model->getSql();
+		$this->unit_new();
 		return $bindValues;
+	}
+
+	public function start() {
+		$this->model->transaction(Model::begin_transaction);
 	}
 
 	public function rollback() {

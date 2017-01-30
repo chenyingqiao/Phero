@@ -31,7 +31,7 @@ class InsertFieldConstraint implements interfaces\IConstraint {
 		$propertys = $this->getTableProperty($Entiy);
 		foreach ($propertys as $key => $value) {
 			$value_ = $value->getValue($Entiy);
-			if (isset($value_) && $value_ !== false) {
+			if (isset($value_)) {
 				$this->fieldList[] = $value->getName();
 			}
 		}

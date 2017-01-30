@@ -58,6 +58,23 @@ trait TConstraintTableDependent {
 		return $propertys;
 	}
 
+	/**
+	 * 获取表的属性名称
+	 * @param  string $value [description]
+	 * @return [type]        [description]
+	 */
+	public final function getTablePropertyNames($Entiy) {
+		$NodeReflectionClass = new NodeReflectionClass($Entiy);
+		$property = $NodeReflectionClass->getProperties();
+		$propertys = [];
+		foreach ($property as $value) {
+			if ($value->resolve(new Field())) {
+				$propertys[] = $value->getName();
+			}
+		}
+		return $propertys;
+	}
+
 	public final function getTablePropertySingle($Entiy, $propertyName) {
 		$propertys = $this->getTableProperty($Entiy);
 		$nams = [];

@@ -23,13 +23,13 @@ class DbUnit extends DbUnitBase {
 	}
 
 	public function polymerization($field, $keyword = "COUNT", $distanct = false) {
+		if ($distanct) {
+			$split = "(distanct ?) as ";
+		} else {
+			$split = "(?) as ";
+		}
 		if (is_array($field)) {
 			$temp_arr = [];
-			if ($distanct) {
-				$split = "(distanct ?) as";
-			} else {
-				$split = "(?) as";
-			}
 			foreach ($field as $key => $value) {
 				$temp_arr[$value] = $keyword . $split . $keyword;
 			}
@@ -45,12 +45,14 @@ class DbUnit extends DbUnitBase {
 	public function COUNT($field, $distanct = false) {
 		$this->allFalse();
 		$this->$field = true;
+		$this->have_as = false;
 		$this->polymerization($field, "COUNT", $distanct);
 		$data = $this->find();
 		$this->dumpSql = $this->sql();
 		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
 			return $data[0];
 		} else {
+			var_dump($data);
 			return $data["COUNT"];
 		}
 	}
