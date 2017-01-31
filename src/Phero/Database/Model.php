@@ -27,16 +27,7 @@ class Model implements interfaces\IModel {
 
 	private $sql, $error;
 
-	private static $model;
-	public function getInstance() {
-		if (!Model::$model) {
-			Model::$model = new Model();
-		}
-		Model::$model->IConstraintBuild = new realize\MysqlConstraintBuild();
-		return Model::$model;
-	}
-
-	private function __construct() {
+	public function __construct() {
 		$this->help = new realize\MysqlDbHelp();
 		$this->IConstraintBuild = new realize\MysqlConstraintBuild();
 	}
@@ -44,6 +35,7 @@ class Model implements interfaces\IModel {
 	public function insert($Entiy, $is_replace = false) {
 		$sql = $this->IConstraintBuild->buildInsertSql($Entiy, $is_replace);
 		$this->sql = $sql;
+        $this->help->setEntiy($Entiy);
 		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $return;
 	}
@@ -74,6 +66,7 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildUpdataSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
+        $this->help->setEntiy($Entiy);
 		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $return;
 	}
@@ -81,6 +74,7 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildDeleteSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
+        $this->help->setEntiy($Entiy);
 		$effect_rows_num = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $effect_rows_num;
 	}

@@ -5,7 +5,7 @@ namespace Phero\Database\Traint;
  * @Author: CYQ19931115
  * @Date:   2017-01-26 11:50:08
  * @Last Modified by:   CYQ19931115
- * @Last Modified time: 2017-01-26 17:31:21
+ * @Last Modified time: 2017-01-30 22:51:28
  */
 
 use Phero\Database\Enum\OrderType;
@@ -36,7 +36,7 @@ trait TRelation {
 	}
 
 	/**
-	 * 解析关系 获取关系数据
+	 * 解析关系 获取关系数据  关联数据有些问题
 	 * @param  [type] $entiy [description]
 	 * @return [type]        [description]
 	 */
@@ -135,6 +135,8 @@ trait TRelation {
 	 * @return [type]        [description]
 	 */
 	protected function fillEntiy($entiy, $data) {
+		$classname = get_class($entiy);
+		$entiy = new $classname();
 		foreach ($data as $key => $value) {
 			$entiy->$key = $value;
 		}

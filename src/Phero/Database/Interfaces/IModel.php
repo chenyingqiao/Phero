@@ -5,7 +5,6 @@ namespace Phero\Database\Interfaces;
  * 数据库统一操作接口
  */
 interface IModel {
-	public function getInstance();
 	public function insert($Entiy, $is_replace);
 	public function select($Entiy);
 	public function update($Entiy);

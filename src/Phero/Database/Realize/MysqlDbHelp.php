@@ -35,7 +35,6 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	public function exec($sql, $data = []) {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
-
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -157,7 +156,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	/**
 	 * 解析获取关联的数据
 	 * 并且合并到原始数据中
-	 * @param  [type] $result [description]
+	 * @param  [type] $result [可以是数组也可以是对象]
 	 * @return [type]         [description]
 	 */
 	private function select_relation($result) {
@@ -175,6 +174,16 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		return $result;
 	}
+
+    /**
+     * 更新
+     */
+	private function update(){
+        if(is_object($result)){
+            //取出实体类中的数据
+            $result_arr[]=$result;
+        }
+    }
 
 	/**
 	 * 绑定sql数据并且执行sql

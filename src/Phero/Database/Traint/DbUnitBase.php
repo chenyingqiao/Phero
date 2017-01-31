@@ -34,18 +34,18 @@ class DbUnitBase {
 	 * @param boolean $IniFalse [反向设置false false表示的是这个列不出现在select列表中]
 	 */
 	public function __construct($values = null, $IniFalse = true) {
-		$this->model = Model::getInstance();
+		$this->model = new Model();
 		$this->values_cache = $values;
 		$this->inifalse = $IniFalse;
-		// if (isset($values)) {
-		// 	$this->initField($values, $IniFalse);
-		// }
 	}
 
 	protected $values_cache, $inifalse;
 
+    /**
+     * 初始化实体
+     */
 	protected function unit_new() {
-		$this->model = Model::getInstance();
+		$this->model = new Model();
 		$this->where = [];
 		$this->having = [];
 		$this->join = [];
