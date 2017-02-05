@@ -5,7 +5,7 @@ namespace Phero\Database\Traint;
  * @Author: CYQ19931115
  * @Date:   2017-01-26 11:50:08
  * @Last Modified by:   CYQ19931115
- * @Last Modified time: 2017-01-30 22:51:28
+ * @Last Modified time: 2017-02-05 21:32:16
  */
 
 use Phero\Database\Enum\OrderType;
@@ -36,7 +36,7 @@ trait TRelation {
 	}
 
 	/**
-	 * 解析关系 获取关系数据  关联数据有些问题
+	 * 解析关系 获取关系数据 
 	 * @param  [type] $entiy [description]
 	 * @return [type]        [description]
 	 */
@@ -57,6 +57,7 @@ trait TRelation {
 					$properties[$property_name]['entiy'] = $entiy_resolve;
 					if (array_key_exists($property_name, $foreigns)) {
 						$properties[$property_name]['foreign'] = $foreigns[$property_name];
+						$properties[$property_name]['foreign_rel'] = $property_name;
 					}
 				}
 			}
@@ -98,7 +99,7 @@ trait TRelation {
 	/**
 	 * 关联插入  是否需要进行事务处理取决于是否有Transaction这个note
 	 * @param  [type] $entiy [description]
-	 * @return [type]        [description]
+	 * @return [type]        [返回的是插入的行数]
 	 */
 	public function relation_insert($entiy) {
 		$relation = $this->getRelation($entiy);
@@ -111,8 +112,10 @@ trait TRelation {
 				if (!isset($foreign_key)) {
 					continue;
 				}
-				$entiy = $this->buildEntiyByNode($entiy, $value);
+				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::insert);
+				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
 				if (empty($entiy)) {
+					echo "continue";
 					continue;
 				}
 				$effect = $entiy->insert();
@@ -120,7 +123,7 @@ trait TRelation {
 				$effect = $value->insert();
 			}
 		}
-		return $effect > 0 ? true : false;
+		return $effect;
 	}
 	public function relation_update($entiy) {
 		$relation = $this->getRelation($entiy);
@@ -137,8 +140,12 @@ trait TRelation {
 	protected function fillEntiy($entiy, $data) {
 		$classname = get_class($entiy);
 		$entiy = new $classname();
-		foreach ($data as $key => $value) {
-			$entiy->$key = $value;
+		if (is_object($data)) {
+			$entiy = $data;
+		} else {
+			foreach ($data as $key => $value) {
+				$entiy->$key = $value;
+			}
 		}
 		return $entiy;
 	}
@@ -159,7 +166,7 @@ trait TRelation {
 	private function buildEntiyByNode($data, $nodes, $type = RelType::select) {
 		$relation_node = $nodes['relation'];
 		$entiy_node = $nodes['entiy'];
-		$rel = $nodes['foreign'];
+		$rel = $nodes['foreign_rel'];
 		$entiyClass = $relation_node->class;
 		$relation_key = $relation_node->key;
 		$relation_type = $relation_node->type;
@@ -194,7 +201,14 @@ trait TRelation {
 			break;
 		case RelType::insert:{
 				$entiy = $data->$rel;
-				$entiy->$relation_key = $data->$relation;
+				var_dump($entiy);
+				if(empty($entiy)){
+					return null;
+				}
+				//自动赋值关联字段到关联表中---如果
+				if (isset($entiy->$relation_key)) {
+					$entiy->$relation_key = $data->$relation;
+				}
 			}
 			break;
 		case RelType::update:

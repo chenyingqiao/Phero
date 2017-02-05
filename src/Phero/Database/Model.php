@@ -35,7 +35,7 @@ class Model implements interfaces\IModel {
 	public function insert($Entiy, $is_replace = false) {
 		$sql = $this->IConstraintBuild->buildInsertSql($Entiy, $is_replace);
 		$this->sql = $sql;
-        $this->help->setEntiy($Entiy);
+		$this->help->setEntiy($Entiy);
 		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $return;
 	}
@@ -66,7 +66,7 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildUpdataSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
-        $this->help->setEntiy($Entiy);
+		$this->help->setEntiy($Entiy);
 		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $return;
 	}
@@ -74,7 +74,7 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraintBuild->buildDeleteSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
-        $this->help->setEntiy($Entiy);
+		$this->help->setEntiy($Entiy);
 		$effect_rows_num = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
 		return $effect_rows_num;
 	}

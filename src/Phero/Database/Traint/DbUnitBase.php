@@ -45,6 +45,7 @@ class DbUnitBase {
      * 初始化实体
      */
 	protected function unit_new() {
+		$this->errormsg=$this->model->getError();
 		$this->model = new Model();
 		$this->where = [];
 		$this->having = [];
@@ -407,5 +408,11 @@ class DbUnitBase {
 
 	public function sql() {
 		return $this->dumpSql;
+	}
+
+	private $errormsg;
+	public function error()
+	{
+		return $this->errormsg;
 	}
 }

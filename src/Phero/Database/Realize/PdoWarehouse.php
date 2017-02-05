@@ -16,6 +16,7 @@ class PdoWarehouse {
 	use TInject;
 
 	protected $pdo_hit;
+	private static $already_init = false;
 
 	/**
 	 * @Inject[di=pdo_instance]
@@ -49,13 +50,14 @@ class PdoWarehouse {
 		} else {
 			$pdo = $this->pdo;
 		}
-		$charset = 'utf8';
+		$charset =Config::config('hit_rule');
+		$charset=isset($charset)?"utf8":$charset;
 		$pdo->exec("set names $charset");
 		$pdo->exec("set character_set_client=$charset");
 		$pdo->exec("set character_set_results=$charset");
 		return $pdo;
 	}
-	private static function init($config) {
+	private function init($config) {
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
 		if ($pdo_di) {
 			return;

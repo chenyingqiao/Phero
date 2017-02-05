@@ -19,8 +19,8 @@ trait TInject {
 	public final function inject() {
 		$NodeReflection = new NodeReflectionClass($this);
 		$propertys = $NodeReflection->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED);
-		$propertys_static = $NodeReflection->getStaticProperties();
-		$propertys = array_merge($propertys, $propertys_static);
+//		$propertys_static = $NodeReflection->getStaticProperties();
+//		$propertys = array_merge($propertys, $propertys_static);
 		$this->autoInject($propertys);
 	}
 

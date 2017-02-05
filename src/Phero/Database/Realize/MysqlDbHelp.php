@@ -46,7 +46,18 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 				return 0;
 			}
 		}
-		return $sql->rowCount();
+		$result = $sql->rowCount();
+
+		$is_realtion = false;
+		if ($result) {
+			$realtion_effect = $this->relation_insert($this->entiy);
+			if (isset($relation_data) && $relation_data > 0) {
+				return $result;
+			} else {
+				return 0;
+			}
+		}
+		return $result;
 	}
 
 	/**
@@ -175,15 +186,29 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		return $result;
 	}
 
-    /**
-     * 更新
-     */
-	private function update(){
-        if(is_object($result)){
-            //取出实体类中的数据
-            $result_arr[]=$result;
-        }
-    }
+	/**
+	 * 更新 插入 删除   本身不使用事务进行包裹
+	 * 需要
+	 * @param $result 需要更新的实体类
+	 */
+	private function exec_relation($result, $type) {
+		$entiy_fill = $this->fillEntiy($this->entiy, $result);
+		if ($entiy_fill instanceof IRelation) {
+			$entiy_fill->rel($type, $entiy_fill);
+		}
+		switch ($type) {
+		case RelType::update:{
+				$this->relation_update($entiy_fill);
+			};
+			break;
+		case RelType::insert:{
+				$this->relation_insert($entiy_fill);
+			};
+			break;
+		case RelType::delete:{};
+			break;
+		}
+	}
 
 	/**
 	 * 绑定sql数据并且执行sql
