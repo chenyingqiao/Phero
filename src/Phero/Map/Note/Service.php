@@ -8,7 +8,13 @@
 
 namespace Phero\Map\Note;
 
-
+/**
+ * 标示这个实体类是在那个机器组上面
+ * 一种是垂直分表(多表链接)
+ * 一种是水平分表(hash数据 雪花主键 )
+ *
+ * 计算机group1,,group2
+ */
 class Service
 {
     /**

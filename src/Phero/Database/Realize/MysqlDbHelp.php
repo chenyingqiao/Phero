@@ -22,6 +22,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	private $entiy;
 
+    private $enableRelation=false;
+
 	public function __construct() {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
 		$this->mode = database\Model::fetch_arr_key;
@@ -34,7 +36,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]       [返回影响的行数]
 	 */
 	public function exec($sql, $data = []) {
-		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
+        $this->enableRelation=$this->getRelationIsEnable($this->entiy);
+        $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -49,7 +52,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$result = $sql->rowCount();
 
 		$is_realtion = false;
-		if ($result) {
+		if ($result&&$this->enableRelation) {
 			$realtion_effect = $this->relation_insert($this->entiy);
 			if (isset($relation_data) && $relation_data > 0) {
 				return $result;
@@ -67,7 +70,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return array [返回结果集]
 	 */
 	public function queryResultArray($sql, $data = []) {
-		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
+        $this->enableRelation=$this->getRelationIsEnable($this->entiy);
+        $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			$sql = $this->pdo->prepare($sql);
@@ -81,7 +85,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$result_data = [];
 		while ($result = $sql->fetch($this->mode)) {
-			$result_data[] = $this->select_relation($result);
+		    if($this->enableRelation){
+                $result_data[] = $this->select_relation($result);
+            }else{
+                $result_data[]=$result;
+            }
 		}
 		return $result_data;
 	}
@@ -93,6 +101,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return array [返回结果集]
 	 */
 	public function query($sql, $data = []) {
+        $this->enableRelation=$this->getRelationIsEnable($this->entiy);
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
@@ -106,7 +115,12 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			}
 		}
 		while ($result = $sql->fetch($this->mode)) {
-			yield $this->select_relation($result);
+		    //开启relation就进行自动关联
+		    if($this->enableRelation){
+                yield $this->select_relation($result);
+            }else{
+                yield $result;
+            }
 		}
 		yield null;
 	}

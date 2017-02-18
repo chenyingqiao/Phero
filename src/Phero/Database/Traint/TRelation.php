@@ -5,7 +5,7 @@ namespace Phero\Database\Traint;
  * @Author: CYQ19931115
  * @Date:   2017-01-26 11:50:08
  * @Last Modified by:   CYQ19931115
- * @Last Modified time: 2017-02-05 21:32:16
+ * @Last Modified time: 2017-02-17 23:25:18
  */
 
 use Phero\Database\Enum\OrderType;
@@ -14,11 +14,25 @@ use Phero\Map\NodeReflectionClass;
 use Phero\Map\Note\Entiy;
 use Phero\Map\Note\Foreign;
 use Phero\Map\Note\Relation;
+use Phero\Map\Note\RelationEnable;
 
 /**
  * summary
  */
 trait TRelation {
+
+    /**
+     * 是否开启了Relation 自动关联查询
+     * @return bool 返回结果
+     */
+    private function getRelationIsEnable($Entiy){
+        $enable=(new NodeReflectionClass($Entiy))->resolve(new RelationEnable());
+        if(empty($enable)){
+            return false;
+        }else{
+            return true;
+        }
+    }
 
 	/**
 	 * 获取外键列表
@@ -43,6 +57,7 @@ trait TRelation {
 	private function getRelation($entiy) {
 		$nodeReflectionClass = new NodeReflectionClass($entiy);
 		$relation = $nodeReflectionClass->getProperties();
+		//取得关联的全部外键
 		$foreigns = $this->getForeignKey($relation);
 		$properties = [];
 		foreach ($relation as $key => $value) {
@@ -50,11 +65,21 @@ trait TRelation {
 			if ($resolve) {
 				$property_name = $value->getName();
 				if ($entiy->$property_name) {
+				    //关联插入需要对关联的数据自动赋值
+				    $result_entiy=$entiy->$property_name;
+                    $relation_key=$resolve->key;
+                    if(empty($foreigns[$property_name])){
+                        throw new \Exception("foreign key nonentity");
+                    }
+                    $parent_entiy_relation_key=$foreigns[$property_name];
+                    $result_entiy->$relation_key=$entiy->$parent_entiy_relation_key;
+                    //关联插入需要对关联的数据自动赋值
 					$properties[$property_name] = $entiy->$property_name;
 				} else {
 					$properties[$property_name]['relation'] = $resolve;
 					$entiy_resolve = $value->resolve(new Entiy());
 					$properties[$property_name]['entiy'] = $entiy_resolve;
+					//判断这个外键是否有和关联查询的字段对应
 					if (array_key_exists($property_name, $foreigns)) {
 						$properties[$property_name]['foreign'] = $foreigns[$property_name];
 						$properties[$property_name]['foreign_rel'] = $property_name;
@@ -105,6 +130,7 @@ trait TRelation {
 		$relation = $this->getRelation($entiy);
 		$effect = false;
 		foreach ($relation as $key => $value) {
+			var_dump($value);
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
@@ -115,7 +141,6 @@ trait TRelation {
 				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::insert);
 				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
 				if (empty($entiy)) {
-					echo "continue";
 					continue;
 				}
 				$effect = $entiy->insert();
@@ -125,12 +150,64 @@ trait TRelation {
 		}
 		return $effect;
 	}
+	/**
+	 * 待测试
+	 * @param  [type] $entiy [description]
+	 * @return [type]        [description]
+	 */
 	public function relation_update($entiy) {
 		$relation = $this->getRelation($entiy);
+		$effect = false;
+		foreach ($relation as $key => $value) {
+			if (!is_object($value)) {
+				$relation_node = $value['relation'];
+				$entiy_node = $value['entiy'];
+				$foreign_key = $value['foreign'];
+				if (!isset($foreign_key)) {
+					continue;
+				}
+				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::update);
+				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
+				if (empty($entiy)) {
+					continue;
+				}
+				$effect = $entiy->update();
+			} else {
+				$effect = $value->update();
+			}
+		}
+		return $effect;
 	}
+	/**
+	 * [relation_delete description]
+	 * @param  [type] $entiy [description]
+	 * @return [type]        [description]
+	 */
 	public function relation_delete($entiy) {
 		$relation = $this->getRelation($entiy);
+		$effect = false;
+		foreach ($relation as $key => $value) {
+			if (!is_object($value)) {
+				$relation_node = $value['relation'];
+				$entiy_node = $value['entiy'];
+				$foreign_key = $value['foreign'];
+				if (!isset($foreign_key)) {
+					continue;
+				}
+				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::delete);
+				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
+				if (empty($entiy)) {
+					continue;
+				}
+				$effect = $entiy->delete();
+			} else {
+				$effect = $value->delete();
+			}
+		}
+		return $effect;
 	}
+
+
 	/**
 	 * 通过数据填充成对象
 	 * @param  [type] $entiy [description]
@@ -151,22 +228,21 @@ trait TRelation {
 	}
 
 	/**
-	 * 通过注解来构建实体
+	 * 通过注解来构建实体用来进行更新插入以及删除
 	 * @param  [type] $data [
 	 *                      select:关联key对应的值
 	 *                      insert:包含数据的entiy
 	 *                      update:更新的数据
 	 *                      delete:和select相同
 	 *               ]
-	 * @param  [type] $relation_node [Relation这个注解]
-	 * @param  [type] $entiy_node    [Entiy这个注解]
+	 * @param  [type] $nodes    [Entiy这个注解]
 	 * @param  [type] $type                     [构建什么类型的entiy]
 	 * @return [type]                           [description]
 	 */
 	private function buildEntiyByNode($data, $nodes, $type = RelType::select) {
 		$relation_node = $nodes['relation'];
 		$entiy_node = $nodes['entiy'];
-		$rel = $nodes['foreign_rel'];
+		$rel = $nodes['foreign'];
 		$entiyClass = $relation_node->class;
 		$relation_key = $relation_node->key;
 		$relation_type = $relation_node->type;
@@ -206,6 +282,7 @@ trait TRelation {
 					return null;
 				}
 				//自动赋值关联字段到关联表中---如果
+				var_dump($entiy->$relation_key);
 				if (isset($entiy->$relation_key)) {
 					$entiy->$relation_key = $data->$relation;
 				}

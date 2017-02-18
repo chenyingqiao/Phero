@@ -6,6 +6,7 @@ use Phero\Database\Interfaces\IRelation;
 
 /**
  * @Table[alias=course]
+ * @RelationEnable
  */
 class video_course extends DbUnit implements IRelation {
 	/**
@@ -65,7 +66,7 @@ class video_course extends DbUnit implements IRelation {
 	public function rel($type, $entiy) {
 		switch ($type) {
 		case RelType::select:
-			echo "rel";
+			echo "  +++++++++++++++++++++++++++select+++++++++++++++++++++++++++ ";
 			break;
 
 		default:
