@@ -36,22 +36,26 @@ class PdoWarehouse {
 	public function getPdo($pattern) {
 		$database_config = Config::config("database");
 		$hit_classname = Config::config('hit_rule');
+		if (empty($hit_classname)) {
+			$hit_classname = "Phero\Database\Realize\Hit\RandomSlaveHit";
+		}
 		$this->pdo_hit = new $hit_classname;
 		$this->init($database_config);
 		//注入后解析
 		$this->inject();
-		if (is_array($this->pdo)) {
+		if (is_array($this->pdo)&&!empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
 			if ($pattern == 0) {
-				$pdo = $this->pdo_hit->hit($this->pdo['servlet']);
-
+				$pdo = $this->pdo_hit->hit($this->pdo['slave']);
 			} else {
 				$pdo = $this->pdo['master'];
 			}
-		} else {
-			$pdo = $this->pdo;
+		} else if(is_array($this->pdo)&&empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
+			$pdo = $this->pdo['master'];
+		}else{
+			$pdo=$this->pdo;
 		}
-		$charset =Config::config('hit_rule');
-		$charset=isset($charset)?"utf8":$charset;
+		$charset = Config::config('hit_rule');
+		$charset = isset($charset) ? "utf8" : $charset;
 		$pdo->exec("set names $charset");
 		$pdo->exec("set character_set_client=$charset");
 		$pdo->exec("set character_set_results=$charset");
@@ -66,14 +70,25 @@ class PdoWarehouse {
 			DI::inj(DatabaseConfig::pdo_instance, new PDO($config['dsn'], $config['user'], $config['password']));
 		} elseif (array_key_exists('master', $config)) {
 			$master = $config['master'];
-			$servlet = $config['servlet'];
-			$servlet_pdo = [];
-			foreach ($servlet as $value) {
-				$servlet_pdo[] = new PDO($value['dsn'], $value['user'], $value['password']);
+			$slave_pdo = [];
+			if (!empty($config['slave'])){
+				$slave = $config['slave'];
+				foreach ($slave as $value) {
+					$slave_pdo[] = new PDO($value['dsn'], $value['user'], $value['password']);
+				}
+			}
+			$master_pdo=[];
+			if(!empty($config['master'])&&is_array($config['master'])&&!array_key_exists("dsn",$config['master'])){
+				foreach ($config['master'] as $key => $value) {
+					$master_pdo[]=new PDO($value['dsn'], $value['user'], $value['password']);
+				}
+			}else if(!empty($config['master'])){
+				$value=$config['master'];
+				$master_pdo=new PDO($value['dsn'], $value['user'], $value['password']);
 			}
 			$pdo = [
-				"master" => new PDO($master['dsn'], $master['user'], $master['password']),
-				"servlet" => $servlet_pdo,
+				"master" => $master_pdo,
+				"slave" => $slave_pdo,
 			];
 			DI::inj(DatabaseConfig::pdo_instance, $pdo);
 		}
