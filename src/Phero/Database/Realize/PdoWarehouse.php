@@ -55,7 +55,7 @@ class PdoWarehouse {
 			$pdo=$this->pdo;
 		}
 		$charset = Config::config('hit_rule');
-		$charset = isset($charset) ? "utf8" : $charset;
+		$charset = empty($charset) ? "utf8" : $charset;
 		$pdo->exec("set names $charset");
 		$pdo->exec("set character_set_client=$charset");
 		$pdo->exec("set character_set_results=$charset");
