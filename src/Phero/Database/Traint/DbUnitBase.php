@@ -378,6 +378,7 @@ class DbUnitBase {
 	}
 
 	/**
+	 * 从Unit中解析成接口
 	 * @return array 绑定的value数组
 	 */
 	public function fetchSql() {
