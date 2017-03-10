@@ -5,7 +5,7 @@ namespace Phero\Database\Traint;
  * @Author: CYQ19931115
  * @Date:   2017-01-26 11:50:08
  * @Last Modified by:   CYQ19931115
- * @Last Modified time: 2017-02-17 23:25:18
+ * @Last Modified time: 2017-03-10 20:12:30
  */
 
 use Phero\Database\Enum\OrderType;
@@ -26,6 +26,9 @@ trait TRelation {
      * @return bool 返回结果
      */
     private function getRelationIsEnable($Entiy){
+    	if(empty($Entiy)){
+    		return false;
+    	}
         $enable=(new NodeReflectionClass($Entiy))->resolve(new RelationEnable());
         if(empty($enable)){
             return false;
