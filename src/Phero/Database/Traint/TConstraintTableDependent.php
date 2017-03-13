@@ -13,7 +13,12 @@ trait TConstraintTableDependent {
 	 */
 	public final function getTableName($Entiy) {
 		$Reflection = new NodeReflectionClass($Entiy);
-		return $Reflection->getShortName();
+		$TableNode=$Reflection->resolve(new Table());
+		if(empty($TableNode)||empty($TableNode->name)){
+			return $Reflection->getShortName();
+		}else{
+			return $TableNode->name;
+		}
 	}
 
 	/**
