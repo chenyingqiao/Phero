@@ -9,7 +9,7 @@ class Where {
 	CONST neq = " <> ";
 	CONST in_ = " in ";
 	CONST not_in = " not in ";
-	CONST between = " detween ";
+	CONST between = " between ";
 	CONST like = " like ";
 	CONST lt = " < ";
 	CONST lr = " <= ";
