@@ -75,15 +75,15 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 				$from = $this->getName($Entiy);
 			}
 
-			$temp= isset($value['temp'])?$value['temp']:"";
+			$temp = isset($value['temp']) ? $value['temp'] : "";
 
 			//这里设置表的默认where链接方式
 			$contype = ($i == count($where) - 1) ? "" : $value[3];
-            //设置默认的比较符号
-//			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
+			//设置默认的比较符号
+			//			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
 			$compare = isset($value[2]) ? $value[2] : "";
-            //支持查询对象是一个实体类 在这里会被解析成子查询
-            if (is_object($value[1])) {
+			//支持查询对象是一个实体类 在这里会被解析成子查询
+			if (is_object($value[1])) {
 				$bindValues = $value[1]->fetchSql();
 				$this->bindData = array_merge($this->bindData, $bindValues);
 				$bindValue = "(" . rtrim($value[1]->sql(), ";") . ")";
@@ -94,21 +94,21 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 			if (!empty($value['group'])) {
 				$group = $value["group"];
 			}
-			$this->setWhere($from, $value[0], $bindValue, $compare, $contype, $group,$temp);
+			$this->setWhere($from, $value[0], $bindValue, $compare, $contype, $group, $temp);
 			$i++;
 		}
 	}
 
-    /**
-     * 通过普通参数添加where
-     * @param [type] $from    [数据源 表名或者是表的别名]
-     * @param [type] $key     [数据库数据键]
-     * @param [type] $value   [数据]
-     * @param [type] $compare [比较方法]
-     * @param [type] $conType [连接方式]
-     * @param string $whereTemp
-     */
-	public function setWhere($from, $key, $value, $compare = enum\Where::eq_, $conType = "", $group = 0 ,$whereTemp="") {
+	/**
+	 * 通过普通参数添加where
+	 * @param [type] $from    [数据源 表名或者是表的别名]
+	 * @param [type] $key     [数据库数据键]
+	 * @param [type] $value   [数据]
+	 * @param [type] $compare [比较方法]
+	 * @param [type] $conType [连接方式]
+	 * @param string $whereTemp
+	 */
+	public function setWhere($from, $key, $value, $compare = enum\Where::eq_, $conType = "", $group = 0, $whereTemp = "") {
 		if ($group == 0) {
 			$group1 = "";
 			$group2 = "";
@@ -122,15 +122,17 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 
 		//给表的别名加点
 		if (!$this->enableAlias) {$from = "";} else { $from .= ".";}
-        $field=$from . $key;
-		if(!empty($whereTemp)){
-            $field= str_replace("?",$field,$whereTemp);
-        }
-        //如果比较符号为空 值也清空 只留下field
-        if(empty($compare)){
-            $value="";
-        }
-
+		$field = $from . $key;
+		if (!empty($whereTemp)) {
+			$field = str_replace("?", $field, $whereTemp);
+		}
+		//如果比较符号为空 值也清空 只留下field
+		if (empty($compare)) {
+			$value = "";
+		}
+		if(empty($key)){
+			$field="";
+		}
 		$this->where .= " " . $group1 . $field . $compare . $value . $group2 . $conType;
 	}
 
@@ -145,9 +147,9 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	 */
 	public function getBindDataType($field) {
 		$type = $this->getTablePropertyNode($this->Entiy, $field, new note\Field());
-        if($type==false){
-            return false;
-        }
+		if ($type == false) {
+			return false;
+		}
 		return note\Field::typeTrunPdoType($type->type);
 	}
 
@@ -159,10 +161,10 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	 * @param [type] $compare [比较符号]
 	 */
 	public function setBindDataAndGetBindKey($key, $values, $from, $compare) {
-        $bindType = $this->getBindDataType($key);
-        if($bindType==false){
-            return "";
-        }
+		$bindType = $this->getBindDataType($key);
+		if ($bindType == false) {
+			return "";
+		}
 		if ($compare == enum\Where::between) {
 			$key1 = ":" . $from . "_" . $key . "_" . rand();
 			$key2 = ":" . $from . "_" . $key . "_" . rand();

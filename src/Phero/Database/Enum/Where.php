@@ -11,12 +11,18 @@ class Where {
 	CONST not_in = " not in ";
 	CONST between = " between ";
 	CONST like = " like ";
+	CONST not_like = " not like ";
 	CONST lt = " < ";
 	CONST lr = " <= ";
 	CONST gt = " > ";
 	CONST ge = " >= ";
 	CONST regexp = " regexp ";
 	CONST is = " is ";
+
+	CONST exists =" exists ";
+	CONST not_exists =" not exists ";
+	CONST all =" all ";
+	CONST any =" any ";
 
 	public static function get($key) {
 		if ($key == "eq_") {
@@ -43,6 +49,14 @@ class Where {
 			return Where::regexp;
 		} else if ($key == 'is') {
 			return Where::is;
+		}else if($key=='exists'){
+			return Where::exists;
+		}else if($key=='not_exists'){
+			return Where::not_exists;
+		}else if($key=='all'){
+			return Where::all;
+		}else if($key=='any'){
+			return Where::any;
 		} else {
 			return "";
 		}

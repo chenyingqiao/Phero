@@ -171,7 +171,7 @@ class DbUnit extends DbUnitBase {
 				}
 			}
 		}
-		//没有后接where
+		//没有后接
 		else if (!strstr($function_name, "And") && !strstr($function_name, "Or") && substr($function_name, 0, 5) == "where") {
 			if (strstr($function_name, "Group")) {
 				$reg = '/where(\w+)Group(\w+)/';
