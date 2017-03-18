@@ -65,7 +65,6 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	 */
 	public function userSetWhere($Entiy, $group = 0) {
 		$where = $this->getBuildData($Entiy);
-		// var_dump($where);
 		$i = 0;
 		foreach ($where as $key => &$value) {
 			if (isset($value['from'])) {
@@ -78,7 +77,13 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 			$temp = isset($value['temp']) ? $value['temp'] : "";
 
 			//这里设置表的默认where链接方式
-			$contype = ($i == count($where) - 1) ? "" : $value[3];
+			var_dump($value);
+			var_dump(isset($value[3]));
+			if(isset($value[3])){
+				$contype=$value[3];
+			}else{
+				$contype="";
+			}
 			//设置默认的比较符号
 			//			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
 			$compare = isset($value[2]) ? $value[2] : "";
@@ -133,7 +138,7 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		if(empty($key)){
 			$field="";
 		}
-		$this->where .= " " . $group1 . $field . $compare . $value . $group2 . $conType;
+		$this->where .= $conType ." " . $group1 . $field . $compare . $value . $group2 ;
 	}
 
 	public function getBindData() {

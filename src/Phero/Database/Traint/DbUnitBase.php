@@ -160,16 +160,19 @@ class DbUnitBase {
 	}
 
 	/**
+	 * [where description]
 	 * 设置条件语句
 	 * @param  [type] $where [需要的参数
 	 *                       ×数据库字段---index:0
 	 *                       ×value数据---index:1
 	 *                       -可选
 	 *                       		比较符号 可选---index:2(默认未等号)
-	 *                       		下个字段连接符---index:3(默认为空字符串)
+	 *                       		下个字段连接符 可选---index:3(默认为空字符串)
 	 * ]
 	 * @param  [type] $from  [来自那个表  如果是多表链接的话]
-	 * @return [type]        [description]
+	 * @param  boolean $group     [description]
+	 * @param  string  $whereTemp [description]
+	 * @return [type]             [description]
 	 */
 	public function where($where, $from = null, $group = false, $whereTemp = "") {
 		if (!isset($where) || count($where) < 2) {

@@ -9,7 +9,12 @@
 5. 快速的数据库调试
 6. 分布式存储过程支持
 
-> 还没有支持 子查询 exists
+> update where function
+```php
+Set(function($this){
+    
+})
+```
 
 ## 开发笔记
 
