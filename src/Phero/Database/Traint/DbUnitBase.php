@@ -315,6 +315,7 @@ class DbUnitBase {
 	private $dumpSql;
 	//ORM
 	public function select($yield = false) {
+		$this->allFalse();
 		$this->initField($this->values_cache, $this->inifalse);
 		$result = $this->model->select($this, $yield);
 		$this->dumpSql = $this->model->getSql();
@@ -358,6 +359,7 @@ class DbUnitBase {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
+		$this->allFalse();
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();

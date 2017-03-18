@@ -107,7 +107,7 @@ trait TConstraintTableDependent {
 	public final function getTablePropertyNode($Entiy, $propertyName, $nodeClass) {
 		$property = $this->getTablePropertySingle($Entiy, $propertyName);
 		if ($property == false) {
-			return false;
+			throw new \Exception(get_class($Entiy)." entiy not exist ".$propertyName);
 		}
 		return $property->resolve($nodeClass);
 	}
