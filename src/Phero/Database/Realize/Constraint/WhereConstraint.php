@@ -77,12 +77,10 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 			$temp = isset($value['temp']) ? $value['temp'] : "";
 
 			//这里设置表的默认where链接方式
-			var_dump($value);
-			var_dump(isset($value[3]));
-			if(isset($value[3])){
-				$contype=$value[3];
-			}else{
-				$contype="";
+			if (isset($value[3])) {
+				$contype = $value[3];
+			} else {
+				$contype = "";
 			}
 			//设置默认的比较符号
 			//			$compare = isset($value[2]) ? $value[2] : enum\Where::eq_;
@@ -135,10 +133,10 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		if (empty($compare)) {
 			$value = "";
 		}
-		if(empty($key)){
-			$field="";
+		if (empty($key)) {
+			$field = "";
 		}
-		$this->where .= $conType ." " . $group1 . $field . $compare . $value . $group2 ;
+		$this->where .= $conType . " " . $group1 . $field . $compare . $value . $group2;
 	}
 
 	public function getBindData() {
@@ -173,8 +171,10 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		if ($compare == enum\Where::between) {
 			$key1 = ":" . $from . "_" . $key . "_" . rand();
 			$key2 = ":" . $from . "_" . $key . "_" . rand();
-			$this->bindData[] = [$key1, $values[0], $bindType];
-			$this->bindData[] = [$key2, $values[1], $bindType];
+			if (!empty($values)) {
+				$this->bindData[] = [$key1, $values[0], $bindType];
+				$this->bindData[] = [$key2, $values[1], $bindType];
+			}
 			return $key1 . " AND " . $key2;
 		} else if ($compare == enum\Where::in_) {
 			$in_betweenBindKey = "(";
@@ -185,13 +185,17 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 				if ($i != count($values) - 1) {
 					$in_betweenBindKey .= ",";
 				}
-				$this->bindData[] = [$bindKey, $value, $bindType];
+				if (!empty($values)) {
+					$this->bindData[] = [$bindKey, $value, $bindType];
+				}
 				$i++;
 			}
 			return $in_betweenBindKey . ")";
 		} else {
 			$bindKey = ":" . $from . "_" . $key . "_" . rand();
-			$this->bindData[] = [$bindKey, $values, $bindType];
+			if (!empty($values)) {
+				$this->bindData[] = [$bindKey, $values, $bindType];
+			}
 			return $bindKey;
 		}
 	}

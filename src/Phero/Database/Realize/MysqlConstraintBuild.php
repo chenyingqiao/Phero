@@ -57,7 +57,7 @@ class MysqlConstraintBuild implements interfaces\IConstraintBuild, interfaces\IB
 		}
 
 		$distanct = "";
-		if ($Entiy->getDistinct()) {$distanct = "distinct";}
+		if ($Entiy->getDistinct()) {$distanct = " distinct ";}
 
 		$sql = "select " . $distanct . $this->fragment(MysqlConstraintBuild::Field)
 		. $this->fragment(MysqlConstraintBuild::DataSource)

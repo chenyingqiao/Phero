@@ -21,11 +21,14 @@ class FieldConstraint implements interfaces\IConstraint {
 	 * @var array
 	 */
 	private $fieldList = array();
+
+	private $entiy;
 	/**
 	 * 初始化的时候要进行表名指定
 	 * @param [type] $Entiy [description]
 	 */
 	public function __construct($Entiy = null) {
+		$this->entiy=$Entiy;
 		$this->setFieldByEntiy($Entiy);
 		$this->joinRecursion($Entiy);
 	}
@@ -129,6 +132,8 @@ class FieldConstraint implements interfaces\IConstraint {
 		$i = 0;
 		// var_dump($this->fieldList);
 		foreach ($this->fieldList as $key => $value) {
+			var_dump($key);
+			var_dump($value);
 			//取内层的数据
 			foreach ($value as $key1 => $value1) {
 				$key = $key1;
@@ -137,7 +142,7 @@ class FieldConstraint implements interfaces\IConstraint {
 
 			$i == count($this->fieldList) - 1 ? $split = " " : $split = ",";
 
-			$table = is_numeric($key) ? "" : $key . ".";
+			$table = is_numeric($key)&&$this->isEntiyField($value[0]) ? "" : $key . ".";
 			$name = !empty($value[0]) ? $value[0] : "";
 			$as = !empty($value[1]) ? " as " . $value[1] : "";
 			$temp = !empty($value[2]) ? $value[2] : "";
@@ -152,6 +157,13 @@ class FieldConstraint implements interfaces\IConstraint {
 			$i++;
 		}
 		return $sql;
+	}
+
+	private function isEntiyField($value)
+	{
+		$propertys=$this->getTablePropertyNames($this->entiy);
+		var_dump($propertys);
+		return in_array($value);
 	}
 
 	public function getType() {
