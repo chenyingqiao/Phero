@@ -8,6 +8,8 @@ use Phero\Database\Traint\DbUnitBase;
  * 实体化数据的载入载体
  */
 class DbUnit extends DbUnitBase {
+	protected $call_set=false;
+
 	public function __set($key, $value) {
 		$this->$key = $value;
 	}
@@ -109,6 +111,21 @@ class DbUnit extends DbUnitBase {
 	public function SQRT($field) {
 		$this->polymerization($field, "SQRT");
 		return $this;
+	}
+
+	/**
+	 * [Set description]
+	 * @Author   Lerko
+	 * @DateTime 2017-03-20T15:12:01+0800
+	 * @param    Closure                  $func [description]
+	 */
+	public function Set(\Closure $func){
+		$this->call_set=true;
+		$this->setGroup();
+		$func=$func->bindTo($this);
+		$this_self=$func();
+		$this->setGroup(parent::GroupEnd);
+		return $this_self;
 	}
 
 	/**

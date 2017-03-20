@@ -65,8 +65,13 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	 */
 	public function userSetWhere($Entiy, $group = 0) {
 		$where = $this->getBuildData($Entiy);
+		var_dump($where);
 		$i = 0;
 		foreach ($where as $key => &$value) {
+			if(count($value)==1&&array_key_exists("group",$value)){
+				$this->setWhere("","","","","",$value['group'],"");
+				continue;
+			}
 			if (isset($value['from'])) {
 				$from = $value['from'];
 			} else {
@@ -136,7 +141,7 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		if (empty($key)) {
 			$field = "";
 		}
-		$this->where .= $conType . " " . $group1 . $field . $compare . $value . $group2;
+		$this->where .= " " .$conType .  $group1 . $field . $compare . $value . $group2;
 	}
 
 	public function getBindData() {

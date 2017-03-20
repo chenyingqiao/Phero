@@ -12,6 +12,9 @@ use Phero\Database\Traint\TConstraintTableDependent;
  */
 class DbUnitBase {
 	use TConstraintTableDependent;
+
+	CONST GroupStart=1,GroupEnd=2,GroupDisbale=0;
+
 	private $model;
 
 	/**
@@ -170,18 +173,19 @@ class DbUnitBase {
 	 *                       		下个字段连接符 可选---index:3(默认为空字符串)
 	 * ]
 	 * @param  [type] $from  [来自那个表  如果是多表链接的话]
-	 * @param  boolean $group     [description]
-	 * @param  string  $whereTemp [description]
+	 * @param  boolean $group     [是否进行where分组]
+	 * @param  string  $whereTemp [where字段模板]
 	 * @return [type]             [description]
 	 */
 	public function where($where, $from = null, $group = false, $whereTemp = "") {
-		if (!isset($where) || count($where) < 2) {
-			return;
-		}
+		// if (!isset($where) || count($where) < 2) {
+		// 	return;
+		// }
 		if (isset($from)) {
 			$where['from'] = $from;
 		}
 		$group = $this->whereGroup;
+		//这里的wheregroup是通过where进行添加的
 		if ($group !== false) {
 			$where['group'] = $group;
 		}
@@ -192,6 +196,32 @@ class DbUnitBase {
 		return $this;
 	}
 
+	/**
+	 * where 分组标示符号
+	 * @Author   Lerko
+	 * @DateTime 2017-03-20T15:51:57+0800
+	 * @return   [type]                   [description]
+	 */
+	public function setGroup($type=self::GroupStart){
+		if($type==self::GroupStart)
+			$this->whereGroup=1;
+		else if($type==self::GroupEnd)
+			$this->whereGroup=2;
+		else
+			$this->whereGroup=0;
+		if($type!=self::GroupDisbale)
+			$this->where(null,null,true);
+	}
+
+	/**
+	 * 设置having
+	 * @Author   Lerko
+	 * @DateTime 2017-03-20T16:24:23+0800
+	 * @param    [type]                   $having [description]
+	 * @param    [type]                   $from   [description]
+	 * @param    boolean                  $group  [description]
+	 * @return   [type]                           [description]
+	 */
 	public function having($having, $from = null, $group = false) {
 		if (!isset($having) || count($having) < 2) {
 			return;
