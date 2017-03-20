@@ -132,8 +132,6 @@ class FieldConstraint implements interfaces\IConstraint {
 		$i = 0;
 		// var_dump($this->fieldList);
 		foreach ($this->fieldList as $key => $value) {
-			var_dump($key);
-			var_dump($value);
 			//取内层的数据
 			foreach ($value as $key1 => $value1) {
 				$key = $key1;

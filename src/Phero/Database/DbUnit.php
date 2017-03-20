@@ -130,13 +130,17 @@ class DbUnit extends DbUnitBase {
 				$matched = preg_match($reg, $function_name, $matcher);
 				$this->whereGroup = 0;
 			}
-			var_dump($matcher);
-			var_dump($argument);
 			if ($matched) {
 				if (!empty($matcher[1])) {
 					$compser = strtolower($matcher[1]);
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
-					$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_]);
+					if(count($argument)==2){
+						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_]);
+					}else if(count($argument)==3){
+						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_], null, false, $argument[2]);
+					}else{
+						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_]);
+					}
 				} else {
 					if (count($argument) == 4) {
 						//字段名 字段值 字段比较符号 字段函数模板[use param]
@@ -144,7 +148,6 @@ class DbUnit extends DbUnitBase {
 					} else {
 						$this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::or_]);
 					}
-					$this->where([$argument[0], $argument[1], $argument[2], enum\WhereCon::or_]);
 				}
 			}
 		}
@@ -163,7 +166,13 @@ class DbUnit extends DbUnitBase {
 				if (!empty($matcher[1])) {
 					$compser = strtolower($matcher[1]);
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
-					$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_]);
+					if(count($argument)==2){
+						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_]);
+					}else if(count($argument)==3){
+						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_], null, false, $argument[2]);
+					}else{
+						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_]);
+					}
 				} else {
 					if (count($argument) == 4) {
 						//字段名 字段值 字段比较符号 字段函数模板[use param]
