@@ -151,7 +151,9 @@ class DbUnit extends DbUnitBase {
 				if (!empty($matcher[1])) {
 					$compser = strtolower($matcher[1]);
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
-					if(count($argument)==2){
+					if(count($argument)==1&&is_object($argument[0])){
+						$this->where(["", $argument[0], enum\Where::get($compser), enum\WhereCon::or_]);
+					}else if(count($argument)==2){
 						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_]);
 					}else if(count($argument)==3){
 						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::or_], null, false, $argument[2]);
@@ -183,7 +185,9 @@ class DbUnit extends DbUnitBase {
 				if (!empty($matcher[1])) {
 					$compser = strtolower($matcher[1]);
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
-					if(count($argument)==2){
+					if(count($argument)==1&&is_object($argument[0])){
+						$this->where(["", $argument[0], enum\Where::get($compser), enum\WhereCon::and_]);
+					}else if(count($argument)==2){
 						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_]);
 					}else if(count($argument)==3){
 						$this->where([$argument[0], $argument[1], enum\Where::get($compser), enum\WhereCon::and_], null, false, $argument[2]);
@@ -215,7 +219,9 @@ class DbUnit extends DbUnitBase {
 				if (!empty($matcher[1])) {
 					$compser = strtolower($matcher[1]);
 					if ($compser == "eq" || $compser == 'in') {$compser .= "_";}
-					if (count($argument) == 3) {
+					if(count($argument)==1&&is_object($argument[0])){
+						$this->where(["", $argument[0], enum\Where::get($compser)]);
+					}elseif (count($argument) == 3) {
 						//字段名 字段值 字段函数模板[use param]
 						$this->where([$argument[0], $argument[1], enum\Where::get($compser)], null, false, $argument[2]);
 					} else {
