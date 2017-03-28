@@ -22,6 +22,12 @@ class Field {
 	 */
 	public $type = self::String;
 
+	/**
+	 * 字段名称
+	 * @var [type]
+	 */
+	public $name;
+
 	public static function typeTrunPdoType($type) {
 		if ($type == "string") {
 			return \PDO::PARAM_STR;

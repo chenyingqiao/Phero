@@ -73,8 +73,12 @@ trait TConstraintTableDependent {
 		$property = $NodeReflectionClass->getProperties();
 		$propertys = [];
 		foreach ($property as $value) {
-			if ($value->resolve(new Field())) {
-				$propertys[] = $value->getName();
+			if ($Field=$value->resolve(new Field())) {
+				if($Field->name){
+					$propertys[] = $Field->name;
+				}else{
+					$propertys[] = $value->getName();
+				}
 			}
 		}
 		return $propertys;
