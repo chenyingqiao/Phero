@@ -74,7 +74,7 @@ trait TConstraintTableDependent {
 		$propertys = [];
 		foreach ($property as $value) {
 			if ($Field=$value->resolve(new Field())) {
-				if($Field->name){
+				if(!empty($Field->name)){
 					$propertys[] = $Field->name;
 				}else{
 					$propertys[] = $value->getName();

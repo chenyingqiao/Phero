@@ -64,10 +64,14 @@ class FieldConstraint implements interfaces\IConstraint {
 				//属性值未true的才添加到field
 				continue;
 			}
+			$FieldNode=$value->getNode(new note\Field());
 			if ($Entiy->have_as) {
-				$as = $value->getNode(new note\Field())->alias;
+				$as = $FieldNode->alias;
 			} else {
 				$as = null;
+			}
+			if(!empty($FieldNode->name)){
+				$fieldName=$FieldNode->name;
 			}
 			$this->setField($fieldName, $tableAlias, $as, $temp);
 		}
@@ -141,7 +145,7 @@ class FieldConstraint implements interfaces\IConstraint {
 			$i == count($this->fieldList) - 1 ? $split = " " : $split = ",";
 
 			$table = is_numeric($key)&&$this->isEntiyField($value[0]) ? "" : $key . ".";
-			$name = !empty($value[0]) ? $value[0] : "";
+			$name = !empty($value[0]) ? "`".$value[0]."`" : "";
 			$as = !empty($value[1]) ? " as " . $value[1] : "";
 			$temp = !empty($value[2]) ? $value[2] : "";
 

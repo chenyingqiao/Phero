@@ -5,6 +5,7 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traint as traint;
 use Phero\Map as M;
+use Phero\Map\Note\Field;
 
 /**
  * 列约束
@@ -32,7 +33,11 @@ class InsertFieldConstraint implements interfaces\IConstraint {
 		foreach ($propertys as $key => $value) {
 			$value_ = $value->getValue($Entiy);
 			if (isset($value_)) {
-				$this->fieldList[] = $value->getName();
+				$Node=$value->getNode(new Field());
+				if(!empty($Node->name))
+					$this->fieldList[] = $Node->name;
+				else
+					$this->fieldList[] = $value->getName();
 			}
 		}
 	}
@@ -50,7 +55,7 @@ class InsertFieldConstraint implements interfaces\IConstraint {
 			} else {
 				$split = "";
 			}
-			$sql .= $value . $split;
+			$sql .= "`".$value."`" . $split;
 			$i++;
 		}
 		return $sql;
