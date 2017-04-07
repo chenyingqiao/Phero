@@ -7,14 +7,14 @@ use Phero\Map\Interfaces\INode;
  */
 class NodeReflectionClass extends \ReflectionClass implements INode {
 	use Resolve;
-
+	
 	/**
 	 * 重载获取Properties的方法
 	 * @param  [type] $filter [属性过滤]
 	 * @return [type]         [description]
 	 * @Override
 	 */
-	public function getProperties($filter = \ReflectionProperty::IS_PUBLIC) {
+	public function getProperties($filter = \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED|\ReflectionProperty::IS_PRIVATE) {
 		$propertys = parent::getProperties($filter);
 		$NodePropertys = [];
 		foreach ($propertys as $key => $value) {
@@ -37,7 +37,7 @@ class NodeReflectionClass extends \ReflectionClass implements INode {
 	 * @param  [type] $filter [description]
 	 * @return [type]         [description]
 	 */
-	public function getMethods($filter = \ReflectionProperty::IS_PUBLIC) {
+	public function getMethods($filter = \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED|\ReflectionProperty::IS_PRIVATE) {
 		$methodList = parent::getMethods($filter);
 		$methodNodeList = [];
 		foreach ($methodList as $key => $value) {
@@ -60,7 +60,7 @@ class NodeReflectionClass extends \ReflectionClass implements INode {
 	 * @param  [type] $filter [属性过滤]
 	 * @return [type]         [description]
 	 */
-	public function getPropertieNames($filter = \ReflectionProperty::IS_PUBLIC) {
+	public function getPropertieNames($filter = \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED|\ReflectionProperty::IS_PRIVATE) {
 		$propertys = parent::getProperties($filter);
 		$propertynames = [];
 		foreach ($propertys as $key => $value) {

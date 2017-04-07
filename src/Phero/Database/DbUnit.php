@@ -134,7 +134,6 @@ class DbUnit extends DbUnitBase {
 	 * @return [type]                [description]
 	 */
 	public function __call($function_name, $argument) {
-		var_dump($function_name);
 		//后接 or 或
 		if (strstr($function_name, "whereOr")) {
 			if (strstr($function_name, "Group")) {
