@@ -366,6 +366,10 @@ class DbUnitBase {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
+		if(!empty($this->values_cache)){
+			$this->allFalse();
+		}
+		$this->initField($this->values_cache, $this->inifalse);
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -380,6 +384,10 @@ class DbUnitBase {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
+		if(!empty($this->values_cache)){
+			$this->allFalse();
+		}
+		$this->initField($this->values_cache, $this->inifalse);
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -397,6 +405,7 @@ class DbUnitBase {
 		if(!empty($this->values_cache)){
 			$this->allFalse();
 		}
+		$this->initField($this->values_cache, $this->inifalse);
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();

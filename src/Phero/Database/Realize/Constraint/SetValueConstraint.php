@@ -5,6 +5,7 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traint as traint;
 use Phero\Map\Note as note;
+use Phero\Map\Note\Field;
 
 /**
  *生成 field和数据的sql片段
@@ -52,11 +53,13 @@ class SetValueConstraint implements interfaces\IConstraint, interfaces\IBindData
 		foreach ($propertys as $key => $value) {
 			$value_ = $value->getValue($Entiy);
 			if (isset($value_) && $value_ !== false) {
+				$Node=$value->getNode(new Field());
+				$name=empty($Node->name)?$value->getName():$Node->name;
 				$field = $this->getTablePropertyNodeOver1($value, new note\Field());
 
-				$bind_key = ":" . $value->getName() . "_" . $index . "_set";
+				$bind_key = ":" . $name . "_" . $index . "_set";
 				$split = $index != count($propertys) - 1 ? "," : "";
-				$this->sql .= $value->getName() . "=" . $bind_key . $split;
+				$this->sql .= "`".$name . "`=" . $bind_key . $split;
 
 				if ($field != null) {
 					$this->bindData[] = [$bind_key, $value_, note\Field::typeTrunPdoType($field->type)];
@@ -76,11 +79,14 @@ class SetValueConstraint implements interfaces\IConstraint, interfaces\IBindData
  */
 	private function getCountHasValue($Entiy, Array $propertys) {
 		$propertys_result = [];
+		echo "===";
 		foreach ($propertys as $key => $value) {
-			if (!empty($value->getValue($Entiy))) {
+			var_dump($value->getValue($Entiy));
+			if ($value->getValue($Entiy)!==null&&$value->getValue($Entiy)!==false) {
 				$propertys_result[] = $value;
 			}
 		}
+	echo "====";
 		return $propertys_result;
 	}
 
