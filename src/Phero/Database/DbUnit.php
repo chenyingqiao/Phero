@@ -54,7 +54,6 @@ class DbUnit extends DbUnitBase {
 		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
 			return $data[0];
 		} else {
-			var_dump($data);
 			return $data["COUNT"];
 		}
 	}

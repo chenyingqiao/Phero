@@ -79,14 +79,11 @@ class SetValueConstraint implements interfaces\IConstraint, interfaces\IBindData
  */
 	private function getCountHasValue($Entiy, Array $propertys) {
 		$propertys_result = [];
-		echo "===";
 		foreach ($propertys as $key => $value) {
-			var_dump($value->getValue($Entiy));
 			if ($value->getValue($Entiy)!==null&&$value->getValue($Entiy)!==false) {
 				$propertys_result[] = $value;
 			}
 		}
-	echo "====";
 		return $propertys_result;
 	}
 
