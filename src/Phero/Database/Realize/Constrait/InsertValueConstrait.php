@@ -1,16 +1,16 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
 
 /**
  * 列约束
  */
-class InsertValueConstraint implements interfaces\IConstraint, interfaces\IBindData {
-	use traint\TConstraintTableDependent;
+class InsertValueConsTrait implements interfaces\IConsTrait, interfaces\IBindData {
+	use Traits\TConsTraitTableDependent;
 	/**
 	 * [table=>[name,as,temp]]
 	 * table:field所属的表名
@@ -90,6 +90,6 @@ class InsertValueConstraint implements interfaces\IConstraint, interfaces\IBindD
 	}
 
 	public function getType() {
-		return realize\MysqlConstraintBuild::Value;
+		return realize\MysqlConsTraitBuild::Value;
 	}
 }

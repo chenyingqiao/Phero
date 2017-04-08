@@ -1,20 +1,20 @@
 <?php
 namespace Phero\Database\Interfaces;
 
-use Phero\Database\Interfaces\IConstraint;
+use Phero\Database\Interfaces\IConsTrait;
 
-interface IConstraintBuild {
+interface IConsTraitBuild {
 	/**
 	 * 添加约束
-	 * @param IConstraint $constraint [description]
+	 * @param IConsTrait $consTrait [description]
 	 * @param [type]      $type       [description]
 	 */
-	public function addItem(IConstraint $constraint);
+	public function addItem(IConsTrait $consTrait);
 	/**
 	 * 取得约束列表
 	 * @return [type] [description]
 	 */
-	public function getConstraints();
+	public function getConsTraits();
 	/**
 	 * 取得select 语句 通过固定的顺序拼装语句
 	 * @return [type] [description]

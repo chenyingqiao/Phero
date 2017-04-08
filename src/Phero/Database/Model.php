@@ -19,24 +19,24 @@ class Model implements interfaces\IModel {
 	const commit_transaction = 3;
 
 	//obj无法使用
-	private $mode = self::fetch_arr_key, $classname = "Phero\\Database\\DbUnit";
+	private $mode = self::fetch_obj, $classname = "Phero\\Database\\DbUnit";
 
 	protected $help;
 
-	protected $IConstraintBuild;
+	protected $IConsTraitBuild;
 
 	private $sql, $error;
 
 	public function __construct() {
 		$this->help = new realize\MysqlDbHelp();
-		$this->IConstraintBuild = new realize\MysqlConstraintBuild();
+		$this->IConsTraitBuild = new realize\MysqlConsTraitBuild();
 	}
 
 	public function insert($Entiy, $is_replace = false) {
-		$sql = $this->IConstraintBuild->buildInsertSql($Entiy, $is_replace);
+		$sql = $this->IConsTraitBuild->buildInsertSql($Entiy, $is_replace);
 		$this->sql = $sql;
 		$this->help->setEntiy($Entiy);
-		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
+		$return = $this->help->exec($sql, $this->IConsTraitBuild->getBindData());
 		return $return;
 	}
 	/**
@@ -52,30 +52,30 @@ class Model implements interfaces\IModel {
 	 * @return [type]        [description]
 	 */
 	public function select($Entiy, $yield = false) {
-		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
+		$sql = $this->IConsTraitBuild->buildSelectSql($Entiy);
 		$this->sql = $sql;
 		$this->help->setEntiy($Entiy);
 		if ($yield) {
-			$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConstraintBuild->getBindData());
+			$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $this->IConsTraitBuild->getBindData());
 		} else {
-			$data = $this->help->setFetchMode($this->mode, $this->classname)->queryResultArray($sql, $this->IConstraintBuild->getBindData());
+			$data = $this->help->setFetchMode($this->mode, $this->classname)->queryResultArray($sql, $this->IConsTraitBuild->getBindData());
 		}
 		return $data;
 	}
 	public function update($Entiy) {
-		$sql = $this->IConstraintBuild->buildUpdataSql($Entiy);
+		$sql = $this->IConsTraitBuild->buildUpdataSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
 		$this->help->setEntiy($Entiy);
-		$return = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
+		$return = $this->help->exec($sql, $this->IConsTraitBuild->getBindData());
 		return $return;
 	}
 	public function delete($Entiy) {
-		$sql = $this->IConstraintBuild->buildDeleteSql($Entiy);
+		$sql = $this->IConsTraitBuild->buildDeleteSql($Entiy);
 		// var_dump($sql);
 		$this->sql = $sql;
 		$this->help->setEntiy($Entiy);
-		$effect_rows_num = $this->help->exec($sql, $this->IConstraintBuild->getBindData());
+		$effect_rows_num = $this->help->exec($sql, $this->IConsTraitBuild->getBindData());
 		return $effect_rows_num;
 	}
 
@@ -143,8 +143,8 @@ class Model implements interfaces\IModel {
 	 */
 	public function fetchSql($Entiy) {
 		// TODO: Implement fetchSql() method.
-		$sql = $this->IConstraintBuild->buildSelectSql($Entiy);
+		$sql = $this->IConsTraitBuild->buildSelectSql($Entiy);
 		$this->sql = $sql;
-		return $this->IConstraintBuild->getBindData();
+		return $this->IConsTraitBuild->getBindData();
 	}
 }

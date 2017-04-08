@@ -5,7 +5,7 @@ use Phero\Database\Enum\DatabaseConfig;
 use Phero\Database\PDO;
 use Phero\System\Config;
 use Phero\System\DI;
-use Phero\System\Traint\TInject;
+use Phero\System\Traits\TInject;
 
 /**
  *pdo链接仓库

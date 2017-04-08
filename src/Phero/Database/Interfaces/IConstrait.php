@@ -4,7 +4,7 @@ namespace Phero\Database\Interfaces;
 /**
  * 约束的基本接口
  */
-interface IConstraint {
+interface IConsTrait {
 	/**
 	 * 返回语句约束的类型
 	 * @return [type] [description]

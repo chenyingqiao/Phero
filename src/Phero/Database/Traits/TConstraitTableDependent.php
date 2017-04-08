@@ -1,11 +1,12 @@
 <?php
-namespace Phero\Database\Traint;
+namespace Phero\Database\Traits;
+
 use Phero\Map\NodeReflectionClass;
 use Phero\Map\NodeReflectionProperty;
 use Phero\Map\Note\Field;
 use Phero\Map\Note\Table;
 
-trait TConstraintTableDependent {
+trait TConsTraitTableDependent {
 	/**
 	 * 获取实体对应的表的名称
 	 * @param  [type] $Entiy [description]

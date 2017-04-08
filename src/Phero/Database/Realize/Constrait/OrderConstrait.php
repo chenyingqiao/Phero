@@ -1,16 +1,16 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Enum as enum;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 
 /**
  *
  */
-class OrderConstraint implements interfaces\IConstraint {
-	use traint\TConstraintTableDependent;
+class OrderConsTrait implements interfaces\IConsTrait {
+	use Traits\TConsTraitTableDependent;
 
 	protected $order;
 	protected $Entiy;
@@ -26,7 +26,7 @@ class OrderConstraint implements interfaces\IConstraint {
 	 * @return [type] [description]
 	 */
 	public function gettype() {
-		return realize\MysqlConstraintBuild::Order;
+		return realize\MysqlConsTraitBuild::Order;
 	}
 	/**
 	 * 获取这个约束组装完成的sql语句片段

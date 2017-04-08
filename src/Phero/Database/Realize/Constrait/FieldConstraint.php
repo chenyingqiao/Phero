@@ -1,17 +1,17 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 use Phero\Map as M;
 use Phero\Map\Note as note;
 
 /**
  * 列约束
  */
-class FieldConstraint implements interfaces\IConstraint {
-	use traint\TConstraintTableDependent;
+class FieldConsTrait implements interfaces\IConsTrait {
+	use Traits\TConsTraitTableDependent;
 	/**
 	 * [table=>[name,as,temp]]
 	 * table:field所属的表名
@@ -144,12 +144,12 @@ class FieldConstraint implements interfaces\IConstraint {
 
 			$i == count($this->fieldList) - 1 ? $split = " " : $split = ",";
 
-			$table = is_numeric($key)&&$this->isEntiyField($value[0]) ? "" : $key . ".";
+			$table = is_numeric($key)&&$this->isEntiyField($value[0]) ? "" : $key;
 			$name = !empty($value[0]) ? "`".$value[0]."`" : "";
 			$as = !empty($value[1]) ? " as " . $value[1] : "";
 			$temp = !empty($value[2]) ? $value[2] : "";
 
-			$fieldSql = $table . $name;
+			$fieldSql = "`".$table ."`.". $name;
 
 			if (empty($temp)) {
 				$sql .= $fieldSql . $as . $split;
@@ -164,11 +164,10 @@ class FieldConstraint implements interfaces\IConstraint {
 	private function isEntiyField($value)
 	{
 		$propertys=$this->getTablePropertyNames($this->entiy);
-		var_dump($propertys);
 		return in_array($value);
 	}
 
 	public function getType() {
-		return realize\MysqlConstraintBuild::Field;
+		return realize\MysqlConsTraitBuild::Field;
 	}
 }

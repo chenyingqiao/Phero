@@ -2,7 +2,7 @@
 namespace Phero\Database;
 
 use Phero\Database\Enum as enum;
-use Phero\Database\Traint\DbUnitBase;
+use Phero\Database\Traits\DbUnitBase;
 
 /**
  * 实体化数据的载入载体
@@ -15,10 +15,13 @@ class DbUnit extends DbUnitBase {
 	}
 
 	//只查询一条
-	public function find() {
+	public function find($field=null) {
 		$this->limit(1);
 		$data = $this->select();
 		if (isset($data[0])) {
+			if(isset($field)){
+				return $data[0][$field];
+			}
 			return $data[0];
 		}
 		return [];

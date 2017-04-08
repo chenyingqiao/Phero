@@ -6,7 +6,7 @@ use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Interfaces\IRelation;
 use Phero\Database\Realize\PdoWarehouse;
-use Phero\Database\Traint\TRelation;
+use Phero\Database\Traits\TRelation;
 
 /**
  * 数据库
@@ -145,10 +145,10 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			$PDOStatement->setFetchMode($this->mode);
 		}
 		if (!empty($this->mode) && !empty($this->classname) && $this->mode == database\Model::fetch_obj) {
-			$PDOStatement->setFetchMode($this->mode, $this->classname);
+			$PDOStatement->setFetchMode($this->mode, $this->classname,array());
 		}
-		$this->mode = database\Model::fetch_arr_key;
-		$this->classname = null;
+		// $this->mode = empty($this->mode)?database\Model::fetch_arr_key:$this->mode;
+		// $this->classname =empty($this->classname)?null:$this->;
 	}
 	/**
 	 * 设置遍历模式

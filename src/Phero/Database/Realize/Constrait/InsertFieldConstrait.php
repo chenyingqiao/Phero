@@ -1,17 +1,17 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 use Phero\Map as M;
 use Phero\Map\Note\Field;
 
 /**
  * 列约束
  */
-class InsertFieldConstraint implements interfaces\IConstraint {
-	use traint\TConstraintTableDependent;
+class InsertFieldConsTrait implements interfaces\IConsTrait {
+	use Traits\TConsTraitTableDependent;
 	/**
 	 * [table=>[name,as,temp]]
 	 * table:field所属的表名
@@ -62,6 +62,6 @@ class InsertFieldConstraint implements interfaces\IConstraint {
 	}
 
 	public function getType() {
-		return realize\MysqlConstraintBuild::Field;
+		return realize\MysqlConsTraitBuild::Field;
 	}
 }

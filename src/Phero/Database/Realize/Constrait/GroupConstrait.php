@@ -1,15 +1,15 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 
 /**
  *Group by field
  */
-class GroupConstraint implements interfaces\IConstraint {
-	use traint\TConstraintTableDependent;
+class GroupConsTrait implements interfaces\IConsTrait {
+	use Traits\TConsTraitTableDependent;
 	protected $group_field;
 	protected $Entiy;
 	public function __construct($Entiy) {
@@ -22,7 +22,7 @@ class GroupConstraint implements interfaces\IConstraint {
 	 * @return [type] [description]
 	 */
 	public function gettype() {
-		return realize\MysqlConstraintBuild::Grouping;
+		return realize\MysqlConsTraitBuild::Grouping;
 	}
 	/**
 	 * 获取这个约束组装完成的sql语句片段

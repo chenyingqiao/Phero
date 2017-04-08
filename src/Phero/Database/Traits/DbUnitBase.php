@@ -1,17 +1,16 @@
 <?php
-namespace Phero\Database\Traint;
+namespace Phero\Database\Traits;
 
 use Phero\Database\Enum as enum;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Model;
-use Phero\Database\Traint\TConstraintTableDependent;
 
 /**
  * 用来设置数据库实体类的一些携带数据
  * 以及基础功能
  */
-class DbUnitBase {
-	use TConstraintTableDependent;
+class DbUnitBase implements \ArrayAccess {
+	use TConsTraitTableDependent;
 
 	CONST GroupStart=1,GroupEnd=2,GroupDisbale=0;
 

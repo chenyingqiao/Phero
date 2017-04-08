@@ -1,17 +1,17 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Enum as enum;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
 
 /**
  *where约束
  */
-class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
-	use traint\TConstraintTableDependent;
+class WhereConsTrait implements interfaces\IConsTrait, interfaces\IBindData {
+	use Traits\TConsTraitTableDependent;
 
 	protected $where;
 
@@ -40,7 +40,7 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	 * @return [type] [description]
 	 */
 	public function getType() {
-		return realize\MysqlConstraintBuild::Where;
+		return realize\MysqlConsTraitBuild::Where;
 	}
 	/**
 	 * 获取这个约束组装完成的sql语句片段
@@ -65,7 +65,6 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 	 */
 	public function userSetWhere($Entiy, $group = 0) {
 		$where = $this->getBuildData($Entiy);
-		var_dump($where);
 		$i = 0;
 		foreach ($where as $key => &$value) {
 			if(count($value)==1&&array_key_exists("group",$value)){
@@ -129,8 +128,8 @@ class WhereConstraint implements interfaces\IConstraint, interfaces\IBindData {
 		}
 
 		//给表的别名加点
-		if (!$this->enableAlias) {$from = "";} else { $from .= ".";}
-		$field = $from . $key;
+		if (!$this->enableAlias) {$from = "";} else { $from = "`".$from."`.`";}
+		$field =$from.$key."`";
 		if (!empty($whereTemp)) {
 			$field = str_replace("?", $field, $whereTemp);
 		}

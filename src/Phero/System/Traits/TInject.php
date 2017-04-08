@@ -1,5 +1,5 @@
-<?php
-namespace Phero\System\Traint;
+`<?php
+namespace Phero\System\Traits;
 
 use Phero\Map\NodeReflectionClass;
 use Phero\Map\Note\Inject;

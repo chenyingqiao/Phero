@@ -2,11 +2,11 @@
 /**
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-03-28 16:49:35
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-04-08 10:44:04
  */
 
-namespace Phero\Database\Traint;
+namespace Phero\Database\Traits;
 
 use Phero\Database\Enum\OrderType;
 use Phero\Database\Enum\RelType;
@@ -133,7 +133,6 @@ trait TRelation {
 		$relation = $this->getRelation($entiy);
 		$effect = false;
 		foreach ($relation as $key => $value) {
-			var_dump($value);
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
@@ -285,7 +284,6 @@ trait TRelation {
 					return null;
 				}
 				//自动赋值关联字段到关联表中---如果
-				var_dump($entiy->$relation_key);
 				if (isset($entiy->$relation_key)) {
 					$entiy->$relation_key = $data->$relation;
 				}

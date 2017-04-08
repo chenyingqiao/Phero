@@ -1,18 +1,18 @@
 <?php
-namespace Phero\Database\Realize\Constraint;
+namespace Phero\Database\Realize\ConsTrait;
 
 use Phero\Database\Enum as enum;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Traint as traint;
+use Phero\Database\Traits as Traits;
 
 /**
  * 数据源建造者
  * 构建数据源的sql片段
  */
-class DataSourceConstraint implements interfaces\IConstraint {
+class DataSourceConsTrait implements interfaces\IConsTrait {
 
-	use traint\TConstraintTableDependent;
+	use Traits\TConsTraitTableDependent;
 
 	/**
 	 * 当前记录的数据源列表
@@ -118,6 +118,6 @@ class DataSourceConstraint implements interfaces\IConstraint {
 	}
 
 	public function getType() {
-		return realize\MysqlConstraintBuild::DataSource;
+		return realize\MysqlConsTraitBuild::DataSource;
 	}
 }
