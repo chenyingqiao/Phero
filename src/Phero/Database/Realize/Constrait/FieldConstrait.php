@@ -48,7 +48,7 @@ class FieldConstrait implements interfaces\IConstrait {
 	 * @param [type] $Entiy [description]
 	 */
 	public function setFieldByEntiy($Entiy) {
-		$tableAlias = $this->getName($Entiy);
+		$tableAlias = $this->getNameByCleverWay($Entiy);
 		$property = $this->getTableProperty($Entiy);
 		$fieldTemp = $Entiy->getFieldTemp();
 		$this->userSetField($Entiy);
@@ -83,7 +83,7 @@ class FieldConstrait implements interfaces\IConstrait {
 	 */
 	private function userSetField($Entiy) {
 		$field = $Entiy->getField();
-		$tableAlias = $this->getName($Entiy);
+		$tableAlias = $this->getNameByCleverWay($Entiy);
 		if (count($field) > 0) {
 			foreach ($field as $key => $value) {
 				$this->setField($value, $tableAlias, null, null);

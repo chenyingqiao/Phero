@@ -75,7 +75,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 				$from = $value['from'];
 			} else {
 				//取得默认的表名或者是表的别名
-				$from = $this->getName($Entiy);
+				$from = $this->getNameByCleverWay($Entiy);
 			}
 
 			$temp = isset($value['temp']) ? $value['temp'] : "";

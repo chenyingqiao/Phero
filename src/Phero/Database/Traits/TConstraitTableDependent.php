@@ -43,7 +43,7 @@ trait TConstraitTableDependent {
 	 * @param  [type] $Entiy [description]
 	 * @return [type]        [description]
 	 */
-	public final function getName($Entiy) {
+	public final function getNameByCleverWay($Entiy) {
 		$aliasEntiy = $this->getTableAlias($Entiy);
 		$nameOfEntiy = isset($aliasEntiy) ? $aliasEntiy : $this->getTableName($Entiy);
 		return $nameOfEntiy;
@@ -124,11 +124,11 @@ trait TConstraitTableDependent {
 	 * @return [type]            [description]
 	 */
 	public final function getTableOn($Entiy, $JoinEntiy, $on) {
-		$nameOfEntiy = $this->getName($Entiy);
+		$nameOfEntiy = $this->getNameByCleverWay($Entiy);
 		if (is_string($JoinEntiy)) {
 			$nameOfJoinEntiy = $JoinEntiy;
 		} else {
-			$nameOfJoinEntiy = $this->getName($JoinEntiy);
+			$nameOfJoinEntiy = $this->getNameByCleverWay($JoinEntiy);
 		}
 		$on = str_replace(["$", "#"], [$nameOfEntiy, $nameOfJoinEntiy], $on);
 		return $on;

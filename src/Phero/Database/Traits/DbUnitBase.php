@@ -39,6 +39,7 @@ class DbUnitBase implements \ArrayAccess {
 		$this->model = new Model();
 		$this->values_cache = $values;
 		$this->inifalse = $IniFalse;
+		$this->initField($values,$this->inifalse);
 	}
 
 	protected $values_cache, $inifalse;
@@ -72,7 +73,7 @@ class DbUnitBase implements \ArrayAccess {
 	 * @param  [type] $values [description]
 	 * @return [type]         [description]
 	 */
-	protected function initField($values, $IniFalse) {
+	protected function initField($values, $IniFalse=false) {
 		//判断是否吧除了需要初始化的值之外的数据设置成false[就是不需要查询]
 		// if ($IniFalse && count($values) > 0 || $values == false) {
 		// 	$this->allFalse();
@@ -422,6 +423,17 @@ class DbUnitBase implements \ArrayAccess {
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
 		return $result;
+	}
+
+	/**
+	 * 取得插入或者修改的最后一个id
+	 * @Author   Lerko
+	 * @DateTime 2017-04-08T15:53:55+0800
+	 * @return   [type]                   [description]
+	 */
+	public function getLastId(){
+		$help=new database\Realize\MysqlDbHelp();
+		return $help->query("select last_insert_id() as id;")['id'];
 	}
 
 	/**

@@ -19,7 +19,7 @@ class Model implements interfaces\IModel {
 	const commit_transaction = 3;
 
 	//obj无法使用
-	private $mode = self::fetch_obj, $classname = "Phero\\Database\\DbUnit";
+	private $mode = self::fetch_arr_key, $classname = "Phero\\Database\\DbUnit";
 
 	protected $help;
 
