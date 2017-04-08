@@ -1,18 +1,18 @@
 <?php
-namespace Phero\Database\Realize\ConsTrait;
+namespace Phero\Database\Realize\Constrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traits as Traits;
 
-class HavingConsTrait extends realize\ConsTraits\WhereConsTrait{
+class HavingConstrait extends realize\Constrait\WhereConstrait{
     /**
      * 返回语句约束的类型
      * @Overried
      * @return [type] [description]
      */
     public function getType() {
-        return realize\MysqlConsTraitBuild::Having;
+        return realize\MysqlConstraitBuild::Having;
     }
     /**
      * 获取这个约束组装完成的sql语句片段

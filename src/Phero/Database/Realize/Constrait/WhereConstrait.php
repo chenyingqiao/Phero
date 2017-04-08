@@ -1,5 +1,5 @@
 <?php
-namespace Phero\Database\Realize\ConsTrait;
+namespace Phero\Database\Realize\Constrait;
 
 use Phero\Database\Enum as enum;
 use Phero\Database\Interfaces as interfaces;
@@ -10,8 +10,8 @@ use Phero\Map\Note as note;
 /**
  *where约束
  */
-class WhereConsTrait implements interfaces\IConsTrait, interfaces\IBindData {
-	use Traits\TConsTraitTableDependent;
+class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
+	use Traits\TConstraitTableDependent;
 
 	protected $where;
 
@@ -40,7 +40,7 @@ class WhereConsTrait implements interfaces\IConsTrait, interfaces\IBindData {
 	 * @return [type] [description]
 	 */
 	public function getType() {
-		return realize\MysqlConsTraitBuild::Where;
+		return realize\MysqlConstraitBuild::Where;
 	}
 	/**
 	 * 获取这个约束组装完成的sql语句片段

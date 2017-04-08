@@ -3,7 +3,7 @@ namespace Phero\Database\Realize;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
-use Phero\Database\Realize\ConsTrait as consTraits;
+use Phero\Database\Realize\Constrait as Constraits;
 use Phero\Database\Traits as Traits;
 
 /**
@@ -14,8 +14,8 @@ use Phero\Database\Traits as Traits;
  * 其实sql本省就是一个约束的描述
  * 比如从是数据库里面筛选什么样的数据用select 描述
  */
-class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBindData {
-	use Traits\TConsTraitTableDependent;
+class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBindData {
+	use Traits\TConstraitTableDependent;
 
 	CONST DataSource = 'datasourse'; //数据源  包括筛选语句 如where
 	CONST Field = 'field'; //查询的数据
@@ -27,47 +27,47 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 	CONST Limit = 'limit';
 	CONST Having = 'having';
 
-	private $consTraits = array();
+	private $Constraits = array();
 
 	/**
 	 * 添加sql语句的约束
 	 * 最后添加的会覆盖之前添加的同类型的约束
-	 * @param IConsTrait $consTrait [description]
+	 * @param IConstrait $Constrait [description]
 	 */
-	public function addItem(interfaces\IConsTrait $consTrait) {
-		$this->consTraits[$consTrait->getType()] = $consTrait;
+	public function addItem(interfaces\IConstrait $Constrait) {
+		$this->Constraits[$Constrait->getType()] = $Constrait;
 	}
-	public function getConsTraits() {
-		return $this->consTraits;
+	public function getConstraits() {
+		return $this->Constraits;
 	}
 	/**
 	 * 快速构建查询
-	 * @param  [type] $Entiy [可传也可以忽略 忽略的时候用的是使用consTraits数组中的拼接对象 ]
+	 * @param  [type] $Entiy [可传也可以忽略 忽略的时候用的是使用Constraits数组中的拼接对象 ]
 	 * @return [type]        [description]
 	 */
 	public function buildSelectSql($Entiy = null) {
-		if (empty($this->consTraits) && !empty($Entiy)) {
-			$this->addItem(new consTraits\FieldConsTrait($Entiy));
-			$this->addItem(new consTraits\DataSourceConsTrait($Entiy));
-			$this->addItem(new consTraits\WhereConsTrait($Entiy));
-			$this->addItem(new consTraits\GroupConsTrait($Entiy));
-			$this->addItem(new consTraits\LimitConsTrait($Entiy));
-			$this->addItem(new consTraits\OrderConsTrait($Entiy));
-			$this->addItem(new consTraits\HavingConsTrait($Entiy));
+		if (empty($this->Constraits) && !empty($Entiy)) {
+			$this->addItem(new Constraits\FieldConstrait($Entiy));
+			$this->addItem(new Constraits\DataSourceConstrait($Entiy));
+			$this->addItem(new Constraits\WhereConstrait($Entiy));
+			$this->addItem(new Constraits\GroupConstrait($Entiy));
+			$this->addItem(new Constraits\LimitConstrait($Entiy));
+			$this->addItem(new Constraits\OrderConstrait($Entiy));
+			$this->addItem(new Constraits\HavingConstrait($Entiy));
 		}
 
 		$distanct = "";
 		if ($Entiy->getDistinct()) {$distanct = " distinct ";}
 
-		$sql = "select " . $distanct . $this->fragment(MysqlConsTraitBuild::Field)
-		. $this->fragment(MysqlConsTraitBuild::DataSource)
-		. $this->fragment(MysqlConsTraitBuild::Where)
-		. $this->fragment(MysqlConsTraitBuild::Grouping)
-		. $this->fragment(MysqlConsTraitBuild::Having)
-		. $this->fragment(MysqlConsTraitBuild::Order)
-		. $this->fragment(MysqlConsTraitBuild::Limit) . ';';
-		$bindData1 = $this->consTraits[MysqlConsTraitBuild::Where]->getBindData();
-		$bindData2 = $this->consTraits[MysqlConsTraitBuild::Having]->getBindData();
+		$sql = "select " . $distanct . $this->fragment(MysqlConstraitBuild::Field)
+		. $this->fragment(MysqlConstraitBuild::DataSource)
+		. $this->fragment(MysqlConstraitBuild::Where)
+		. $this->fragment(MysqlConstraitBuild::Grouping)
+		. $this->fragment(MysqlConstraitBuild::Having)
+		. $this->fragment(MysqlConstraitBuild::Order)
+		. $this->fragment(MysqlConstraitBuild::Limit) . ';';
+		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
+		$bindData2 = $this->Constraits[MysqlConstraitBuild::Having]->getBindData();
 		$this->bindData = array_merge($bindData1, $bindData2);
 		return $sql;
 	}
@@ -78,9 +78,9 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 	 * @return [type]              [description]
 	 */
 	public function buildInsertSql($Entiy = null, $is_replace = false) {
-		if (empty($this->consTraits) && !empty($Entiy)) {
-			$this->addItem(new consTraits\InsertFieldConsTrait($Entiy));
-			$this->addItem(new consTraits\InsertValueConsTrait($Entiy));
+		if (empty($this->Constraits) && !empty($Entiy)) {
+			$this->addItem(new Constraits\InsertFieldConstrait($Entiy));
+			$this->addItem(new Constraits\InsertValueConstrait($Entiy));
 		}
 		if (is_array($Entiy)) {
 			$Entiy = $Entiy[0];
@@ -90,8 +90,8 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 		} else {
 			$sql_head = "insert";
 		}
-		$sql = $sql_head . " into " . $this->getTableName($Entiy) . " (" . $this->fragment(MysqlConsTraitBuild::Field) . ") values " . $this->fragment(MysqlConsTraitBuild::Value) . ";";
-		$this->bindData = $this->consTraits[MysqlConsTraitBuild::Value]->getBindData();
+		$sql = $sql_head . " into " . $this->getTableName($Entiy) . " (" . $this->fragment(MysqlConstraitBuild::Field) . ") values " . $this->fragment(MysqlConstraitBuild::Value) . ";";
+		$this->bindData = $this->Constraits[MysqlConstraitBuild::Value]->getBindData();
 		return $sql;
 	}
 
@@ -101,9 +101,9 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 	 * @return [type]        [description]
 	 */
 	public function buildUpdataSql($Entiy = null) {
-		if (empty($this->consTraits) && !empty($Entiy)) {
-			$this->addItem(new consTraits\SetValueConsTrait($Entiy));
-			$this->addItem(new consTraits\WhereConsTrait($Entiy));
+		if (empty($this->Constraits) && !empty($Entiy)) {
+			$this->addItem(new Constraits\SetValueConstrait($Entiy));
+			$this->addItem(new Constraits\WhereConstrait($Entiy));
 		}
 		if (is_array($Entiy)) {
 			$Entiy = $Entiy[0];
@@ -114,9 +114,9 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 		} else {
 			$as = '';
 		}
-		$sql = "update " . $this->getTableName($Entiy) . $as . " set " . $this->fragment(MysqlConsTraitBuild::Set) . $this->fragment(MysqlConsTraitBuild::Where) . ";";
-		$bindData1 = $this->consTraits[MysqlConsTraitBuild::Where]->getBindData();
-		$bindData2 = $this->consTraits[MysqlConsTraitBuild::Set]->getBindData();
+		$sql = "update " . $this->getTableName($Entiy) . $as . " set " . $this->fragment(MysqlConstraitBuild::Set) . $this->fragment(MysqlConstraitBuild::Where) . ";";
+		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
+		$bindData2 = $this->Constraits[MysqlConstraitBuild::Set]->getBindData();
 		$this->bindData = array_merge($bindData1, $bindData2);
 		return $sql;
 	}
@@ -127,11 +127,11 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 	 * @return [type]         [description]
 	 */
 	public function buildDeleteSql($Entiy) {
-		if (empty($this->consTraits) && !empty($Entiy)) {
-			$this->addItem(new consTraits\WhereConsTrait($Entiy, false));
+		if (empty($this->Constraits) && !empty($Entiy)) {
+			$this->addItem(new Constraits\WhereConstrait($Entiy, false));
 		}
-		$sql = "delete from " . $this->getTableName($Entiy) . $this->fragment(MysqlConsTraitBuild::Where) . ";";
-		$bindData1 = $this->consTraits[MysqlConsTraitBuild::Where]->getBindData();
+		$sql = "delete from " . $this->getTableName($Entiy) . $this->fragment(MysqlConstraitBuild::Where) . ";";
+		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
 		$this->bindData = $bindData1;
 		return $sql;
 	}
@@ -142,10 +142,10 @@ class MysqlConsTraitBuild implements interfaces\IConsTraitBuild, interfaces\IBin
 	 * @return [type]      [description]
 	 */
 	private function fragment($key) {
-		if (empty($this->consTraits[$key])) {
+		if (empty($this->Constraits[$key])) {
 			return "";
 		}
-		return $this->consTraits[$key]->getSqlFragment();
+		return $this->Constraits[$key]->getSqlFragment();
 	}
 
 	private $bindData = [];

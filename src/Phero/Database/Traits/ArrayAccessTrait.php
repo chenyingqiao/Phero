@@ -3,21 +3,21 @@
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-08 10:25:35
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-04-08 10:44:19
+ * @Last Modified time: 2017-04-08 11:15:48
  */
 namespace Phero\Database\Traits;
 
-trait ArrayAccessTrait implements \ArrayAccess{
-	public offsetExists ( $offset ){
+trait ArrayAccessTrait{
+	public function offsetExists ( $offset ){
 		return isset($this->$offset);
 	}
-	public offsetGet ( $offset ){
+	public function offsetGet ( $offset ){
 		return $this->$offset;
 	}
-	public offsetSet ( $offset , $value ){
+	public function offsetSet ( $offset , $value ){
 		$this->$offset=$value;
 	}
-	public offsetUnset ( $offset ){
+	public function offsetUnset ( $offset ){
 		unset($this->$offset);
 	}
 }

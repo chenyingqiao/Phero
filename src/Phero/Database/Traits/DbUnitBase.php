@@ -10,7 +10,7 @@ use Phero\Database\Model;
  * 以及基础功能
  */
 class DbUnitBase implements \ArrayAccess {
-	use TConsTraitTableDependent;
+	use TConstraitTableDependent,ArrayAccessTrait;
 
 	CONST GroupStart=1,GroupEnd=2,GroupDisbale=0;
 

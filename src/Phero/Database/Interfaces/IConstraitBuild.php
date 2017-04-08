@@ -3,7 +3,7 @@ namespace Phero\Database\Interfaces;
 
 use Phero\Database\Interfaces\IConsTrait;
 
-interface IConsTraitBuild {
+interface IConstraitBuild {
 	/**
 	 * 添加约束
 	 * @param IConsTrait $consTrait [description]

@@ -1,5 +1,5 @@
 <?php
-namespace Phero\Database\Realize\ConsTrait;
+namespace Phero\Database\Realize\Constrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
@@ -7,7 +7,7 @@ use Phero\Database\Realize as realize;
 /**
  *
  */
-class LimitConsTrait implements interfaces\IConsTrait {
+class LimitConstrait implements interfaces\IConstrait {
 
 	protected $limit;
 
@@ -20,7 +20,7 @@ class LimitConsTrait implements interfaces\IConsTrait {
 	 * @return [type] [description]
 	 */
 	public function gettype() {
-		return realize\MysqlConsTraitBuild::Limit;
+		return realize\MysqlConstraitBuild::Limit;
 	}
 	/**
 	 * 获取这个约束组装完成的sql语句片段

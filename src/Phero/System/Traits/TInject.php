@@ -1,4 +1,4 @@
-`<?php
+<?php
 namespace Phero\System\Traits;
 
 use Phero\Map\NodeReflectionClass;

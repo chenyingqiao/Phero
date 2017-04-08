@@ -6,7 +6,7 @@ use Phero\Map\NodeReflectionProperty;
 use Phero\Map\Note\Field;
 use Phero\Map\Note\Table;
 
-trait TConsTraitTableDependent {
+trait TConstraitTableDependent {
 	/**
 	 * 获取实体对应的表的名称
 	 * @param  [type] $Entiy [description]

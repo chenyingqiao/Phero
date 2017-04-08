@@ -1,5 +1,5 @@
 <?php
-namespace Phero\Database\Realize\ConsTrait;
+namespace Phero\Database\Realize\Constrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
@@ -11,8 +11,8 @@ use Phero\Map\Note\Field;
  *生成 field和数据的sql片段
  *如 username=:username
  */
-class SetValueConsTrait implements interfaces\IConsTrait, interfaces\IBindData {
-	use Traits\TConsTraitTableDependent;
+class SetValueConstrait implements interfaces\IConstrait, interfaces\IBindData {
+	use Traits\TConstraitTableDependent;
 	private $bindData = [];
 	private $sql = "";
 	public function __construct($Entiy) {
@@ -30,7 +30,7 @@ class SetValueConsTrait implements interfaces\IConsTrait, interfaces\IBindData {
 	 * @return [type] [description]
 	 */
 	public function getType() {
-		return realize\MysqlConsTraitBuild::Set;
+		return realize\MysqlConstraitBuild::Set;
 	}
 	/**
 	 * 获取这个约束组装完成的sql语句片段

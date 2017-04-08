@@ -1,5 +1,5 @@
 <?php
-namespace Phero\Database\Realize\ConsTrait;
+namespace Phero\Database\Realize\Constrait;
 
 use Phero\Database\Enum as enum;
 use Phero\Database\Interfaces as interfaces;
@@ -10,9 +10,9 @@ use Phero\Database\Traits as Traits;
  * 数据源建造者
  * 构建数据源的sql片段
  */
-class DataSourceConsTrait implements interfaces\IConsTrait {
+class DataSourceConstrait implements interfaces\IConstrait {
 
-	use Traits\TConsTraitTableDependent;
+	use Traits\TConstraitTableDependent;
 
 	/**
 	 * 当前记录的数据源列表
@@ -118,6 +118,6 @@ class DataSourceConsTrait implements interfaces\IConsTrait {
 	}
 
 	public function getType() {
-		return realize\MysqlConsTraitBuild::DataSource;
+		return realize\MysqlConstraitBuild::DataSource;
 	}
 }

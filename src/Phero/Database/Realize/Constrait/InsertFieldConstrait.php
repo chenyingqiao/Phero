@@ -1,5 +1,5 @@
 <?php
-namespace Phero\Database\Realize\ConsTrait;
+namespace Phero\Database\Realize\Constrait;
 
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
@@ -10,8 +10,8 @@ use Phero\Map\Note\Field;
 /**
  * 列约束
  */
-class InsertFieldConsTrait implements interfaces\IConsTrait {
-	use Traits\TConsTraitTableDependent;
+class InsertFieldConstrait implements interfaces\IConstrait {
+	use Traits\TConstraitTableDependent;
 	/**
 	 * [table=>[name,as,temp]]
 	 * table:field所属的表名
@@ -62,6 +62,6 @@ class InsertFieldConsTrait implements interfaces\IConsTrait {
 	}
 
 	public function getType() {
-		return realize\MysqlConsTraitBuild::Field;
+		return realize\MysqlConstraitBuild::Field;
 	}
 }
