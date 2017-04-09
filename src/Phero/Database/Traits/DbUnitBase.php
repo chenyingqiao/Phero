@@ -66,6 +66,7 @@ class DbUnitBase implements \ArrayAccess {
 		//不管是查询还是插入都会把字段值全部重置成null
 		//select存储的field描述存储在一个values_cache变量中
 		$this->allNull();
+		$this->initField($this->values_cache,$this->inifalse);
 	}
 
 	/**
@@ -108,12 +109,15 @@ class DbUnitBase implements \ArrayAccess {
 	}
 	/**
 	 * 数据插入的时候初始化为null
+	 * 然后将数据缓存到value_cache
 	 * @return [type] [description]
 	 */
 	protected function allNull() {
-		$propertys = $this->getTablePropertyNames($this);
+		$propertys = $this->getTableProperty($this);
 		//初始化所有的值null
 		foreach ($propertys as $key => $value) {
+			$property_name=$value->getName();
+			$this->values_cache[$value->getName()]=$this->$property_name;
 			$this->$value = null;
 		}
 	}
