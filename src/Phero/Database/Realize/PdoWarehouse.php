@@ -59,6 +59,10 @@ class PdoWarehouse {
 		$pdo->exec("set names $charset");
 		$pdo->exec("set character_set_client=$charset");
 		$pdo->exec("set character_set_results=$charset");
+		//PDO::ATTR_STRINGIFY_FETCHES 提取的时候将数值转换为字符串。 
+		//PDO::ATTR_EMULATE_PREPARES 启用或禁用预处理语句的模拟。
+		$pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
+		$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		return $pdo;
 	}
 	private function init($config) {

@@ -87,19 +87,24 @@ trait TConstraitTableDependent {
 
 	public final function getTablePropertySingle($Entiy, $propertyName) {
 		$propertys = $this->getTableProperty($Entiy);
-		$nams = [];
+		$name = [];
+		$feild_node_name=[];
+		$feild_node_relation_name=[];
 		foreach ($propertys as $key => $value) {
-			$nams[] = $value->getName();
+			$name[] = $value->getName();
+			$node_name_item=$value->getNode(new Field())->name;
+			$feild_node_name[]=$node_name_item;
+			$feild_node_relation_name[$node_name_item]=$value->getName();
 		}
-		if (!in_array($propertyName, $nams)) {
+		if (!in_array($propertyName, $name)&&!in_array($propertyName,$feild_node_name)) {
 			return false;
+		}
+		//这里如果是node的name就要对对propertyName进行指定
+		if(in_array($propertyName,$feild_node_name)&&!in_array($propertyName, $name)){
+			$propertyName=$feild_node_relation_name[$propertyName];
 		}
 		$NodeReflectionClass = new NodeReflectionClass($Entiy);
 		return $NodeReflectionClass->getProperty($propertyName);
-	}
-
-	public final function getTableRelation() {
-
 	}
 
 	/**
