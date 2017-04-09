@@ -40,7 +40,15 @@ class MysqlDbHelp implements interfaces\IDbHelp {
         $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
-			$sql = $this->pdo->prepare($sql);
+			try {
+				$sql = $this->pdo->prepare($sql);
+			} catch (\PDOException $e) {
+				$this->error=$e->getMessage();
+			}
+			if($sql===false){
+				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
+				return 0;
+			}
 			$this->sql_bind_execute($sql, $data);
 		} else {
 			if ($sql instanceof \PDOStatement) {
@@ -74,7 +82,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
         $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
-			$sql = $this->pdo->prepare($sql);
+			try {
+				$sql = $this->pdo->prepare($sql);
+			} catch (\PDOException $e) {
+				$this->error=$e->getMessage();
+			}
+			if($sql===false){
+				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
+			}
 			$this->sql_bind_execute($sql, $data);
 		} else {
 			if ($sql instanceof \PDOStatement) {
@@ -105,7 +120,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
-			$sql = $this->pdo->prepare($sql);
+			try {
+				$sql = $this->pdo->prepare($sql);
+			} catch (\PDOException $e) {
+				$this->error=$e->getMessage();
+			}
+			if($sql===false){
+				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
+			}
 			$this->sql_bind_execute($sql, $data);
 		} else {
 			if ($sql instanceof \PDOStatement) {
