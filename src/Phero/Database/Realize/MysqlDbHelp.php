@@ -45,7 +45,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			} catch (\PDOException $e) {
 				$this->error=$e->getMessage();
 			}
-			if($sql===false){
+			if(empty($sql)){
 				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
 				return 0;
 			}
@@ -87,8 +87,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			} catch (\PDOException $e) {
 				$this->error=$e->getMessage();
 			}
-			if($sql===false){
+			if(empty($sql)){
 				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
+				return 0;
 			}
 			$this->sql_bind_execute($sql, $data);
 		} else {
@@ -125,8 +126,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			} catch (\PDOException $e) {
 				$this->error=$e->getMessage();
 			}
-			if($sql===false){
+			if(empty($sql)){
 				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
+				return 0;
 			}
 			$this->sql_bind_execute($sql, $data);
 		} else {
