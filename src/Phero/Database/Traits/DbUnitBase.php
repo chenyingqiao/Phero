@@ -4,6 +4,7 @@ namespace Phero\Database\Traits;
 use Phero\Database\Enum as enum;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Model;
+use Phero\Database\Realize\MysqlDbHelp;
 
 /**
  * 用来设置数据库实体类的一些携带数据
@@ -433,8 +434,11 @@ class DbUnitBase implements \ArrayAccess {
 	 * @return   [type]                   [description]
 	 */
 	public function getLastId(){
-		$help=new database\Realize\MysqlDbHelp();
-		return $help->query("select last_insert_id() as id;")['id'];
+		$help=new MysqlDbHelp();
+		$id=$help->query("select last_insert_id() as id;");
+		foreach ($id as $key => $value) {
+			return $value['id'];
+		}
 	}
 
 	/**
