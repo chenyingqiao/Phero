@@ -32,7 +32,7 @@ class InsertFieldConstrait implements interfaces\IConstrait {
 		$propertys = $this->getTableProperty($Entiy);
 		foreach ($propertys as $key => $value) {
 			$value_ = $value->getValue($Entiy);
-			if (isset($value_)) {
+			if (!empty($value_)) {
 				$Node=$value->getNode(new Field());
 				if(!empty($Node->name))
 					$this->fieldList[] = $Node->name;

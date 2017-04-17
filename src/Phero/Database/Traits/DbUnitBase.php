@@ -370,7 +370,7 @@ class DbUnitBase implements \ArrayAccess {
 		// if(!empty($this->values_cache)){
 		// 	$this->allFalse();
 		// }
-		$this->initField($this->values_cache);
+		// $this->initField($this->values_cache);
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -388,7 +388,7 @@ class DbUnitBase implements \ArrayAccess {
 		// if(!empty($this->values_cache)){
 		// 	$this->allFalse();
 		// }
-		$this->initField($this->values_cache);
+		// $this->initField($this->values_cache);
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -406,7 +406,7 @@ class DbUnitBase implements \ArrayAccess {
 		// if(!empty($this->values_cache)){
 		// 	$this->allFalse();
 		// }
-		$this->initField($this->values_cache);
+		// $this->initField($this->values_cache);
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();

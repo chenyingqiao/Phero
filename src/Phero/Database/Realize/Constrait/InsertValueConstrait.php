@@ -45,7 +45,7 @@ class InsertValueConstrait implements interfaces\IConstrait, interfaces\IBindDat
 		$propertys = $this->getTableProperty($Entiy);
 		foreach ($propertys as $key => $value) {
 			$value_ = $value->getValue($Entiy);
-			if (isset($value_) && $value_ !== false) {
+			if (!empty($value_) && $value_ !== false) {
 				$field = $this->getTablePropertyNodeOver1($value, new note\Field());
 
 				$bind_key = ":" . $value->getName() . "_" . $index;
