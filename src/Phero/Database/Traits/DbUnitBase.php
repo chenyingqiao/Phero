@@ -65,9 +65,9 @@ class DbUnitBase implements \ArrayAccess {
 		$this->distinct = false;
 		//不管是查询还是插入都会把字段值全部重置成null
 		//select存储的field描述存储在一个values_cache变量中
-		// $this->allNull();
+		$this->allNull();
 		//从values_cache恢复数据  这个是为了entity复用的时候进行数据缓存处理  保留原本的数据但是不保留原本的查询动作
-		// $this->initField($this->values_cache);
+		$this->initField($this->values_cache);
 	}
 
 	/**
@@ -353,7 +353,7 @@ class DbUnitBase implements \ArrayAccess {
 		// if(!empty($this->values_cache)){
 		// 	$this->allFalse();
 		// }
-		// $this->initField($this->values_cache);
+		$this->initField($this->values_cache);
 		$result = $this->model->select($this, $yield);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
