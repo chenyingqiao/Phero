@@ -35,17 +35,16 @@ class DbUnitBase implements \ArrayAccess {
 	 * ]
 	 * @param boolean $IniFalse [反向设置false false表示的是这个列不出现在select列表中]
 	 */
-	public function __construct($values = null, $IniFalse = true) {
+	public function __construct($values = null) {
 		$this->model = new Model();
 		$this->values_cache = $values;
-		$this->inifalse = $IniFalse;
-		$this->initField($values,$this->inifalse);
+		$this->initField($values);
 	}
 
 	protected $values_cache, $inifalse;
 
     /**
-     * 初始化实体
+     * 初始化实体 从values_cache恢复数据  这个是为了entity复用的时候进行数据缓存处理  保留原本的数据但是不保留原本的查询动作
      */
 	protected function unit_new() {
 		$this->errormsg=$this->model->getError();
@@ -66,7 +65,8 @@ class DbUnitBase implements \ArrayAccess {
 		//不管是查询还是插入都会把字段值全部重置成null
 		//select存储的field描述存储在一个values_cache变量中
 		$this->allNull();
-		$this->initField($this->values_cache,$this->inifalse);
+		//从values_cache恢复数据  这个是为了entity复用的时候进行数据缓存处理  保留原本的数据但是不保留原本的查询动作
+		$this->initField($this->values_cache);
 	}
 
 	/**
@@ -75,14 +75,10 @@ class DbUnitBase implements \ArrayAccess {
 	 * @return [type]         [description]
 	 */
 	protected function initField($values, $IniFalse=false) {
-		//判断是否吧除了需要初始化的值之外的数据设置成false[就是不需要查询]
-		// if ($IniFalse && count($values) > 0 || $values == false) {
-		// 	$this->allFalse();
-		// }
 		if (is_array($values)) {
 			$setFiled = false;
 			$keys = array_keys($values);
-			//判断是否是数值key的数组
+			//判断是否是数值key的数组 填充以及field选中
 			if (is_numeric($keys[0])) {
 				$setFiled = true;
 			}
@@ -117,8 +113,9 @@ class DbUnitBase implements \ArrayAccess {
 		//初始化所有的值null
 		foreach ($propertys as $key => $value) {
 			$property_name=$value->getName();
-			$this->values_cache[$value->getName()]=$this->$property_name;
-			$this->$value = null;
+			if($this->$property_name!=false)
+				$this->values_cache[$value->getName()]=$this->$property_name;
+			$this->$property_name = null;
 		}
 	}
 	//查询条件列表
@@ -352,10 +349,10 @@ class DbUnitBase implements \ArrayAccess {
 	private $dumpSql;
 	//ORM
 	public function select($yield = false) {
-		if(!empty($this->values_cache)){
-			$this->allFalse();
-		}
-		$this->initField($this->values_cache, $this->inifalse);
+		// if(!empty($this->values_cache)){
+		// 	$this->allFalse();
+		// }
+		$this->initField($this->values_cache);
 		$result = $this->model->select($this, $yield);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -370,10 +367,10 @@ class DbUnitBase implements \ArrayAccess {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
-		if(!empty($this->values_cache)){
-			$this->allFalse();
-		}
-		$this->initField($this->values_cache, $this->inifalse);
+		// if(!empty($this->values_cache)){
+		// 	$this->allFalse();
+		// }
+		$this->initField($this->values_cache);
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -388,10 +385,10 @@ class DbUnitBase implements \ArrayAccess {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
-		if(!empty($this->values_cache)){
-			$this->allFalse();
-		}
-		$this->initField($this->values_cache, $this->inifalse);
+		// if(!empty($this->values_cache)){
+		// 	$this->allFalse();
+		// }
+		$this->initField($this->values_cache);
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -406,10 +403,10 @@ class DbUnitBase implements \ArrayAccess {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
-		if(!empty($this->values_cache)){
-			$this->allFalse();
-		}
-		$this->initField($this->values_cache, $this->inifalse);
+		// if(!empty($this->values_cache)){
+		// 	$this->allFalse();
+		// }
+		$this->initField($this->values_cache);
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();

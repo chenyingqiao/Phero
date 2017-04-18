@@ -4,6 +4,7 @@ namespace Phero\Database\Traits;
 use Phero\Map\NodeReflectionClass;
 use Phero\Map\NodeReflectionProperty;
 use Phero\Map\Note\Field;
+use Phero\Map\Note\Primary;
 use Phero\Map\Note\Table;
 
 trait TConstraitTableDependent {
@@ -144,5 +145,24 @@ trait TConstraitTableDependent {
 	 */
 	public final function getTablePropertyNodeOver1(NodeReflectionProperty $property, $nodeClass) {
 		return $property->resolve($nodeClass);
+	}
+
+	/**
+	 * 获取表标记的主键
+	 * @Author   Lerko
+	 * @DateTime 2017-04-15T15:50:25+0800
+	 * @param    [type]                   $Entiy [description]
+	 * @return   [type]                          [description]
+	 */
+	protected final function getPrimaryKey($Entity){
+		$NodeReflectionClass = new NodeReflectionClass($Entity);
+		$propertys = $NodeReflectionClass->getProperties();
+		foreach ($propertys as $key => $value) {
+			$primary=$value->getNode(new Primary());
+			if(isset($primary)){
+				return $value->getNode(new Field());
+			}
+		}
+		return null;
 	}
 }

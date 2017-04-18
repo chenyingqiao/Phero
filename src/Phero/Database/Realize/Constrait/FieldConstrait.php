@@ -45,6 +45,7 @@ class FieldConstrait implements interfaces\IConstrait {
 
 	/**
 	 * 通过实体类设置field
+	 * 实体的字段为全等false的时候是属于不加入field的
 	 * @param [type] $Entiy [description]
 	 */
 	public function setFieldByEntiy($Entiy) {

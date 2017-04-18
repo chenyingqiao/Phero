@@ -47,8 +47,15 @@ class DbUnit extends DbUnitBase {
 	 * 直接返回数量
 	 * @param [type] $field [description]
 	 */
-	public function COUNT($field, $distanct = false) {
+	public function COUNT($field=null, $distanct = false) {
 		$this->allFalse();
+		if($field==null){
+			$field_entity=$this->getPrimaryKey($this);
+			if(empty($field_entity)){
+				throw new \Exception("没有默认主键");
+			}
+			$field=$field_entity->name;
+		}
 		$this->$field = true;
 		$this->have_as = false;
 		$this->polymerization($field, "COUNT", $distanct);
