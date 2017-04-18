@@ -61,6 +61,9 @@ class DbUnit extends DbUnitBase {
 		$this->polymerization($field, "COUNT", $distanct);
 		$data = $this->find();
 		$this->dumpSql = $this->sql();
+		if(empty($data)){
+			return 0;
+		}
 		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
 			return $data[0];
 		} else {

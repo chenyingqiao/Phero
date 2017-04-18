@@ -15,6 +15,10 @@ table 名称直接实例化支持
 7. 乐观锁支持
 8. 数据库查询钩子 事件触发
 
+
+$entity->select();//直接赋值到entity里面
+update 表达式类    定义列和update表达式
+
 > update where function
 ```php
 Set(function($this){
