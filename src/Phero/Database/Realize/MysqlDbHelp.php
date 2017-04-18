@@ -128,7 +128,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			}
 			if(empty($sql)){
 				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
-				return 0;
+				yield 0;
 			}
 			$this->sql_bind_execute($sql, $data);
 		} else {
