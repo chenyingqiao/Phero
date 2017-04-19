@@ -1,6 +1,7 @@
 <?php
 namespace Phero\Database;
 
+use Phero\Database\Enum\FetchType;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 
@@ -141,9 +142,23 @@ class Model implements interfaces\IModel {
 	 * @param $Entiy 实体类
 	 * @return array 返回sql对应的bindValue数据
 	 */
-	public function fetchSql($Entiy) {
+	public function fetchSql($Entiy,$type=FetchType::select) {
 		// TODO: Implement fetchSql() method.
-		$sql = $this->IConstraitBuild->buildSelectSql($Entiy);
+		switch ($type) {
+			case FetchType::select:
+				$method="buildSelectSql";
+				break;
+			case FetchType::update:
+				$method="buildUpdataSql";
+				break;
+			case FetchType::delete:
+				$method="buildDeleteSql";
+				break;
+			case FetchType::insert:
+				$method="buildInsertSql";
+				break;
+		}
+		$sql = $this->IConstraitBuild->$method($Entiy);
 		$this->sql = $sql;
 		return $this->IConstraitBuild->getBindData();
 	}
