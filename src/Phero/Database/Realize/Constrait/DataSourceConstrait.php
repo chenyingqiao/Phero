@@ -107,9 +107,9 @@ class DataSourceConstrait implements interfaces\IConstrait {
 				$value['on'] = null;
 				$value['join'] = null;
 			}
-			$table = $value['table'];
+			$table = "`".$value['table']."`";
 			$i == 0 ? $join = "" : $join = " " . $value['join'] . " ";
-			empty($value['as']) ? $as = "" : $as = " as " . $value['as'];
+			empty($value['as']) ? $as = "" : $as = " as `" . $value['as']."`";
 			$on = empty($value['on']) ? "" : " on " . $value['on'] . " ";
 			$sql .= $join . $table . $as . $on;
 			$i++;

@@ -9,6 +9,9 @@ use Phero\Database\Realize\MysqlDbHelp;
 /**
  * 用来设置数据库实体类的一些携带数据
  * 以及基础功能
+ *
+ * 将各个fragment部分剥离出去
+ * 然后就可以使用类对象的方式传入where
  */
 class DbUnitBase implements \ArrayAccess {
 	use TConstraitTableDependent,ArrayAccessTrait;
@@ -445,8 +448,8 @@ class DbUnitBase implements \ArrayAccess {
 	 * 从Unit中解析成接口
 	 * @return array 绑定的value数组
 	 */
-	public function fetchSql() {
-		$bindValues = $this->model->fetchSql($this);
+	public function fetchSql($type=FetchType::select) {
+		$bindValues = $this->model->fetchSql($this,$type);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
 		return $bindValues;
