@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-23 10:50:45
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-04-23 10:58:18
+ * @Last Modified time: 2017-04-23 11:05:58
  */
 
 /**
@@ -19,10 +19,10 @@ class Tool
 	private function __construct(){}
 	public static function getInstance()
 	{
-		if(empty($this->tool)){
-			$this->tool=new Tool();
+		if(empty(self::$tool)){
+			self::$tool=new Tool();
 		}
-		return $this->tool;
+		return self::$tool;
 	}
 
 	/**

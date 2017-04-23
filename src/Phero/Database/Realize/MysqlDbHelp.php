@@ -7,6 +7,8 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Interfaces\IRelation;
 use Phero\Database\Realize\PdoWarehouse;
 use Phero\Database\Traits\TRelation;
+use Phero\System\Config;
+use Phero\System\Tool;
 
 /**
  * 数据库
