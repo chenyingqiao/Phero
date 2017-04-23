@@ -26,7 +26,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	public function __construct() {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
-		$this->mode = database\Model::fetch_arr_key;
+		$fetch_mode=Config::config("fetch_mode");
+		$this->mode = Tool::getInstance()->getConfigMode($fetch_mode);
 	}
 
 	/**
