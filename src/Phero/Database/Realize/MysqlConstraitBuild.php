@@ -114,7 +114,7 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 		} else {
 			$as = '';
 		}
-		$sql = "update " . $this->getTableName($Entiy) . $as . " set " . $this->fragment(MysqlConstraitBuild::Set) . $this->fragment(MysqlConstraitBuild::Where) . ";";
+		$sql = "update `" . $this->getTableName($Entiy)."`" . $as . " set " . $this->fragment(MysqlConstraitBuild::Set) . $this->fragment(MysqlConstraitBuild::Where) . ";";
 		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
 		$bindData2 = $this->Constraits[MysqlConstraitBuild::Set]->getBindData();
 		$this->bindData = array_merge($bindData1, $bindData2);
@@ -130,7 +130,7 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 		if (empty($this->Constraits) && !empty($Entiy)) {
 			$this->addItem(new Constraits\WhereConstrait($Entiy, false));
 		}
-		$sql = "delete from " . $this->getTableName($Entiy) . $this->fragment(MysqlConstraitBuild::Where) . ";";
+		$sql = "delete from `" . $this->getTableName($Entiy) ."`". $this->fragment(MysqlConstraitBuild::Where) . ";";
 		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
 		$this->bindData = $bindData1;
 		return $sql;

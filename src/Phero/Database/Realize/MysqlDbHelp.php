@@ -7,6 +7,8 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Interfaces\IRelation;
 use Phero\Database\Realize\PdoWarehouse;
 use Phero\Database\Traits\TRelation;
+use Phero\System\Config;
+use Phero\System\Tool;
 
 /**
  * 数据库
@@ -26,7 +28,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	public function __construct() {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
-		$this->mode = database\Model::fetch_arr_key;
+		$fetch_mode=Config::config("fetch_mode");
+		$this->mode = Tool::getInstance()->getConfigMode($fetch_mode);
 	}
 
 	/**
