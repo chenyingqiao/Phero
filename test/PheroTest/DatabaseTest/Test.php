@@ -2,31 +2,37 @@
 namespace PheroTest;
 
 use PheroTest\DatabaseTest\Unit as unit;
+use PHPUnit\Framework\TestCase;
 
-class Test extends \PHPUnit_Framework_TestCase {
-	public function testSelect() {
-		$video_user = new unit\video_user();
-		$video_user_list = $video_user->select();
-		$this->assertEmpty($video_user_list);
-		// return $video_user_list;
-	}
-	public function testPushAndPop() {
-		$stack = [];
-		$this->assertEquals(0, count($stack));
+//phpunit --bootstrap ../../../../../autoload.php Test.php
 
-		array_push($stack, 'foo');
-		$this->assertEquals('foo', $stack[count($stack) - 1]);
-		$this->assertEquals(1, count($stack));
+class Test extends TestCase {
+    public function testEmpty()
+    {
+        $stack = [];
+        $this->assertEmpty($stack);
 
-		$this->assertEquals('foo', array_pop($stack));
-		$this->assertEquals(0, count($stack));
-	}
+        return $stack;
+    }
 
-	/**
-	 * @test
-	 */
-	public function Stringlen() {
-		$str = 'abc';
-		$this->assertEquals(3, strlen($str));
-	}
+    /**
+     * @depends testEmpty
+     */
+    public function testPush(array $stack)
+    {
+        array_push($stack, 'foo');
+        $this->assertEquals('foo', $stack[count($stack)-1]);
+        $this->assertNotEmpty($stack);
+
+        return $stack;
+    }
+
+    /**
+     * @depends testPush
+     */
+    public function testPop(array $stack)
+    {
+        $this->assertEquals('foo', array_pop($stack));
+        $this->assertEmpty($stack);
+    }
 }
