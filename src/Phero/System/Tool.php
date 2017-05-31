@@ -6,8 +6,8 @@ use Phero\Database\Model;
 /**
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-23 10:50:45
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-04-23 11:05:58
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-05-31 15:48:32
  */
 
 /**
@@ -46,4 +46,43 @@ class Tool
 					return Model::fetch_arr_key;
 		}
 	}
+
+	/**
+	 * 通过pdo的绑定还原原本的sql
+	 * @Author   Lerko
+	 * @DateTime 2017-05-31T15:22:13+0800
+	 * @param    [type]                   $query  [description]
+	 * @param    [type]                   $params [description]
+	 * @return   [type]                           [description]
+	 */
+	public function showQuery($query, $params)
+    {
+        $keys = array();
+        $values = array();
+        
+        # build a regular expression for each parameter
+        foreach ($params as $key=>$value)
+        {
+            if (is_string($value[0]))
+            {
+                $keys[] = '/'.$value[0].'/';
+            }
+            else
+            {
+                $keys[] = '/[?]/';
+            }
+            
+            if(is_numeric($value[1]))
+            {
+                $values[] = intval($value[1]);
+            }
+            else
+            {
+                $values[] = "'".$value[1] ."'";
+            }
+        }
+        
+        $query = preg_replace($keys, $values, $query, 1, $count);
+        return $query;
+    }
 }
