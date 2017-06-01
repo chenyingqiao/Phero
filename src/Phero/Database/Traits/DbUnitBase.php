@@ -356,7 +356,7 @@ class DbUnitBase implements \ArrayAccess {
 		// if(!empty($this->values_cache)){
 		// 	$this->allFalse();
 		// }
-		$this->initField($this->values_cache);
+		// $this->initField($this->values_cache);
 		$result = $this->model->select($this, $yield);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();

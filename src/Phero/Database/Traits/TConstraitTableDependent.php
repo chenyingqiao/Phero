@@ -160,7 +160,11 @@ trait TConstraitTableDependent {
 		foreach ($propertys as $key => $value) {
 			$primary=$value->getNode(new Primary());
 			if(isset($primary)){
-				return $value->getNode(new Field());
+				$Field= $value->getNode(new Field());
+				if(isset($Field->name)){
+					return $Field->name;
+				}
+				return $value->getName();
 			}
 		}
 		return null;

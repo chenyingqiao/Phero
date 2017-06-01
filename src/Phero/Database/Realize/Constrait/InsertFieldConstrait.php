@@ -47,7 +47,7 @@ class InsertFieldConstrait implements interfaces\IConstrait {
 	 * @return [type] [description]
 	 */
 	public function getSqlFragment() {
-		$sql = " ";
+		$sql = "";
 		$i = 0;
 		foreach ($this->fieldList as $key => $value) {
 			if ($i < count($this->fieldList) - 1) {

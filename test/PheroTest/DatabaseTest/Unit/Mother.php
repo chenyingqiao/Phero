@@ -2,16 +2,19 @@
 
 namespace PheroTest\DatabaseTest\Unit;
 
+use PheroTest\DatabaseTest\Traits\Truncate;
 use Phero\Database\DbUnit;
 /**
  * @Author: lerko
  * @Date:   2017-05-31 11:54:57
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-05-31 13:53:36
+ * @Last Modified time: 2017-05-31 17:53:46
  */
 class Mother extends DbUnit
 {
+	use Truncate;
 	/**
+	 * @Primary
 	 * @Field[type=int]
 	 * @var [type]
 	 */

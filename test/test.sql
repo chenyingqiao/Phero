@@ -2,7 +2,7 @@
 * @Author: lerko
 * @Date:   2017-05-31 12:12:49
 * @Last Modified by:   lerko
-* @Last Modified time: 2017-05-31 15:52:32
+* @Last Modified time: 2017-05-31 18:11:36
 */
 show tables;
 
@@ -31,3 +31,6 @@ truncate table Mother
 truncate table MotherInfo
 truncate table Parent
 truncate table ParentInfo
+
+
+select count(*) as count,`Mother`.`name` from `Mother` limit 1;

@@ -26,7 +26,15 @@ class DbUnit extends DbUnitBase {
 		}
 		return [];
 	}
-
+	/**
+	 * 统一设置聚合函数
+	 * @Author   Lerko
+	 * @DateTime 2017-05-31T18:14:06+0800
+	 * @param    [type]                   $field    [description]
+	 * @param    string                   $keyword  [description]
+	 * @param    boolean                  $distanct [description]
+	 * @return   [type]                             [description]
+	 */
 	public function polymerization($field, $keyword = "COUNT", $distanct = false) {
 		if ($distanct) {
 			$split = "(distanct ?) as ";
@@ -47,18 +55,18 @@ class DbUnit extends DbUnitBase {
 	 * 直接返回数量
 	 * @param [type] $field [description]
 	 */
-	public function COUNT($field=null, $distanct = false) {
+	public function count($field=null, $distanct = false) {
 		$this->allFalse();
 		if($field==null){
 			$field_entity=$this->getPrimaryKey($this);
 			if(empty($field_entity)){
 				throw new \Exception("没有默认主键");
 			}
-			$field=$field_entity->name;
+			$field=$field_entity;
 		}
 		$this->$field = true;
 		$this->have_as = false;
-		$this->polymerization($field, "COUNT", $distanct);
+		$this->polymerization($field, "count", $distanct);
 		$data = $this->find();
 		$this->dumpSql = $this->sql();
 		if(empty($data)){
@@ -67,60 +75,60 @@ class DbUnit extends DbUnitBase {
 		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
 			return $data[0];
 		} else {
-			return $data["COUNT"];
+			return $data["count"];
 		}
 	}
-	public function SUM($field) {
+	public function sum($field) {
 		$this->polymerization($field, "SUM");
 		return $this;
 	}
-	public function MAX($field) {
+	public function max($field) {
 		$this->polymerization($field, "MAX");
 		return $this;
 	}
-	public function MIN($field) {
+	public function min($field) {
 		$this->polymerization($field, "MIN");
 		return $this;
 	}
 
-	public function AVG($field) {
+	public function avg($field) {
 		$this->polymerization($field, "AVG");
 		return $this;
 	}
-	public function GROUP_CONCAT($field) {
+	public function group_concat($field) {
 		$this->polymerization($field, "GROUP_CONCAT");
 		return $this;
 	}
-	public function BIN($field) {
+	public function bin($field) {
 		$this->polymerization($field, "BIN");
 		return $this;
 	}
 
-	public function ABS($field) {
+	public function abs($field) {
 		$this->polymerization($field, "ABS");
 		return $this;
 	}
-	public function CEILING($field) {
+	public function ceiling($field) {
 		$this->polymerization($field, "CEILING");
 		return $this;
 	}
-	public function EXP($field) {
+	public function exp($field) {
 		$this->polymerization($field, "EXP");
 		return $this;
 	}
-	public function FLOOR($field) {
+	public function floor($field) {
 		$this->polymerization($field, "FLOOR");
 		return $this;
 	}
-	public function LN($field) {
+	public function ln($field) {
 		$this->polymerization($field, "LN");
 		return $this;
 	}
-	public function SIGN($field) {
+	public function sign($field) {
 		$this->polymerization($field, "SIGN");
 		return $this;
 	}
-	public function SQRT($field) {
+	public function sqrt($field) {
 		$this->polymerization($field, "SQRT");
 		return $this;
 	}

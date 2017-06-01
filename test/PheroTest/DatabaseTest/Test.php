@@ -4,8 +4,6 @@ namespace PheroTest;
 use PheroTest\DatabaseTest\Unit as unit;
 use PHPUnit\Framework\TestCase;
 
-//phpunit --bootstrap ../../../../../autoload.php Test.php
-
 class Test extends TestCase {
     public function testEmpty()
     {
