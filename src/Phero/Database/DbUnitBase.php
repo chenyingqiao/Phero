@@ -20,9 +20,6 @@ use Phero\System\Tool;
 /**
  * 用来设置数据库实体类的一些携带数据
  * 以及基础功能
- *
- * 将各个fragment部分剥离出去
- * 然后就可以使用类对象的方式传入where
  */
 class DbUnitBase implements \ArrayAccess {
 	use TConstraitTableDependent,
@@ -53,17 +50,14 @@ class DbUnitBase implements \ArrayAccess {
 	public function __construct($values = null) {
 		$this->model = new Model();
 		$this->values_cache = $values;
+		if($values!==null)
+			$this->allFalse();
 		$this->initField($values);
 	}
-
 
 	private $dumpSql;
 	//ORM
 	public function select($yield = false) {
-		// if(!empty($this->values_cache)){
-		// 	$this->allFalse();
-		// }
-		// $this->initField($this->values_cache);
 		$result = $this->model->select($this, $yield);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -78,10 +72,6 @@ class DbUnitBase implements \ArrayAccess {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
-		// if(!empty($this->values_cache)){
-		// 	$this->allFalse();
-		// }
-		// $this->initField($this->values_cache);
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -96,10 +86,6 @@ class DbUnitBase implements \ArrayAccess {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
-		// if(!empty($this->values_cache)){
-		// 	$this->allFalse();
-		// }
-		// $this->initField($this->values_cache);
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();
@@ -114,10 +100,6 @@ class DbUnitBase implements \ArrayAccess {
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
-		// if(!empty($this->values_cache)){
-		// 	$this->allFalse();
-		// }
-		// $this->initField($this->values_cache);
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
 		$this->unit_new();

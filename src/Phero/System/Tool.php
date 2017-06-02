@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-23 10:50:45
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 15:49:03
+ * @Last Modified time: 2017-06-02 17:40:27
  */
 
 /**
@@ -95,6 +95,9 @@ class Tool
      */
     public function setWhereRelation(&$where,$relationTablename,$selfTablename){
     	foreach ($where as $key => &$value) {
+            if(!is_string($value[1])){
+                continue;
+            }
     		if(strstr($value[1],'#')){
     			$value[1]=str_replace("#", "`{$relationTablename}`", $value[1]);
                 $value["sql_fregment"]=true;
