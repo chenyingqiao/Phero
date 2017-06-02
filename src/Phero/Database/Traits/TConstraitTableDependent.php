@@ -136,7 +136,7 @@ trait TConstraitTableDependent {
 		} else {
 			$nameOfJoinEntiy = $this->getNameByCleverWay($JoinEntiy);
 		}
-		$on = str_replace(["$", "#"], [$nameOfEntiy, $nameOfJoinEntiy], $on);
+		$on = str_replace(["$", "#"], ["`{$nameOfEntiy}`", "`{$nameOfJoinEntiy}`"], $on);
 		return $on;
 	}
 	/**

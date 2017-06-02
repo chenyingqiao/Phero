@@ -3,12 +3,12 @@
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-05-31 14:55:57
+ * @Last Modified time: 2017-06-02 13:52:31
  */
 return [
 	"database" => [
 		"master" => [
-			"dsn" => "mysql:dbname=phero;host=localhost",
+			"dsn" => "mysql:dbname=phero;host=127.0.0.1",
 			"user" => "root",
 			"password" => "lerko",
 		],

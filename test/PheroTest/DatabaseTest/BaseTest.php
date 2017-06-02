@@ -10,12 +10,17 @@ use Webmozart\Console\UI\Component\Table;
  * @Author: lerko
  * @Date:   2017-05-31 15:53:30
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-01 11:47:33
+ * @Last Modified time: 2017-06-02 11:55:28
  */
 class BaseTest extends TestCase
 {
-	public function __construct(){
-		parent::__construct();
+	/**
+	 * @beforeClass
+	 * @Author   Lerko
+	 * @DateTime 2017-06-02T09:49:02+0800
+	 */
+	public static function setUpConfig(){
+		self::TablePrint("初始化配置文件位置");
 		DI::inj("all_config_path",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
 	}
 
@@ -53,5 +58,25 @@ class BaseTest extends TestCase
 		}
 		$table->render($io);
 		echo "\n".$io->fetchOutput();
+	}
+
+	protected $time_start,$time_end;
+	/**
+	 * 记录运行时间
+	 * @Author   Lerko
+	 * @DateTime 2017-06-02T10:18:59+0800
+	 * @param    boolean                  $type [true 开始 false 结束]
+	 * @return   [type]                         [description]
+	 */
+	protected function timer($type=true,$msg="没有消息"){
+		if($type){
+			$this->time_start=microtime(true);
+		}else{
+			$this->time_end=microtime(true);
+			if(isset($this->time_start)){
+				$time="耗时".round($this->time_end-$this->time_start,5)."秒";
+				$this->TablePrint([$msg,$time]);
+			}
+		}
 	}
 }

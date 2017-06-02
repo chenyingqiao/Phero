@@ -1,10 +1,15 @@
 <?php
-namespace Phero\Database\Traits;
+
+namespace Phero\Database;
 
 use Phero\Database\Enum as enum;
+use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Model;
 use Phero\Database\Realize\MysqlDbHelp;
+use Phero\Database\Traits\ArrayAccessTrait;
+use Phero\Database\Traits\TConstraitTableDependent;
+use Phero\System\Tool;
 
 /**
  * 用来设置数据库实体类的一些携带数据
@@ -159,6 +164,10 @@ class DbUnitBase implements \ArrayAccess {
 	public function getOrder() {return $this->order;}
 	public function getHaving() {return $this->having;}
 	public function getDistinct() {return $this->distinct;}
+
+	public function setWhereRelation($tablename){
+		Tool::getInstance()->setWhereRelation($this->where,$tablename,$this->getNameByCleverWay($this));
+	}
 	/**
 	 * 获取单独添加数据源时设置的Join类型
 	 * @return [type] [description]
@@ -170,7 +179,7 @@ class DbUnitBase implements \ArrayAccess {
 	/**
 	 * [where description]
 	 * 设置条件语句
-	 * @param  [type] $where [需要的参数
+	 * @param  [type] $where [
 	 *                       ×数据库字段---index:0
 	 *                       ×value数据---index:1
 	 *                       -可选
@@ -178,7 +187,7 @@ class DbUnitBase implements \ArrayAccess {
 	 *                       		下个字段连接符 可选---index:3(默认为空字符串)
 	 * ]
 	 * @param  [type] $from  [来自那个表  如果是多表链接的话]
-	 * @param  boolean $group     [是否进行where分组]
+	 * @param  boolean $group     [是否进行where分组 1:左括号 2:右括号]
 	 * @param  string  $whereTemp [where字段模板]
 	 * @return [type]             [description]
 	 */
@@ -189,7 +198,8 @@ class DbUnitBase implements \ArrayAccess {
 		if (isset($from)) {
 			$where['from'] = $from;
 		}
-		$group = $this->whereGroup;
+		if($this->whereGroup!==false)
+			$group = $this->whereGroup;
 		//这里的wheregroup是通过where进行添加的
 		if ($group !== false) {
 			$where['group'] = $group;

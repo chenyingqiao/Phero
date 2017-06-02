@@ -1,8 +1,9 @@
 <?php
 namespace Phero\Database;
 
+use Phero\Database\DbUnitBase;
 use Phero\Database\Enum as enum;
-use Phero\Database\Traits\DbUnitBase;
+use Phero\Database\Realize\MysqlDbHelp;
 
 /**
  * 实体化数据的载入载体
@@ -56,26 +57,11 @@ class DbUnit extends DbUnitBase {
 	 * @param [type] $field [description]
 	 */
 	public function count($field=null, $distanct = false) {
-		$this->allFalse();
-		if($field==null){
-			$field_entity=$this->getPrimaryKey($this);
-			if(empty($field_entity)){
-				throw new \Exception("没有默认主键");
-			}
-			$field=$field_entity;
-		}
-		$this->$field = true;
-		$this->have_as = false;
-		$this->polymerization($field, "count", $distanct);
-		$data = $this->find();
-		$this->dumpSql = $this->sql();
-		if(empty($data)){
-			return 0;
-		}
-		if ($this->getModel()->getFetchMode() == Model::fetch_arr_number) {
-			return $data[0];
-		} else {
-			return $data["count"];
+		$help=new MysqlDbHelp();
+		$tablename=$this->getTableName($this);
+		$id=$help->query("select count(*) as count from {$tablename};");
+		foreach ($id as $key => $value) {
+			return $value['count'];
 		}
 	}
 	public function sum($field) {

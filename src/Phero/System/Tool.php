@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-23 10:50:45
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-05-31 15:48:32
+ * @Last Modified time: 2017-06-02 15:49:03
  */
 
 /**
@@ -84,5 +84,24 @@ class Tool
         
         $query = preg_replace($keys, $values, $query, 1, $count);
         return $query;
+    }
+
+    /**
+     * where替换$
+     * @Author   Lerko
+     * @DateTime 2017-06-02T14:45:06+0800
+     * @param    [type]                   &$where        [description]
+     * @param    [type]                   $relationTable [description]
+     */
+    public function setWhereRelation(&$where,$relationTablename,$selfTablename){
+    	foreach ($where as $key => &$value) {
+    		if(strstr($value[1],'#')){
+    			$value[1]=str_replace("#", "`{$relationTablename}`", $value[1]);
+                $value["sql_fregment"]=true;
+    		}
+    		if(strstr($value[0],'$')){
+    			$value[0]=str_replace("$", "`{$relationTablename}`", $value[0]);
+    		}
+    	}
     }
 }

@@ -1,15 +1,15 @@
 <?php
 namespace PheroTest;
 
+use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit as unit;
-use PHPUnit\Framework\TestCase;
 
-class Test extends TestCase {
+class Test extends BaseTest {
     public function testEmpty()
     {
         $stack = [];
         $this->assertEmpty($stack);
-
+        echo "testEmpty";
         return $stack;
     }
 
@@ -21,16 +21,36 @@ class Test extends TestCase {
         array_push($stack, 'foo');
         $this->assertEquals('foo', $stack[count($stack)-1]);
         $this->assertNotEmpty($stack);
-
+        echo "testPush";
         return $stack;
     }
 
     /**
      * @depends testPush
+     * @test
      */
-    public function testPop(array $stack)
+    public function Pop(array $stack)
     {
         $this->assertEquals('foo', array_pop($stack));
         $this->assertEmpty($stack);
+        echo "Pop";
+    }
+
+    /**
+     * @Author   Lerko
+     * @DateTime 2017-06-02T09:39:41+0800
+     * @after
+     */
+    public function tearDownPop(){
+        echo "{asdf}";
+    }
+
+    /**
+     * @Author   Lerko
+     * @DateTime 2017-06-02T09:39:41+0800
+     * @after
+     */
+    public static function tearDowntestPush(){
+        echo "{asdf2}";
     }
 }

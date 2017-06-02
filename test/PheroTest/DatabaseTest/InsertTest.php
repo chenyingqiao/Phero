@@ -1,6 +1,6 @@
 <?php 
 
-namespace PheroTest;
+namespace PheroTest\DatabaseTest;
 
 use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit\Mother;
@@ -12,7 +12,7 @@ use Phero\System\DI;
  * @Author: lerko
  * @Date:   2017-05-31 14:23:48
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-01 11:58:46
+ * @Last Modified time: 2017-06-02 12:04:39
  */
 
 class InsertTest extends BaseTest
