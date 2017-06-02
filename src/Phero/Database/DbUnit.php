@@ -11,10 +11,6 @@ use Phero\Database\Realize\MysqlDbHelp;
 class DbUnit extends DbUnitBase {
 	protected $call_set=false;
 
-	public function __set($key, $value) {
-		$this->$key = $value;
-	}
-
 	//只查询一条
 	public function find($field=null) {
 		$this->limit(1);
@@ -119,20 +115,7 @@ class DbUnit extends DbUnitBase {
 		return $this;
 	}
 
-	/**
-	 * [Set description]
-	 * @Author   Lerko
-	 * @DateTime 2017-03-20T15:12:01+0800
-	 * @param    Closure                  $func [description]
-	 */
-	public function Set(\Closure $func){
-		$this->call_set=true;
-		$this->setGroup();
-		$func=$func->bindTo($this);
-		$this_self=$func();
-		$this->setGroup(parent::GroupEnd);
-		return $this_self;
-	}
+
 
 	/**
 	 * where扩展函数

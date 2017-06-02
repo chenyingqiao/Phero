@@ -14,7 +14,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 16:01:55
+ * @Last Modified time: 2017-06-02 17:24:54
  */
 class SelectTest extends BaseTest
 {
