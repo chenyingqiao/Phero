@@ -136,7 +136,7 @@ trait TConstraitTableDependent {
 		} else {
 			$nameOfJoinEntiy = $this->getNameByCleverWay($JoinEntiy);
 		}
-		$on = str_replace(["$", "#"], [$nameOfEntiy, $nameOfJoinEntiy], $on);
+		$on = str_replace(["$", "#"], ["`{$nameOfEntiy}`", "`{$nameOfJoinEntiy}`"], $on);
 		return $on;
 	}
 	/**
@@ -160,7 +160,11 @@ trait TConstraitTableDependent {
 		foreach ($propertys as $key => $value) {
 			$primary=$value->getNode(new Primary());
 			if(isset($primary)){
-				return $value->getNode(new Field());
+				$Field= $value->getNode(new Field());
+				if(isset($Field->name)){
+					return $Field->name;
+				}
+				return $value->getName();
 			}
 		}
 		return null;

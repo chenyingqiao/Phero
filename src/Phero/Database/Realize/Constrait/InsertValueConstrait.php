@@ -70,7 +70,7 @@ class InsertValueConstrait implements interfaces\IConstrait, interfaces\IBindDat
 	 * @return [type] [description]
 	 */
 	public function SqlFragmentPiece() {
-		$this->sql .= "( ";
+		$this->sql .= "(";
 		$i = 0;
 		foreach ($this->ValueList as $key => $value) {
 			if ($i < count($this->ValueList) - 1) {

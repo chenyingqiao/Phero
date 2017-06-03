@@ -2,8 +2,8 @@
 /**
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-04-08 10:44:04
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-06-01 10:03:55
  */
 
 namespace Phero\Database\Traits;
@@ -26,6 +26,7 @@ trait TRelation {
      * @return bool 返回结果
      */
     private function getRelationIsEnable($Entiy){
+    	if(is_array($Entiy)&&isset($Entiy[0]))$Entiy=$Entiy[0];
     	if(empty($Entiy)){
     		return false;
     	}

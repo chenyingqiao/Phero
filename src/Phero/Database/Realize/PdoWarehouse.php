@@ -66,6 +66,9 @@ class PdoWarehouse {
 		return $pdo;
 	}
 	private function init($config) {
+		if(!$config){
+			throw new \Exception("Do not specify a configuration file", 1);
+		}
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
 		if ($pdo_di) {
 			return;
