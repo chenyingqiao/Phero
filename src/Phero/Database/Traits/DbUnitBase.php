@@ -2,6 +2,7 @@
 namespace Phero\Database\Traits;
 
 use Phero\Database\Enum as enum;
+use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Model;
 use Phero\Database\Realize\MysqlDbHelp;
@@ -78,7 +79,11 @@ class DbUnitBase implements \ArrayAccess {
 	 * @param  [type] $values [description]
 	 * @return [type]         [description]
 	 */
-	protected function initField($values) {
+	protected function initField($values=false) {
+		if($values===false){
+			$this->allFalse();
+			return ;
+		}
 		if (is_array($values)) {
 			$setFiled = false;
 			$keys = array_keys($values);
