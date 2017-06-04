@@ -5,6 +5,7 @@ namespace Phero\Database;
 use Phero\Database\Enum as enum;
 use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\JoinType;
+use Phero\Database\Interfaces\INoteMap;
 use Phero\Database\Model;
 use Phero\Database\Realize\MysqlDbHelp;
 use Phero\Database\Traits\ArrayAccessTrait;
@@ -21,7 +22,7 @@ use Phero\System\Tool;
  * 用来设置数据库实体类的一些携带数据
  * 以及基础功能
  */
-class DbUnitBase implements \ArrayAccess {
+class DbUnitBase implements \ArrayAccess,INoteMap {
 	use TConstraitTableDependent,
 		ArrayAccessTrait,
 		WhereUnitTrait,
@@ -74,7 +75,7 @@ class DbUnitBase implements \ArrayAccess {
 		}
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
-		$this->unit_new();
+		$this->unit_new(false);
 		return $result;
 	}
 	/**
@@ -88,7 +89,7 @@ class DbUnitBase implements \ArrayAccess {
 		}
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
-		$this->unit_new();
+		$this->unit_new(false);
 		return $result;
 	}
 	/**
@@ -102,7 +103,7 @@ class DbUnitBase implements \ArrayAccess {
 		}
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
-		$this->unit_new();
+		$this->unit_new(false);
 		return $result;
 	}
 
@@ -115,7 +116,7 @@ class DbUnitBase implements \ArrayAccess {
 		}
 		$result = $this->model->insert($this, true);
 		$this->dumpSql = $this->model->getSql();
-		$this->unit_new();
+		$this->unit_new(false);
 		return $result;
 	}
 
@@ -171,5 +172,46 @@ class DbUnitBase implements \ArrayAccess {
 	public function error()
 	{
 		return $this->errormsg;
+	}
+
+	/**
+	 * 获取当前类的实例化
+	 * @Author   Lerko
+	 * @DateTime 2017-06-04T13:22:26+0800
+	 */
+	private static $LastInc=[];
+	public static function Inc(){
+		$classname=get_called_class();
+		self::$LastInc[$classname] = new $classname();
+		return self::$LastInc[$classname];
+	}
+
+	/**
+	 * 获取一个单独实例，这个实例是Inc创建,
+	 * 如果Inc没有创建那么就会自己创建一个实例
+	 * @Author   Lerko
+	 * @DateTime 2017-06-04T13:45:16+0800
+	 * @return   [type]                   [description]
+	 */
+	public static function lastInc(){
+		$classname=get_called_class();
+		if(!isset(self::$LastInc[$classname])){
+			self::$LastInc[$classname]=new $classname;
+		}
+		return self::$LastInc[$classname];
+	}
+
+	private $map;
+	/**
+	 * 存储map 用来外部设置注解数据
+	 * @Author   Lerko
+	 * @DateTime 2017-06-04T14:35:25+0800
+	 * @param    [type]                   $noteName [description]
+	 * @param    [type]                   $value    [description]
+	 * @return   [type]                             [description]
+	 */
+	public function map($noteName,$value)
+	{
+		$map[$noteName]=$value;
 	}
 }

@@ -7,14 +7,16 @@ use Phero\Database\DbUnit;
 /**
  * @Author: lerko
  * @Date:   2017-05-31 11:54:57
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-05-31 17:53:46
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-06-04 16:25:38
+ * @RelationEnable
  */
 class Mother extends DbUnit
 {
 	use Truncate;
 	/**
 	 * @Primary
+	 * @Foreign[rel=info]
 	 * @Field[type=int]
 	 * @var [type]
 	 */
@@ -24,4 +26,10 @@ class Mother extends DbUnit
 	 * @var [type]
 	 */
 	public $name;
+
+	/**
+	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\MotherInfo,key=mid]
+	 * @var [type]
+	 */
+	public $info;
 }

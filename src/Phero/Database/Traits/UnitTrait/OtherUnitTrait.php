@@ -6,8 +6,8 @@ use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 17:27:50
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-06-04 12:51:42
  */
 
 trait OtherUnitTrait{
@@ -73,7 +73,7 @@ trait OtherUnitTrait{
     /**
      * 初始化实体 从values_cache恢复数据  这个是为了entity复用的时候进行数据缓存处理  保留原本的数据但是不保留原本的查询动作
      */
-	protected function unit_new() {
+	protected function unit_new($reloadFieldValueFormCache=true) {
 		$this->errormsg=$this->model->getError();
 		$this->model = new Model();
 		$this->where = [];
@@ -93,6 +93,8 @@ trait OtherUnitTrait{
 		//select存储的field描述存储在一个values_cache变量中
 		$this->allNull();
 		//从values_cache恢复数据  这个是为了entity复用的时候进行数据缓存处理  保留原本的数据但是不保留原本的查询动作
-		$this->initField($this->values_cache);
+		if($reloadFieldValueFormCache){
+			$this->initField($this->values_cache);
+		}
 	}
 }

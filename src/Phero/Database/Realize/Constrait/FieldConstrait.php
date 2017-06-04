@@ -60,12 +60,11 @@ class FieldConstrait implements interfaces\IConstrait {
 				$temp = $fieldTemp[$fieldName];
 				$Entiy->$fieldName = true;
 			}
-
-			if ($Entiy->$fieldName === false) {
+			$FieldNode=$value->getNode(new note\Field());
+			if ($Entiy->$fieldName === false||empty($FieldNode)) {
 				//属性值未true的才添加到field
 				continue;
 			}
-			$FieldNode=$value->getNode(new note\Field());
 			if ($Entiy->have_as) {
 				$as = $FieldNode->alias;
 			} else {
