@@ -6,8 +6,8 @@ use Phero\System\Tool;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 16:11:42
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 17:16:34
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-06-04 15:02:20
  */
 trait WhereUnitTrait
 {
@@ -57,7 +57,6 @@ trait WhereUnitTrait
 	 * @param    Closure                  $func [description]
 	 */
 	public function Set(\Closure $func){
-		$this->call_set=true;
 		$this->setGroup();
 		$func=$func->bindTo($this);
 		$this_self=$func();

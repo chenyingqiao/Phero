@@ -1,8 +1,8 @@
 /*
 * @Author: lerko
 * @Date:   2017-05-31 12:12:49
-* @Last Modified by:   lerko
-* @Last Modified time: 2017-06-02 13:48:06
+* @Last Modified by:   ‘chenyingqiao’
+* @Last Modified time: 2017-06-04 13:51:47
 */
 show tables;
 
@@ -40,3 +40,5 @@ select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`i
 select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.pid=`parent`.id  inner join `Mother` on `Marry`.mid=`Mother`.id ;
 
 select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where (Fun(`parent`.`id`) = 10  and Fun2(`parent`.`name`) like '%test%');
+select `Mother`.`mid`,`Mother`.`name` from `Mother` limit 10;
+

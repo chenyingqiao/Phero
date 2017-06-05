@@ -9,8 +9,6 @@ use Phero\Database\Realize\MysqlDbHelp;
  * 实体化数据的载入载体
  */
 class DbUnit extends DbUnitBase {
-	protected $call_set=false;
-
 	//只查询一条
 	public function find($field=null) {
 		$this->limit(1);

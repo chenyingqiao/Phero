@@ -9,39 +9,8 @@ use Phero\System as sys;
  *
  */
 trait Resolve {
-	/**
-	 * 解析相应的注解 如果没有本注解就返回空
-	 * 并且吧注解映射到实体类中
-	 * @param  [type] $NodeClass [需要获取的注解名称]
-	 * @return [type]            [返回注解实例化类]
-	 */
-	public function resolve($NodeClass) {
-		if ($NodeClass instanceof \ReflectionClass) {
-			$NodeReflection = $NodeClass;
-		} else {
-			$NodeReflection = new \ReflectionClass($NodeClass);
-		}
-		// $SelfReflectionClass = new \ReflectionClass(get_parent_class);
-		// $NodeName = get_parent_class();
 
-		/**
-		 * 这里可以通过缓存获取注解
-		 *
-		 * 缓存通过类名称（包括命名空间）作为key
-		 */
-		if (sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
-			//有注入缓存注解才会进行注解缓存
-			$parent_class_name = get_parent_class();
-			if ($parent_class_name == "ReflectionClass") {
-				$NodeKey = $this->getName();
-			} else {
-				$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
-			}
-			$NodeKey = md5($NodeKey);
-			$cache = LocalFileCache::read($NodeKey);
-			if (!empty($cache)) {return $cache;}
-		}
-
+	private function _getDocCommentMatch($NodeReflection){
 		$str = $this->getDocComment();
 		$NodeName = $NodeReflection->getName();
 		$NodeName = explode('\\', $NodeName);
@@ -52,7 +21,10 @@ trait Resolve {
 		if (empty($result)) {
 			return null;
 		}
+		return $match;
+	}
 
+	private function _getDocNodeData($match){
 		$ResolveNodeName = $match[1][0];
 		$ResolveNodeParam = $match[2][0];
 		$ResolveNodeParam = explode(',', $ResolveNodeParam);
@@ -76,6 +48,10 @@ trait Resolve {
 				$ParamMap[$param[0]] = $param[1];
 			}
 		}
+		return $ParamMap;
+	}
+
+	private function _checkNodePropertiseAndAssign($NodeReflection,$ParamMap){
 		$ReflectionPropertys = $NodeReflection->getProperties(\ReflectionProperty::IS_PUBLIC);
 		$ParamMapKeys = array_keys($ParamMap); //参数的key
 
@@ -87,7 +63,44 @@ trait Resolve {
 				$Node->$PropertyName = $ParamMap[$PropertyName];
 			}
 		}
+		return $Node;
+	}
+	/**
+	 * 解析相应的注解 如果没有本注解就返回空
+	 * 并且吧注解映射到实体类中
+	 * @param  [type] $NodeClass [需要获取的注解名称]
+	 * @return [type]            [返回注解实例化类]
+	 */
+	public function resolve($NodeClass) {
+		if ($NodeClass instanceof \ReflectionClass) {
+			$NodeReflection = $NodeClass;
+		} else {
+			$NodeReflection = new \ReflectionClass($NodeClass);
+		}
+		/**
+		 * 这里可以通过缓存获取注解
+		 *
+		 * 缓存通过类名称（包括命名空间）作为key
+		 */
+		if (sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
+			//有注入缓存注解才会进行注解缓存
+			$parent_class_name = get_parent_class();
+			if ($parent_class_name == "ReflectionClass") {
+				$NodeKey = $this->getName();
+			} else {
+				$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+			}
+			$NodeKey = md5($NodeKey);
+			$cache = LocalFileCache::read($NodeKey);
+			if (!empty($cache)) {return $cache;}
+		}
 
+		$match=$this->_getDocCommentMatch($NodeReflection);
+		if(empty($match)){
+			return null;
+		}
+		$paramData=$this->_getDocNodeData($match);
+		$Node=$this->_checkNodePropertiseAndAssign($NodeReflection,$paramData);
 		/**
 		 * 这里可以缓存注解
 		 */

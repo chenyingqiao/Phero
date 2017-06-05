@@ -82,7 +82,7 @@ DROP TABLE IF EXISTS `phero`.`ParentInfo` ;
 
 CREATE TABLE IF NOT EXISTS `phero`.`ParentInfo` (
   `pid` INT NOT NULL,
-  `phome` VARCHAR(45) NULL,
+  `phone` VARCHAR(45) NULL,
   PRIMARY KEY (`pid`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
