@@ -14,7 +14,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 17:53:38
+ * @Last Modified time: 2017-06-02 17:56:40
  */
 class SelectTest extends BaseTest
 {
@@ -110,10 +110,10 @@ class SelectTest extends BaseTest
 			->whereOrExists($Marry)
 			->fetchSql();
 		$this->TablePrint($result);
-		echo $Parents->sql();
-		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.id  or `Marry`.`id` in (select `Mother`.`id` from `Mother` where `Mother`.`id` between 1 AND 10));");
+		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.id  and `Marry`.`id` in (select `Mother`.`id` from `Mother` where `Mother`.`id` between 1 AND 10));");
 	}
 
 	public function testWhereFunction(){
+		
 	}
 }
