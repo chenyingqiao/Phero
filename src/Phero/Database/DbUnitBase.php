@@ -33,8 +33,8 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		OtherUnitTrait;
 
 	CONST GroupStart=1,GroupEnd=2,GroupDisbale=0;
-
-
+	private $dumpSql;
+	
 	/**
 	 * 初始化实体类中的数据
 	 * 可以是属性名和数据
@@ -56,7 +56,6 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		$this->initField($values);
 	}
 
-	private $dumpSql;
 	//ORM
 	public function select($yield = false) {
 		$result = $this->model->select($this, $yield);
@@ -138,9 +137,10 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * 从Unit中解析成接口
 	 * @return array 绑定的value数组
 	 */
-	public function fetchSql($type=FetchType::select) {
+	public function fetchSql(&$sql="",$type=FetchType::select) {
 		$bindValues = $this->model->fetchSql($this,$type);
 		$this->dumpSql = $this->model->getSql();
+		$sql=$this->dumpSql;
 		$this->unit_new();
 		return $bindValues;
 	}
@@ -247,7 +247,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @DateTime 2017-06-06T14:38:07+0800
 	 * @param    [type]                   $Field [description]
 	 */
-	public function FF($Field){
-		return "`".$this->getNameByCleverWay($this)."`.`$Field`";
+	public static function FF($Field){
+		return "`".self::Inc()->getNameByCleverWay(self::Inc())."`.`$Field`";
 	}
 }

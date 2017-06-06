@@ -1,44 +1,112 @@
 /*
 * @Author: lerko
 * @Date:   2017-05-31 12:12:49
-* @Last Modified by:   ‘chenyingqiao’
-* @Last Modified time: 2017-06-04 13:51:47
-*/
-show tables;
+* @Last Modified by:   lerko
+* @Last Modified time: 2017-06-06 18:09:45
+*/ 
+SHOW TABLES;
+
+SHOW
+CREATE TABLE Children;
 
 
-show create table Children;
-select * from Children limit 30;
+SELECT *
+FROM Children
+LIMIT 30;
 
-show create table Marry;
-select * from Marry limit 30;
-
-show create table Mother;
-select * from Mother limit 30;
-
-show create table MotherInfo;
-select * from MotherInfo limit 30;
-
-show create table Parent;
-select * from Parent limit 30;
-
-show create table ParentInfo;
-select * from ParentInfo limit 30;
-
-truncate table Children
-truncate table Marry
-truncate table Mother
-truncate table MotherInfo
-truncate table Parent
-truncate table ParentInfo
+SHOW
+CREATE TABLE Marry;
 
 
-explain select count(*) as count from `Mother` limit 1;
+SELECT *
+FROM Marry
+LIMIT 30;
 
-select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 10;
+SHOW
+CREATE TABLE Mother;
 
-select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.pid=`parent`.id  inner join `Mother` on `Marry`.mid=`Mother`.id ;
 
-select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where (Fun(`parent`.`id`) = 10  and Fun2(`parent`.`name`) like '%test%');
-select `Mother`.`mid`,`Mother`.`name` from `Mother` limit 10;
+SELECT *
+FROM Mother
+LIMIT 30;
 
+SHOW
+CREATE TABLE MotherInfo;
+
+
+SELECT *
+FROM MotherInfo
+LIMIT 30;
+
+SHOW
+CREATE TABLE Parent;
+
+
+SELECT *
+FROM Parent
+LIMIT 30;
+
+SHOW
+CREATE TABLE ParentInfo;
+
+
+SELECT *
+FROM ParentInfo
+LIMIT 30;
+
+
+SELECT count(*) AS COUNT
+FROM `Mother`
+LIMIT 1;
+
+
+truncate table Children;
+truncate table Marry;
+truncate table Mother;
+truncate table MotherInfo;
+truncate table Parent;
+truncate table ParentInfo;
+
+SELECT `parent`.`id`,
+       `parent`.`name`
+FROM `Parent` AS `parent`
+WHERE `parent`.`id` = 10;
+
+
+SELECT `Marry`.`id`,
+       `Marry`.`pid`,
+       `Marry`.`mid`,
+       `parent`.`id`,
+       `parent`.`name`,
+       `Mother`.`id`,
+       `Mother`.`name`
+FROM `Marry`
+INNER JOIN `Parent` AS `parent` ON `Marry`.pid=`parent`.id
+INNER JOIN `Mother` ON `Marry`.mid=`Mother`.id ;
+
+
+SELECT `parent`.`id`,
+       `parent`.`name`
+FROM `Parent` AS `parent`
+WHERE (Fun(`parent`.`id`) = 10
+       AND Fun2(`parent`.`name`) LIKE '%test%');
+
+
+SELECT `Mother`.`mid`,
+       `Mother`.`name`
+FROM `Mother`
+LIMIT 10;
+
+
+SELECT `Marry`.`id`,
+       `Marry`.`pid`,
+       `Marry`.`mid`,
+       `parent`.`id`,
+       `parent`.`name`,
+       `Mother`.`id`,
+       `Mother`.`name`
+FROM `Marry`
+INNER JOIN `Parent` AS `parent` ON `Marry`.`pid`=`parent`.`id`
+INNER JOIN `Mother` ON `Marry`.`mid`=`Mother`.`id`
+GROUP BY `Mother`.`id`
+HAVING `Mother`.`id` = 1;

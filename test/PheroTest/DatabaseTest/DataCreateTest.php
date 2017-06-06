@@ -13,8 +13,8 @@ use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 12:12:52
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-06-04 16:14:46
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-06-06 18:07:07
  */
 class DataCreateTest extends BaseTest
 {
@@ -39,6 +39,7 @@ class DataCreateTest extends BaseTest
 			$UnitsParentInfo[]=new ParentInfo(["pid"=>$i+1,"phone"=>"1506013{$i}03"]);
 			$UnitsMotherInfo[]=new MotherInfo(["mid"=>$i+1,"email"=>"6143257{$i}@qq.com"]);
 			$UnitsChildren[]=new Children(['name'=>"小明{$i}","marry_id"=>$i+1]);
+			$UnitsChildren[]=new Children(['name'=>"小黄{$i}","marry_id"=>$i+1]);
 		}
 		$Model=new Model();
 		$Model->insert($UnitsParent);
@@ -55,6 +56,10 @@ class DataCreateTest extends BaseTest
 				$Model->getError()
 			]);
 		$Model->insert($UnitsChildren);
+		$this->TablePrint([
+				$Model->getSql(),
+				$Model->getError()
+			]);
 
 		$this->TablePrint($UnitsParent[0]->limit(10)->select());
 		$this->TablePrint($UnitsMother[0]->limit(10)->select());
@@ -62,5 +67,7 @@ class DataCreateTest extends BaseTest
 		$this->TablePrint($UnitsParentInfo[0]->limit(10)->select());
 		$this->TablePrint($UnitsMotherInfo[0]->limit(10)->select());
 		$this->TablePrint($UnitsChildren[0]->limit(10)->select());
+
+		echo "=============";
 	}
 }

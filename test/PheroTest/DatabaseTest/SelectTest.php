@@ -3,6 +3,7 @@
 namespace PheroTest\DatabaseTest;
 
 use PheroTest\DatabaseTest\BaseTest;
+use PheroTest\DatabaseTest\Unit\Children;
 use PheroTest\DatabaseTest\Unit\Marry;
 use PheroTest\DatabaseTest\Unit\Mother;
 use PheroTest\DatabaseTest\Unit\Parents;
@@ -16,7 +17,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-06 16:04:06
+ * @Last Modified time: 2017-06-06 18:03:25
  */
 class SelectTest extends BaseTest
 {
@@ -87,10 +88,8 @@ class SelectTest extends BaseTest
 		$Parents=new Parents();
 		$Marry=new Marry();
 		$Mother=new Mother();
-		// $Marry->join($Parents,"$.pid=#.id");
-		$Marry->join($Parents,"{$Marry->FF("pid")}={$Parents->FF("id")}");
-		// $Marry->join($Mother,"$.mid=#.id");
-		$Marry->join($Mother,"{$Marry->FF("mid")}={$Mother->FF("id")}");
+		$Marry->join($Parents,"$.`pid`=#.`id`");
+		$Marry->join($Mother,"$.`mid`=#.`id`");
 		$MarryClone=clone $Marry;
 		$result=$Marry->fetchSql();
 		$this->TablePrint($result);
@@ -109,36 +108,50 @@ class SelectTest extends BaseTest
 		$Marry=new Marry();
 		$Mother=new Mother(["id"]);
 		$Mother->whereBetween("id",[1,10]);
-		$Marry->whereEq("pid","#.id");
+		$Marry->whereEq("pid","#.`id`");
 		$Marry->whereAndIn("id",$Mother);
 		$Parents->whereEq("id",1)
 			->whereOrExists($Marry);
 		$result=$Parents->fetchSql();
 		$this->TablePrint($result);
-		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.id  and `Marry`.`id` in (select `Mother`.`id` from `Mother` where `Mother`.`id` between 1 AND 10));");
+		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.`id`  and `Marry`.`id` in (select `Mother`.`id` from `Mother` where `Mother`.`id` between 1 AND 10));");
 	}
 
 	/**
-	 * @depends testSelectJoin
+	 * @depends clone testSelectJoin
 	 * @Author   Lerko
 	 * @DateTime 2017-06-06T13:49:09+0800
+	 * @test
 	 * @return   [type]                   [description]
 	 */
-	public function testOrder(Marry $marry){
-		$marry->order(Mother::Inc()->FF("id"),OrderType::desc);
+	public function Order(Marry $marry){
+		$marry->order(Mother::FF("id"),OrderType::desc);
 		$sql=$marry->fetchSql();
 		$this->TablePrint($sql);
 		$this->assertEquals($marry->sql(),"select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  order by `Mother`.`id` desc;");
 	}
 
 	/**
-	 * @depends testSelectJoin
+	 * @depends clone testSelectJoin
 	 * @Author   Lerko
 	 * @DateTime 2017-06-06T16:00:15+0800
 	 * @param    Marry                    $marry [description]
 	 * @return   [type]                          [description]
 	 */
 	public function testGroupByAndHave(Marry $marry){
-		$marry->group(Mother::Inc()->FF("id"))->having();
+		$sql="";
+		$marry->sum("id")->group(Mother::FF("id"))->havingEq(Mother::FF("id"),1)->fetchSql($sql);
+		$this->TablePrint($sql);
+		$this->assertEquals($sql,"select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  group by `Mother`.`id` having  `Mother`.`id` = 1;");
+	}
+
+	/**
+	 * @Author   Lerko
+	 * @DateTime 2017-06-06T17:53:16+0800
+	 * @return   [type]                   [description]
+	 */
+	public function testSimpleGroupByAndHaving(){
+		$data=Children::Inc()->limit(10)->group(Children::FF("pid"))->select();
+		$this->TablePrint($data);
 	}
 }

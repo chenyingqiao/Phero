@@ -118,7 +118,7 @@ trait TConstraitTableDependent {
 	public final function getTablePropertyNode($Entiy, $propertyName, $nodeClass) {
 		$property = $this->getTablePropertySingle($Entiy, $propertyName);
 		if ($property == false) {
-			throw new \Exception(get_class($Entiy)." entiy not exist ".$propertyName);
+			return false;
 		}
 		return $property->resolve($nodeClass);
 	}

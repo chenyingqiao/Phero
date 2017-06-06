@@ -5,10 +5,10 @@ namespace Phero\Database\Traits\UnitTrait;
  * @Author: lerko
  * @Date:   2017-06-02 16:24:50
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-06 16:15:29
+ * @Last Modified time: 2017-06-06 16:39:34
  */
 trait HavingUnitTrait{
-	private $having;
+	private $having=[];
 	public function getHaving(){
 		return $this->having;
 	}

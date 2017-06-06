@@ -131,8 +131,8 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 		}
 
 		//为字段添加表明前缀
-		if (!$this->enableAlias||strstr($key,'.')) {$from = "";} else { $from = "`".$from."`.";}
-		$field =$from."`".$key."`";
+		if (!$this->enableAlias||strstr($key,'.')) {$from = "";$dit="";} else { $from = "`".$from."`.";$dit="`";}
+		$field ="$from$dit$key$dit";
 		if (!empty($whereTemp)) {
 			$field = str_replace("?", $field, $whereTemp);
 		}
@@ -158,7 +158,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	public function getBindDataType($field) {
 		$type = $this->getTablePropertyNode($this->Entiy, $field, new note\Field());
 		if ($type == false) {
-			return false;
+			return 1;
 		}
 		return note\Field::typeTrunPdoType($type->type);
 	}
@@ -173,9 +173,6 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	 */
 	public function setBindDataAndGetBindKey($key, $values, $from, $compare) {
 		$bindType = $this->getBindDataType($key);
-		if ($bindType == false) {
-			return "";
-		}
 		if ($compare == enum\Where::between) {
 			$key1 = ":" . $from . "_" . $key . "_" . rand();
 			$key2 = ":" . $from . "_" . $key . "_" . rand();
