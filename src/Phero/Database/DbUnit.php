@@ -3,6 +3,7 @@ namespace Phero\Database;
 
 use Phero\Database\DbUnitBase;
 use Phero\Database\Enum as enum;
+use Phero\Database\Enum\Where;
 use Phero\Database\Realize\MysqlDbHelp;
 
 /**
@@ -113,10 +114,12 @@ class DbUnit extends DbUnitBase {
 		return $this;
 	}
 
-
-
 	/**
 	 * where扩展函数
+	 * 1个参数 数据和比较符号
+	 * 2个参数 字段和比较符号
+	 * 3个参数 字段比较符号字段模板
+	 * 4个参数 并且调用不匹配自由where  字段名 字段值 字段比较符号 字段函数模板
 	 * @param  [type] $function_name [调用的函数名称]
 	 * @param  [type] $argument      [调用where的参数 每个调用都不一样]
 	 * @return [type]                [description]

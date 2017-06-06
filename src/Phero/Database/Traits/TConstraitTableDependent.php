@@ -125,11 +125,15 @@ trait TConstraitTableDependent {
 
 	/**
 	 * 处理on链接的字符串 如"$.uid=#.id"
+	 * 如果不包含$#的话直接返回传入的数据
 	 * @param  [type] $Entiy     [被关联的实体]
 	 * @param  [type] $JoinEntiy [关联的实体]
 	 * @return [type]            [description]
 	 */
 	public final function getTableOn($Entiy, $JoinEntiy, $on) {
+		if(!strstr($on,"$") && !strstr($on, '#')){
+			return $on;
+		}
 		$nameOfEntiy = $this->getNameByCleverWay($Entiy);
 		if (is_string($JoinEntiy)) {
 			$nameOfJoinEntiy = $JoinEntiy;
@@ -169,4 +173,5 @@ trait TConstraitTableDependent {
 		}
 		return null;
 	}
+
 }

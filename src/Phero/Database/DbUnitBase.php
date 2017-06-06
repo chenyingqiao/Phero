@@ -240,4 +240,14 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 			return false;
 		}
 	}
+
+	/**
+	 * 快速获取列明和表明的拼接
+	 * @Author   Lerko
+	 * @DateTime 2017-06-06T14:38:07+0800
+	 * @param    [type]                   $Field [description]
+	 */
+	public function FF($Field){
+		return "`".$this->getNameByCleverWay($this)."`.`$Field`";
+	}
 }

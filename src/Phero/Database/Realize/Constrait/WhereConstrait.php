@@ -130,8 +130,8 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			$group2 = ")";
 		}
 
-		//给表的别名加点
-		if (!$this->enableAlias) {$from = "";} else { $from = "`".$from."`.";}
+		//为字段添加表明前缀
+		if (!$this->enableAlias||strstr($key,'.')) {$from = "";} else { $from = "`".$from."`.";}
 		$field =$from."`".$key."`";
 		if (!empty($whereTemp)) {
 			$field = str_replace("?", $field, $whereTemp);

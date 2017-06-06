@@ -6,8 +6,8 @@ use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-06-04 12:51:42
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-06-06 13:58:58
  */
 
 trait OtherUnitTrait{
@@ -61,8 +61,8 @@ trait OtherUnitTrait{
 	 * @param  [type] $order_type [description]
 	 * @return [type]             [description]
 	 */
-	public function order($field, $order_type = null) {
-		$this->order = [$field, $order_type];
+	public function order($field, $order_type = null,$belongto=null) {
+		$this->order = [$field, $order_type,$belongto];
 		return $this;
 	}
 

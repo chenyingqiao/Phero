@@ -37,20 +37,33 @@ class Test extends BaseTest {
     }
 
     /**
+     * @test
      * @Author   Lerko
-     * @DateTime 2017-06-02T09:39:41+0800
-     * @after
+     * @DateTime 2017-06-06T14:06:11+0800
+     * @return   [type]                   [description]
      */
-    public function tearDownPop(){
-        echo "{asdf}";
+    public function stringAddFunction(){
+        echo "$Test::stringFun()hahah";
     }
 
-    /**
-     * @Author   Lerko
-     * @DateTime 2017-06-02T09:39:41+0800
-     * @after
-     */
-    public static function tearDowntestPush(){
-        echo "{asdf2}";
+    public static function stringFun(){
+        return "hello";
     }
+    // /**
+    //  * @Author   Lerko
+    //  * @DateTime 2017-06-02T09:39:41+0800
+    //  * @after
+    //  */
+    // public function tearDownPop(){
+    //     echo "{asdf}";
+    // }
+
+    // /**
+    //  * @Author   Lerko
+    //  * @DateTime 2017-06-02T09:39:41+0800
+    //  * @after
+    //  */
+    // public static function tearDowntestPush(){
+    //     echo "{asdf2}";
+    // }
 }
