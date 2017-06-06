@@ -5,7 +5,7 @@ namespace Phero\Database;
 use Phero\Database\Enum as enum;
 use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\JoinType;
-use Phero\Database\Interfaces\INoteMap;
+use Phero\Database\Interfaces\INodeMap;
 use Phero\Database\Model;
 use Phero\Database\Realize\MysqlDbHelp;
 use Phero\Database\Traits\ArrayAccessTrait;
@@ -22,7 +22,7 @@ use Phero\System\Tool;
  * 用来设置数据库实体类的一些携带数据
  * 以及基础功能
  */
-class DbUnitBase implements \ArrayAccess,INoteMap {
+class DbUnitBase implements \ArrayAccess,INodeMap {
 	use TConstraitTableDependent,
 		ArrayAccessTrait,
 		WhereUnitTrait,
@@ -201,7 +201,7 @@ class DbUnitBase implements \ArrayAccess,INoteMap {
 		return self::$LastInc[$classname];
 	}
 
-	private $map;
+	private $map=[];
 	/**
 	 * 存储map 用来外部设置注解数据
 	 * @Author   Lerko
@@ -210,8 +210,34 @@ class DbUnitBase implements \ArrayAccess,INoteMap {
 	 * @param    [type]                   $value    [description]
 	 * @return   [type]                             [description]
 	 */
-	public function map($noteName,$value)
+	public function map($note,$value=false)
 	{
-		$map[$noteName]=$value;
+		if($value===false){
+			$value=$note;
+		}
+		if(is_object($note)){
+			$NodeReflection = new \ReflectionClass($note);
+			$NodeName = $NodeReflection->getName();
+		}else{
+			$NodeName=$note;
+		}
+		$this->map[$NodeName]=$value;
+		return $this;
+	}
+
+	/**
+	 * 获取map中设置的节点
+	 * @Author   Lerko
+	 * @DateTime 2017-06-06T10:50:31+0800
+	 * @param    [type]                   $nodeName [description]
+	 * @return   [type]                             [description]
+	 */
+	public function getMap($nodeName)
+	{
+		if(array_key_exists($nodeName,$this->map)){
+			return $this->map[$nodeName];
+		}else{
+			return false;
+		}
 	}
 }

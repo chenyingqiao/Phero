@@ -1,5 +1,6 @@
 <?php
 namespace Phero\Map;
+use Phero\Database\Interfaces\INodeMap;
 use Phero\Map\Interfaces\INode;
 
 /**
@@ -7,6 +8,12 @@ use Phero\Map\Interfaces\INode;
  */
 class NodeReflectionClass extends \ReflectionClass implements INode {
 	use Resolve;
+
+	public function __construct($argument){
+		parent::__construct($argument);
+		if($argument instanceof INodeMap)
+			$this->entiy=$argument;
+	}
 	
 	/**
 	 * 重载获取Properties的方法

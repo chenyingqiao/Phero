@@ -76,6 +76,13 @@ trait Resolve {
 			$NodeReflection = $NodeClass;
 		} else {
 			$NodeReflection = new \ReflectionClass($NodeClass);
+			$NodeName = $NodeReflection->getName();
+			if(isset($this->entiy)){
+				$Node=$this->entiy->getMap($NodeName);
+				if($Node!==false){
+					return $Node;
+				}
+			}
 		}
 		/**
 		 * 这里可以通过缓存获取注解

@@ -2,8 +2,8 @@
 /**
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-06-04 15:24:13
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-06-06 11:10:18
  */
 
 namespace Phero\Database\Traits;
@@ -122,10 +122,8 @@ trait TRelation {
 				} else {
 					$data[$key] = $entiy->select();
 				}
-				echo $entiy->sql()."\n";
 			} else {
 				$data[$key] = $value->select();
-				echo $value->sql()."\n";
 			}
 		}
 		return $data;
