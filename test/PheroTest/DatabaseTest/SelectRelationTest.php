@@ -10,7 +10,7 @@ use Phero\Map\Note\RelationEnable;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 13:26:40
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-06 12:02:32
+ * @Last Modified time: 2017-06-07 09:12:48
  */
 class SelectRelationTest extends BaseTest
 {
@@ -29,7 +29,7 @@ class SelectRelationTest extends BaseTest
 
 	public function testRelationMapNodeSet(){
 		$data=Mother::Inc()->map(new RelationEnable,null)->find();
-		var_dump($data);
+		var_export($data);
 		$this->assertArrayNotHasKey("info", $data);
 	}
 

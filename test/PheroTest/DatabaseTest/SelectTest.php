@@ -17,7 +17,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-06 18:03:25
+ * @Last Modified time: 2017-06-07 08:58:05
  */
 class SelectTest extends BaseTest
 {
@@ -98,7 +98,7 @@ class SelectTest extends BaseTest
 	}
 
 	/**
-	 * 车市exists
+	 * 测试exists
 	 * @Author   Lerko
 	 * @DateTime 2017-06-02T14:35:40+0800
 	 * @return   [type]                   [description]
