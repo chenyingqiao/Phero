@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-06 13:58:58
+ * @Last Modified time: 2017-06-07 15:02:23
  */
 
 trait OtherUnitTrait{
@@ -21,7 +21,6 @@ trait OtherUnitTrait{
 	protected $havingGroup = false;
 	protected $datasourse = [];
 	protected $distinct = false;
-	protected $values_cache, $inifalse;
 	private $model;
 	/**
 	 * 列是否需要as

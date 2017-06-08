@@ -180,9 +180,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @DateTime 2017-06-04T13:22:26+0800
 	 */
 	private static $LastInc=[];
-	public static function Inc(){
+	public static function Inc($data=null){
 		$classname=get_called_class();
-		self::$LastInc[$classname] = new $classname();
+		self::$LastInc[$classname] = new $classname($data);
 		return self::$LastInc[$classname];
 	}
 
@@ -193,10 +193,10 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @DateTime 2017-06-04T13:45:16+0800
 	 * @return   [type]                   [description]
 	 */
-	public static function lastInc(){
+	public static function lastInc($data=null){
 		$classname=get_called_class();
 		if(!isset(self::$LastInc[$classname])){
-			self::$LastInc[$classname]=new $classname;
+			self::$LastInc[$classname]=new $classname($data);
 		}
 		return self::$LastInc[$classname];
 	}

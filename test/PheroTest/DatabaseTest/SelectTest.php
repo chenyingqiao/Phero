@@ -17,7 +17,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-07 08:58:05
+ * @Last Modified time: 2017-06-07 17:12:48
  */
 class SelectTest extends BaseTest
 {
@@ -28,7 +28,7 @@ class SelectTest extends BaseTest
 	 */
 	public function getParentTableData(){
 		$data=[];
-		for ($i=0; $i < 100; $i++) { 
+		for ($i=0; $i < 10; $i++) { 
 			$data[]=["id"=>$i+1,"name"=>"parent{$i}"];
 		}
 		return $data;
@@ -43,7 +43,7 @@ class SelectTest extends BaseTest
 		$this->timer();
 		$Parents=new Parents();
 		$result=$Parents->count();
-		$this->assertEquals($result, 100);
+		$this->assertEquals($result, 10);
 		$this->timer(false,__METHOD__);
 	}
 
@@ -73,7 +73,7 @@ class SelectTest extends BaseTest
 			->where(["name","%test%",Where::like,WhereCon::and_],null,2,"Fun2(?)")
 			->fetchSql();
 		$sql=$Parents->sql();
-		$this->TablePrint($result);
+		//$this->TablePrint($result);
 		$this->assertEquals($sql,
 			"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where (Fun(`parent`.`id`) = 10  and Fun2(`parent`.`name`) like '%test%');");
 	}
@@ -92,7 +92,7 @@ class SelectTest extends BaseTest
 		$Marry->join($Mother,"$.`mid`=#.`id`");
 		$MarryClone=clone $Marry;
 		$result=$Marry->fetchSql();
-		$this->TablePrint($result);
+		//$this->TablePrint($result);
 		$this->assertEquals($Marry->sql(), "select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
 		return $MarryClone;
 	}
@@ -113,9 +113,37 @@ class SelectTest extends BaseTest
 		$Parents->whereEq("id",1)
 			->whereOrExists($Marry);
 		$result=$Parents->fetchSql();
-		$this->TablePrint($result);
+		//$this->TablePrint($result);
 		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.`id`  and `Marry`.`id` in (select `Mother`.`id` from `Mother` where `Mother`.`id` between 1 AND 10));");
 	}
+
+	/**
+	 * 设置field
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-06-07T14:17:56+0800
+	 * @return   [type]                   [description]
+	 */
+	public function selectField(){
+		$sql="";
+		$data=Mother::Inc(["name"])->fetchSql($sql);
+		$this->assertEquals($sql,"select `Mother`.`name` from `Mother`;");
+	}
+
+	/**
+	 * @depends clone testSelectJoin
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-06-07T14:28:29+0800
+	 * @return   [type]                   [description]
+	 */
+	public function selectJoinField(Marry $marry){
+		$sql="";
+		$id=Mother::FF("id");
+		$marry->field("ThisIsMyFuckingFun($id)")->fetchSql($sql);
+		$this->assertEquals($sql,"select ThisIsMyFuckingFun(`Mother`.`id`),`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
+	}
+
 
 	/**
 	 * @depends clone testSelectJoin
@@ -127,7 +155,7 @@ class SelectTest extends BaseTest
 	public function Order(Marry $marry){
 		$marry->order(Mother::FF("id"),OrderType::desc);
 		$sql=$marry->fetchSql();
-		$this->TablePrint($sql);
+		//$this->TablePrint($sql);
 		$this->assertEquals($marry->sql(),"select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  order by `Mother`.`id` desc;");
 	}
 
@@ -141,8 +169,8 @@ class SelectTest extends BaseTest
 	public function testGroupByAndHave(Marry $marry){
 		$sql="";
 		$marry->sum("id")->group(Mother::FF("id"))->havingEq(Mother::FF("id"),1)->fetchSql($sql);
-		$this->TablePrint($sql);
-		$this->assertEquals($sql,"select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  group by `Mother`.`id` having  `Mother`.`id` = 1;");
+		//$this->TablePrint($sql);
+		$this->assertEquals($sql,"select `Marry`.`sum(id) as sum_id`,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  group by `Mother`.`id` having  `Mother`.`id` = 1;");
 	}
 
 	/**
@@ -152,6 +180,5 @@ class SelectTest extends BaseTest
 	 */
 	public function testSimpleGroupByAndHaving(){
 		$data=Children::Inc()->limit(10)->group(Children::FF("pid"))->select();
-		$this->TablePrint($data);
 	}
 }

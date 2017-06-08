@@ -22,31 +22,7 @@ class DbUnit extends DbUnitBase {
 		}
 		return [];
 	}
-	/**
-	 * 统一设置聚合函数
-	 * @Author   Lerko
-	 * @DateTime 2017-05-31T18:14:06+0800
-	 * @param    [type]                   $field    [description]
-	 * @param    string                   $keyword  [description]
-	 * @param    boolean                  $distanct [description]
-	 * @return   [type]                             [description]
-	 */
-	public function polymerization($field, $keyword = "COUNT", $distanct = false) {
-		if ($distanct) {
-			$split = "(distanct ?) as ";
-		} else {
-			$split = "(?) as ";
-		}
-		if (is_array($field)) {
-			$temp_arr = [];
-			foreach ($field as $key => $value) {
-				$temp_arr[$value] = $keyword . $split . $keyword;
-			}
-			$this->fieldTemp($temp_arr);
-		} else if (is_string($field)) {
-			$this->fieldTemp([$field => $keyword . $split . $keyword]);
-		}
-	}
+
 	/**
 	 * 直接返回数量
 	 * @param [type] $field [description]
@@ -59,61 +35,17 @@ class DbUnit extends DbUnitBase {
 			return $value['count'];
 		}
 	}
-	public function sum($field) {
-		$this->polymerization($field, "SUM");
-		return $this;
-	}
-	public function max($field) {
-		$this->polymerization($field, "MAX");
-		return $this;
-	}
-	public function min($field) {
-		$this->polymerization($field, "MIN");
-		return $this;
-	}
 
-	public function avg($field) {
-		$this->polymerization($field, "AVG");
-		return $this;
+	private function _callPolymerization($function_name,$argument){
+		isset($argument[0])?$field=$argument[0]:$field="";
+		$in_polymerization=in_array($function_name,explode(",","sum,max,min,avg,group_concat,bin,abs,ceiling,exp,floor,ln,sign,sqrt"));
+		if(!$in_polymerization){
+			return ;
+		}
+		$temp="{$function_name}(?) as {$function_name}_{$field}";
+		$field=str_replace("?", $field, $temp);
+		$this->field($field);
 	}
-	public function group_concat($field) {
-		$this->polymerization($field, "GROUP_CONCAT");
-		return $this;
-	}
-	public function bin($field) {
-		$this->polymerization($field, "BIN");
-		return $this;
-	}
-
-	public function abs($field) {
-		$this->polymerization($field, "ABS");
-		return $this;
-	}
-	public function ceiling($field) {
-		$this->polymerization($field, "CEILING");
-		return $this;
-	}
-	public function exp($field) {
-		$this->polymerization($field, "EXP");
-		return $this;
-	}
-	public function floor($field) {
-		$this->polymerization($field, "FLOOR");
-		return $this;
-	}
-	public function ln($field) {
-		$this->polymerization($field, "LN");
-		return $this;
-	}
-	public function sign($field) {
-		$this->polymerization($field, "SIGN");
-		return $this;
-	}
-	public function sqrt($field) {
-		$this->polymerization($field, "SQRT");
-		return $this;
-	}
-
 	/**
 	 * where扩展函数
 	 * 1个参数 数据和比较符号
@@ -124,8 +56,9 @@ class DbUnit extends DbUnitBase {
 	 * @return [type]                [description]
 	 */
 	public function __call($function_name, $argument) {
-		$result=$this->_callWhereAndHavingCatch($function_name,$argument);
-		if($result)return $this;
+		$this->_callWhereAndHavingCatch($function_name,$argument);
+		$this->_callPolymerization($function_name,$argument);
+		return $this;
 	}
 
 	private function _callWhereAndHavingCatch($function_name, $argument){
@@ -149,10 +82,7 @@ class DbUnit extends DbUnitBase {
 					$this->$call([$argument[0], $argument[1], enum\Where::get($compser),$Con]);
 				}else if(count($argument)==3){
 					$this->$call([$argument[0], $argument[1], enum\Where::get($compser), $Con], null, false, $argument[2]);
-				}else{
-					return false;
 				}
-				return true;
 			}
 		}
 	}

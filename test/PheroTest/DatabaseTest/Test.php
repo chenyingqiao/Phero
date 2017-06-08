@@ -3,6 +3,9 @@ namespace PheroTest;
 
 use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit as unit;
+use Phero\Database\DbUnit;
+use Phero\Map\NodeReflectionClass;
+use Phero\System\Config;
 
 class Test extends BaseTest {
     public function testEmpty()
@@ -36,18 +39,15 @@ class Test extends BaseTest {
         echo "Pop";
     }
 
-    /**
-     * @test
-     * @Author   Lerko
-     * @DateTime 2017-06-06T14:06:11+0800
-     * @return   [type]                   [description]
-     */
-    public function stringAddFunction(){
-        echo "$Test::stringFun()hahah";
+    public function testInterfaces(){
+        $reflection=new NodeReflectionClass(new DbUnit);
+        var_dump($reflection->getInterfaceNames());
+        $interfaceMothers=new NodeReflectionClass("Phero\System\Interfaces\Section\ISectionCacheRead");
+        var_dump($interfaceMothers->getMethods());
     }
 
-    public static function stringFun(){
-        return "hello";
+    public function testConfigSet(){
+        var_dump(Config::config("cache"));
     }
     // /**
     //  * @Author   Lerko
