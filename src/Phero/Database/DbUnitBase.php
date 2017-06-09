@@ -2,7 +2,9 @@
 
 namespace Phero\Database;
 
+use Phero\Cache\CacheOperationByConfig;
 use Phero\Database\Enum as enum;
+use Phero\Database\Enum\Cache;
 use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Interfaces\INodeMap;
@@ -57,10 +59,32 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	}
 
 	//ORM
+	/**
+	 * 查询方法
+	 * @Author   Lerko
+	 * @DateTime 2017-06-08T17:53:58+0800
+	 * @param    boolean|Cache                  $yield [是否进行一条一条数据的取出，传入cache的时候是进行数据缓存]
+	 * @return   [type]                          [description]
+	 */
 	public function select($yield = false) {
+		$cache=false;
+		$sql="";
+		$this->fetchSql($sql);
+		if($yield instanceof Cache){
+			$cacheObj=$yield;
+			$cache=true;
+			$yield=false;
+			$data=CacheOperationByConfig::read(md5($sql));
+			if(!empty($data)){
+				return $data;
+			}
+		}
 		$result = $this->model->select($this, $yield);
-		$this->dumpSql = $this->model->getSql();
+		$this->dumpSql = $sql;
 		$this->unit_new();
+		if($cache){
+			CacheOperationByConfig::save(md5($sql),$result,$cacheObj->liveTime);
+		}
 		return $result;
 	}
 	/**
@@ -141,7 +165,6 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		$bindValues = $this->model->fetchSql($this,$type);
 		$this->dumpSql = $this->model->getSql();
 		$sql=$this->dumpSql;
-		$this->unit_new();
 		return $bindValues;
 	}
 

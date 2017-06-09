@@ -10,32 +10,28 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
  * @Author: lerko
  * @Date:   2017-06-08 11:43:47
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-08 13:14:40
+ * @Last Modified time: 2017-06-08 20:35:57
  */
 class CacheOperationByConfig implements ICache
 {
 	private static $cache;
 	private static function getCache(){
 		$cache=Config::config("cache");
-		if(is_object($cache)&&$cache instanceof AbstractCache){
+		if(is_object($cache)){
 			self::$cache= $cache;
 		}else{
 			self::$cache= new FilesystemCache();
 		}
-		$debug=Config::config("debug");
-		if($debug){
-			self::$cache->clear();
-		}
 	}
 
-	public static function save($key, $data)
+	public static function save($key, $data,$lt=null)
 	{
-		if(is_object($data)){
+		if(is_object($data)||is_array($data)){
 			$data=serialize($data);
 		}
 		if(!isset(self::$cache))
 			self::getCache();
-		self::$cache->set($key,$data);
+		self::$cache->set($key,$data,$lt);
 	}
 
 	public static function read($key)

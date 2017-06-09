@@ -10,7 +10,7 @@ use Webmozart\Console\UI\Component\Table;
  * @Author: lerko
  * @Date:   2017-05-31 15:53:30
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 11:55:28
+ * @Last Modified time: 2017-06-08 14:36:48
  */
 class BaseTest extends TestCase
 {
@@ -21,7 +21,7 @@ class BaseTest extends TestCase
 	 */
 	public static function setUpConfig(){
 		self::TablePrint("初始化配置文件位置");
-		DI::inj("all_config_path",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
+		DI::inj("config",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
 	}
 
 	/**

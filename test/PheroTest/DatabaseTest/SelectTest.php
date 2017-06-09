@@ -17,7 +17,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-07 17:12:48
+ * @Last Modified time: 2017-06-08 16:59:37
  */
 class SelectTest extends BaseTest
 {
@@ -181,4 +181,5 @@ class SelectTest extends BaseTest
 	public function testSimpleGroupByAndHaving(){
 		$data=Children::Inc()->limit(10)->group(Children::FF("pid"))->select();
 	}
+
 }

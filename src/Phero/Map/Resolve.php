@@ -31,9 +31,9 @@ trait Resolve {
 				}
 			}
 		}
-		
+		$debug=Config::config("debug");
 		$Node=CacheOperationByConfig::read($this->getCacheKey());
-		if(isset($Node)){
+		if(!empty($Node)&&empty($debug)){
 			return $Node;
 		}
 
@@ -43,7 +43,7 @@ trait Resolve {
 		}
 		$paramData=$this->_getDocNodeData($match);
 		$Node=$this->_checkNodePropertiseAndAssign($NodeReflection,$paramData);
-		
+		// if(empty($debug))
 		CacheOperationByConfig::save($this->getCacheKey(),$Node);
 
 		return $Node;
