@@ -10,7 +10,7 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
  * @Author: lerko
  * @Date:   2017-06-08 11:43:47
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-08 20:35:57
+ * @Last Modified time: 2017-06-12 17:10:14
  */
 class CacheOperationByConfig implements ICache
 {
@@ -26,6 +26,7 @@ class CacheOperationByConfig implements ICache
 
 	public static function save($key, $data,$lt=null)
 	{
+		if(empty($data))return;
 		if(is_object($data)||is_array($data)){
 			$data=serialize($data);
 		}
@@ -39,6 +40,7 @@ class CacheOperationByConfig implements ICache
 		if(!isset(self::$cache))
 			self::getCache();
 		$data=self::$cache->get($key);
+		if(empty($data))return;
 		$serializeAble=unserialize($data);
 		if($serializeAble){
 			return $serializeAble;

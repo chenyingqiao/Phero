@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-23 10:50:45
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 17:40:27
+ * @Last Modified time: 2017-06-12 17:11:28
  */
 
 /**
@@ -106,5 +106,16 @@ class Tool
     			$value[0]=str_replace("$", "`{$relationTablename}`", $value[0]);
     		}
     	}
+    }
+
+    /**
+     * 清除特殊符号
+     * @Author   Lerko
+     * @DateTime 2017-06-12T15:19:13+0800
+     * @param    [type]                   $content [description]
+     * @return   [type]                            [description]
+     */
+    public static function clearSpecialSymbal($content){
+        return preg_replace("/[^\w:]+/","",$content);
     }
 }

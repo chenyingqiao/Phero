@@ -6,6 +6,7 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
+use Phero\System\Tool;
 
 /**
  *where约束
@@ -174,7 +175,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	public function setBindDataAndGetBindKey($key, $values, $from, $compare) {
 		$bindType = $this->getBindDataType($key);
 		if ($compare == enum\Where::between) {
-			$key1 = ":" . $from . "_" . $key . "_" . rand();
+			$key1 = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 			$key2 = ":" . $from . "_" . $key . "_" . rand();
 			if (!empty($values)) {
 				$this->bindData[] = [$key1, $values[0], $bindType];
@@ -185,7 +186,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			$in_betweenBindKey = "(";
 			$i = 0;
 			foreach ($values as $key => $value) {
-				$bindKey = ":" . $from . "_" . $key . "_" . rand();
+				$bindKey = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 				$in_betweenBindKey .= $bindKey;
 				if ($i != count($values) - 1) {
 					$in_betweenBindKey .= ",";
@@ -197,7 +198,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			}
 			return $in_betweenBindKey . ")";
 		} else {
-			$bindKey = ":" . $from . "_" . $key . "_" . rand();
+			$bindKey = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 			if (!empty($values)) {
 				$this->bindData[] = [$bindKey, $values, $bindType];
 			}

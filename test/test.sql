@@ -2,7 +2,7 @@
 * @Author: lerko
 * @Date:   2017-05-31 12:12:49
 * @Last Modified by:   lerko
-* @Last Modified time: 2017-06-06 18:09:45
+* @Last Modified time: 2017-06-12 17:32:31
 */ 
 SHOW TABLES;
 
@@ -110,3 +110,5 @@ INNER JOIN `Parent` AS `parent` ON `Marry`.`pid`=`parent`.`id`
 INNER JOIN `Mother` ON `Marry`.`mid`=`Mother`.`id`
 GROUP BY `Mother`.`id`
 HAVING `Mother`.`id` = 1;
+
+select count(*) from Parent;

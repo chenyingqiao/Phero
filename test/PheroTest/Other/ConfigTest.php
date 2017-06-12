@@ -9,7 +9,7 @@ use Symfony\Component\Cache\Simple\RedisCache;
  * @Author: lerko
  * @Date:   2017-06-08 14:33:17
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-08 20:54:41
+ * @Last Modified time: 2017-06-12 15:35:49
  */
 class ConfigTest extends BaseTest
 {
@@ -30,5 +30,11 @@ class ConfigTest extends BaseTest
 		$data=["aaa"=>2,"232"=>time()];
 		CacheOperationByConfig::save("ying",$data,10);
 		var_dump(CacheOperationByConfig::read("ying"));
+	}
+
+	public function testArrayCacheOnRedisCache(){
+		$data=["aaa"=>2,"232"=>time()];
+		$redis=RedisCache::createConnection('redis://127.0.0.1');
+		$redis->set("RedisArrayTest",$data);
 	}
 }

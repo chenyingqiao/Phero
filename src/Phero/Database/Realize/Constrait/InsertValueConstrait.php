@@ -5,6 +5,7 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
+use Phero\System\Tool;
 
 /**
  * 列约束
@@ -49,6 +50,7 @@ class InsertValueConstrait implements interfaces\IConstrait, interfaces\IBindDat
 				$field = $this->getTablePropertyNodeOver1($value, new note\Field());
 
 				$bind_key = ":" . $value->getName() . "_" . $index;
+				$bind_key=Tool::clearSpecialSymbal($bind_key);
 				$this->ValueList[] = $bind_key;
 				if ($field != null) {
 					$this->bindData[] = [$bind_key, $value_, note\Field::typeTrunPdoType($field->type)];

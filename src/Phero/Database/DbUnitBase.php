@@ -185,6 +185,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 
 	public function dumpSql() {
 		var_dump($this->dumpSql);
+		var_dump($this->error());
 	}
 
 	public function sql() {
@@ -271,6 +272,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @param    [type]                   $Field [description]
 	 */
 	public static function FF($Field){
-		return "`".self::Inc()->getNameByCleverWay(self::Inc())."`.`$Field`";
+		//这里调用了Inc使得实例池中的数据会被清空
+		return "`".self::lastInc()->getNameByCleverWay(self::lastInc())."`.`$Field`";
 	}
 }
