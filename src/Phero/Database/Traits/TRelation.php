@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-09 10:47:34
+ * @Last Modified time: 2017-06-14 14:21:36
  */
 
 namespace Phero\Database\Traits;
@@ -81,7 +81,7 @@ trait TRelation {
                     $parent_entiy_relation_key=$foreigns[$property_name];
                     $result_entiy->$relation_key=$entiy->$parent_entiy_relation_key;
                     //关联插入需要对关联的数据自动赋值
-					$properties[$property_name] = $entiy->$property_name;
+					$properties[$property_name] = $result_entiy;
 				} else {
 					$properties[$property_name]['relation'] = $resolve;
 					$entiy_resolve = $value->resolve(new Entiy());

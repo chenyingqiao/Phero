@@ -36,9 +36,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * 返回影响的行数
 	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
 	 * @param  array  $data [绑定的数据]
-	 * @return [type]       [返回影响的行数]
+	 * @return [type]       [返回影响的行数 0 就是没有修改或者插入成功]
 	 */
-	public function exec($sql, $data = []) {
+	public function exec($sql, $data = [],$type=RelType::insert) {
         $this->enableRelation=$this->getRelationIsEnable($this->entiy);
         $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
@@ -64,7 +64,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 		$is_realtion = false;
 		if ($result&&$this->enableRelation) {
-			$realtion_effect = $this->relation_insert($this->entiy);
+			$realtion_effect = $this->exec_relation($this->entiy,$type);
 			if (isset($relation_data) && $relation_data > 0) {
 				return $result;
 			} else {
@@ -229,25 +229,26 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	/**
 	 * 更新 插入 删除   本身不使用事务进行包裹
-	 * 需要
-	 * @param $result 需要更新的实体类
+	 * @Author   Lerko
+	 * @DateTime 2017-06-14T11:34:01+0800
+	 * @param    [type]                   $entiy [需要关联写入的实体]
+	 * @param    [type]                   $type  [关联写入的类型]
+	 * @return   [type]                          [返回影响的行数]
 	 */
-	private function exec_relation($result, $type) {
-		$entiy_fill = $this->fillEntiy($this->entiy, $result);
-		if ($entiy_fill instanceof IRelation) {
-			$entiy_fill->rel($type, $entiy_fill);
+	private function exec_relation($entiy,$type) {
+		if ($entiy instanceof IRelation) {
+			$entiy->rel($type, $entiy);
 		}
 		switch ($type) {
-		case RelType::update:{
-				$this->relation_update($entiy_fill);
+			case RelType::update:{
+					return $this->relation_update($entiy);
+				};
+			case RelType::insert:{
+					return $this->relation_insert($entiy);
+				};
+			case RelType::delete:{
+					return $this->relation_delete($entiy);
 			};
-			break;
-		case RelType::insert:{
-				$this->relation_insert($entiy_fill);
-			};
-			break;
-		case RelType::delete:{};
-			break;
 		}
 	}
 

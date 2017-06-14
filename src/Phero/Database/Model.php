@@ -2,6 +2,7 @@
 namespace Phero\Database;
 
 use Phero\Database\Enum\FetchType;
+use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\System\Tool;
@@ -70,7 +71,7 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraitBuild->buildUpdataSql($Entiy);
 		$this->help->setEntiy($Entiy);
 		$bindData=$this->IConstraitBuild->getBindData();
-		$return = $this->help->exec($sql, $bindData);
+		$return = $this->help->exec($sql, $bindData,RelType::update);
 		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
 		return $return;
 	}
@@ -78,7 +79,7 @@ class Model implements interfaces\IModel {
 		$sql = $this->IConstraitBuild->buildDeleteSql($Entiy);
 		$this->help->setEntiy($Entiy);
 		$bindData=$this->IConstraitBuild->getBindData();
-		$effect_rows_num = $this->help->exec($sql, $bindData);
+		$effect_rows_num = $this->help->exec($sql, $bindData ,RelType::delete);
 		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
 		return $effect_rows_num;
 	}
