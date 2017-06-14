@@ -19,6 +19,7 @@ class SetValueConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	public function __construct($Entiy) {
 		if (is_array($Entiy)) {
 			foreach ($Entiy as $key => $value) {
+				$Entiy->map(new RelationEnable,null);
 				$this->resovleEntiy($value, $key);
 			}
 		} else {

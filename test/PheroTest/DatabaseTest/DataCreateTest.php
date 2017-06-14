@@ -14,7 +14,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-02 12:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-06 18:07:07
+ * @Last Modified time: 2017-06-14 14:46:19
  */
 class DataCreateTest extends BaseTest
 {
@@ -24,7 +24,7 @@ class DataCreateTest extends BaseTest
 	 * @return   [type]                   [description]
 	 */
 	public function testCreateData(){
-		(new Parents)->truncate();
+		// (new Parents)->truncate();
 		(new Mother)->truncate();
 		(new Marry)->truncate();
 		(new ParentInfo)->truncate();
@@ -60,13 +60,6 @@ class DataCreateTest extends BaseTest
 				$Model->getSql(),
 				$Model->getError()
 			]);
-
-		$this->TablePrint($UnitsParent[0]->limit(10)->select());
-		$this->TablePrint($UnitsMother[0]->limit(10)->select());
-		$this->TablePrint($UnitsMarry[0]->limit(10)->select());
-		$this->TablePrint($UnitsParentInfo[0]->limit(10)->select());
-		$this->TablePrint($UnitsMotherInfo[0]->limit(10)->select());
-		$this->TablePrint($UnitsChildren[0]->limit(10)->select());
 
 		echo "=============";
 	}

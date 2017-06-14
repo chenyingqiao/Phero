@@ -2,7 +2,7 @@
 * @Author: lerko
 * @Date:   2017-05-31 12:12:49
 * @Last Modified by:   lerko
-* @Last Modified time: 2017-06-12 17:32:31
+* @Last Modified time: 2017-06-14 15:34:39
 */ 
 SHOW TABLES;
 
@@ -112,3 +112,5 @@ GROUP BY `Mother`.`id`
 HAVING `Mother`.`id` = 1;
 
 select count(*) from Parent;
+
+update `Mother` as mother set `id`=12,`name`='update Relation 测试';

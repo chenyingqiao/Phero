@@ -5,13 +5,14 @@ use Phero\Database\DbUnit;
 /**
  * @Author: lerko
  * @Date:   2017-05-31 11:54:57
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-06-04 15:53:14
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-06-14 15:05:54
  */
 class MotherInfo extends DbUnit
 {
 	use Truncate;
 	/**
+	 * @Primary
 	 * @Field[type=int]
 	 * @Primary
 	 * @var [type]

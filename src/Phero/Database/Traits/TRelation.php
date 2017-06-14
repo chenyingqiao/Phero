@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-14 14:21:36
+ * @Last Modified time: 2017-06-14 15:53:37
  */
 
 namespace Phero\Database\Traits;

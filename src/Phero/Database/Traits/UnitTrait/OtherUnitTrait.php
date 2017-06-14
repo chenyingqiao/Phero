@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-07 15:02:23
+ * @Last Modified time: 2017-06-14 15:51:11
  */
 
 trait OtherUnitTrait{
@@ -95,5 +95,20 @@ trait OtherUnitTrait{
 		if($reloadFieldValueFormCache){
 			$this->initField($this->values_cache);
 		}
+	}
+	/**
+	 * 检查更新或者删除的
+	 * @Author   Lerko
+	 * @DateTime 2017-06-14T14:34:31+0800
+	 * @return   [type]                   [description]
+	 */
+	public function checkSaveForUpdateOrDelete(){
+		$primary=$this->getPrimaryKey($this);
+		if(empty($primary)&&empty($this->$primary)&&empty($this->where)){
+			return false;
+		}elseif(!empty($primary)&&!empty($this->$primary)){
+			$this->whereEq($primary,$this->$primary);
+		}
+		return true;
 	}
 }

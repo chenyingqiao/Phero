@@ -93,6 +93,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return [type]                    [description]
 	 */
 	public function update($transaction_type = false) {
+		if(!$this->checkSaveForUpdateOrDelete()){
+			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
+		}
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
@@ -107,6 +110,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return [type]                    [description]
 	 */
 	public function delete($transaction_type = false) {
+		if(!$this->checkSaveForUpdateOrDelete()){
+			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
+		}
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
@@ -121,6 +127,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return [type]                    [description]
 	 */
 	public function insert($transaction_type = false) {
+		if(!$this->checkSaveForUpdateOrDelete()){
+			throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
+		}
 		if ($transaction_type) {
 			$this->model->transaction(Model::begin_transaction);
 		}
@@ -131,6 +140,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	}
 
 	public function replace($transaction_type = false) {
+		if(!$this->checkSaveForUpdateOrDelete()){
+			throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
+		}
 		if ($this->model->getPdoDriverType() != enum\PdoDriverType::PDO_MYSQL) {
 			throw new \Exception("mysql驱动才支持replace", 1);
 		}
@@ -162,6 +174,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return array 绑定的value数组
 	 */
 	public function fetchSql(&$sql="",$type=FetchType::select) {
+		$this->checkSaveForUpdateOrDelete();
 		$bindValues = $this->model->fetchSql($this,$type);
 		$this->dumpSql = $this->model->getSql();
 		$sql=$this->dumpSql;
@@ -190,6 +203,10 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 
 	public function sql() {
 		return $this->dumpSql;
+	}
+
+	public function setSql($sql){
+		$this->dumpSql=$sql;
 	}
 
 	private $errormsg;
