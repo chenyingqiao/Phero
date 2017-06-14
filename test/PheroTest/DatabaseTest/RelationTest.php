@@ -10,7 +10,7 @@ use PheroTest\DatabaseTest\Unit\MotherInfo;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 17:00:10
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-14 15:52:05
+ * @Last Modified time: 2017-06-14 16:27:11
  */
 class RelationTest extends BaseTest
 {
@@ -53,5 +53,19 @@ class RelationTest extends BaseTest
 		$this->TablePrint($Mother->sql());
 		$this->TablePrint($Mother->error());
 		$this->TablePrint($Mother->info->sql());
+	}
+
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-06-14T16:16:25+0800
+	 * @return   [type]                   [description]
+	 */
+	public function deleteRelation(){
+		$Mother=new Mother;
+		$Mother->id=12;
+		$Mother->delete();
+		$this->TablePrint($Mother->sql());
+		$this->TablePrint($Mother->error());
 	}
 }
