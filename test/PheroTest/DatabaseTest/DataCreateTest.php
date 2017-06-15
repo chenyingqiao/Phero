@@ -14,7 +14,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-02 12:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-14 14:46:19
+ * @Last Modified time: 2017-06-15 14:47:00
  */
 class DataCreateTest extends BaseTest
 {
@@ -24,7 +24,7 @@ class DataCreateTest extends BaseTest
 	 * @return   [type]                   [description]
 	 */
 	public function testCreateData(){
-		// (new Parents)->truncate();
+		(new Parents)->truncate();
 		(new Mother)->truncate();
 		(new Marry)->truncate();
 		(new ParentInfo)->truncate();
