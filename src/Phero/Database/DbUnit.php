@@ -82,6 +82,8 @@ class DbUnit extends DbUnitBase {
 					$this->$call([$argument[0], $argument[1], enum\Where::get($compser),$Con]);
 				}else if(count($argument)==3){
 					$this->$call([$argument[0], $argument[1], enum\Where::get($compser), $Con], null, false, $argument[2]);
+				}elseif(count($argument)==1&&strstr($compser,"is")){
+					$this->$call([$argument[0],"", enum\Where::get($compser), $Con]);
 				}
 			}
 		}

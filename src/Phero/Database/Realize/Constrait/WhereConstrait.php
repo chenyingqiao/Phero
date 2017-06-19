@@ -173,6 +173,9 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	 * @param [type] $compare [比较符号]
 	 */
 	public function setBindDataAndGetBindKey($key, $values, $from, $compare) {
+		if(empty($values)){
+			return "";
+		}
 		$bindType = $this->getBindDataType($key);
 		if ($compare == enum\Where::between) {
 			$key1 = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
