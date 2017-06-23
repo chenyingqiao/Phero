@@ -47,19 +47,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 				$sql = $this->pdo->prepare($sql);
 			} catch (\PDOException $e) {
 				$this->error=$e->getMessage();
-			}
-			if(empty($sql)){
-				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
 				return 0;
 			}
-			$this->sql_bind_execute($sql, $data);
-		} else {
-			if ($sql instanceof \PDOStatement) {
-				$this->sql_bind_execute($sql, $data);
-			} else {
+			if(empty($sql)){
+				$this->error="sql prepare 失败 请检查表名或者字段名称或者语句结构是否错误！";
 				return 0;
 			}
 		}
+		$this->sql_bind_execute($sql, $data);
 		$result = $sql->rowCount();
 
 		$is_realtion = false;
@@ -89,19 +84,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 				$sql = $this->pdo->prepare($sql);
 			} catch (\PDOException $e) {
 				$this->error=$e->getMessage();
+				return 0;
 			}
 			if(empty($sql)){
 				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
 				return 0;
 			}
-			$this->sql_bind_execute($sql, $data);
-		} else {
-			if ($sql instanceof \PDOStatement) {
-				$this->sql_bind_execute($sql, $data);
-			} else {
-				return array();
-			}
 		}
+		$this->sql_bind_execute($sql, $data);
 		$result_data = [];
 		while ($result = $sql->fetch($this->mode)) {
 		    if($this->enableRelation){
@@ -133,14 +123,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
 				yield 0;
 			}
-			$this->sql_bind_execute($sql, $data);
-		} else {
-			if ($sql instanceof \PDOStatement) {
-				$this->sql_bind_execute($sql, $data);
-			} else {
-				yield null;
-			}
 		}
+		$this->sql_bind_execute($sql, $data);
 		while ($result = $sql->fetch($this->mode)) {
 		    //开启relation就进行自动关联
 		    if($this->enableRelation){
