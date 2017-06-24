@@ -118,25 +118,29 @@ trait TConstraitTableDependent {
 	public final function getTablePropertyNode($Entiy, $propertyName, $nodeClass) {
 		$property = $this->getTablePropertySingle($Entiy, $propertyName);
 		if ($property == false) {
-			throw new \Exception(get_class($Entiy)." entiy not exist ".$propertyName);
+			return false;
 		}
 		return $property->resolve($nodeClass);
 	}
 
 	/**
 	 * 处理on链接的字符串 如"$.uid=#.id"
+	 * 如果不包含$#的话直接返回传入的数据
 	 * @param  [type] $Entiy     [被关联的实体]
 	 * @param  [type] $JoinEntiy [关联的实体]
 	 * @return [type]            [description]
 	 */
 	public final function getTableOn($Entiy, $JoinEntiy, $on) {
+		if(!strstr($on,"$") && !strstr($on, '#')){
+			return $on;
+		}
 		$nameOfEntiy = $this->getNameByCleverWay($Entiy);
 		if (is_string($JoinEntiy)) {
 			$nameOfJoinEntiy = $JoinEntiy;
 		} else {
 			$nameOfJoinEntiy = $this->getNameByCleverWay($JoinEntiy);
 		}
-		$on = str_replace(["$", "#"], [$nameOfEntiy, $nameOfJoinEntiy], $on);
+		$on = str_replace(["$", "#"], ["`{$nameOfEntiy}`", "`{$nameOfJoinEntiy}`"], $on);
 		return $on;
 	}
 	/**
@@ -160,9 +164,14 @@ trait TConstraitTableDependent {
 		foreach ($propertys as $key => $value) {
 			$primary=$value->getNode(new Primary());
 			if(isset($primary)){
-				return $value->getNode(new Field());
+				$Field= $value->getNode(new Field());
+				if(isset($Field->name)){
+					return $Field->name;
+				}
+				return $value->getName();
 			}
 		}
 		return null;
 	}
+
 }

@@ -1,32 +1,69 @@
 <?php
 namespace PheroTest;
 
+use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit as unit;
+use Phero\Database\DbUnit;
+use Phero\Map\NodeReflectionClass;
+use Phero\System\Config;
 
-class Test extends \PHPUnit_Framework_TestCase {
-	public function testSelect() {
-		$video_user = new unit\video_user();
-		$video_user_list = $video_user->select();
-		$this->assertEmpty($video_user_list);
-		// return $video_user_list;
-	}
-	public function testPushAndPop() {
-		$stack = [];
-		$this->assertEquals(0, count($stack));
+class Test extends BaseTest {
+    public function testEmpty()
+    {
+        $stack = [];
+        $this->assertEmpty($stack);
+        echo "testEmpty";
+        return $stack;
+    }
 
-		array_push($stack, 'foo');
-		$this->assertEquals('foo', $stack[count($stack) - 1]);
-		$this->assertEquals(1, count($stack));
+    /**
+     * @depends testEmpty
+     */
+    public function testPush(array $stack)
+    {
+        array_push($stack, 'foo');
+        $this->assertEquals('foo', $stack[count($stack)-1]);
+        $this->assertNotEmpty($stack);
+        echo "testPush";
+        return $stack;
+    }
 
-		$this->assertEquals('foo', array_pop($stack));
-		$this->assertEquals(0, count($stack));
-	}
+    /**
+     * @depends testPush
+     * @test
+     */
+    public function Pop(array $stack)
+    {
+        $this->assertEquals('foo', array_pop($stack));
+        $this->assertEmpty($stack);
+        echo "Pop";
+    }
 
-	/**
-	 * @test
-	 */
-	public function Stringlen() {
-		$str = 'abc';
-		$this->assertEquals(3, strlen($str));
-	}
+    public function testInterfaces(){
+        $reflection=new NodeReflectionClass(new DbUnit);
+        var_dump($reflection->getInterfaceNames());
+        $interfaceMothers=new NodeReflectionClass("Phero\System\Interfaces\Section\ISectionCacheRead");
+        var_dump($interfaceMothers->getMethods());
+    }
+
+    public function testConfigSet(){
+        var_dump(Config::config("cache"));
+    }
+    // /**
+    //  * @Author   Lerko
+    //  * @DateTime 2017-06-02T09:39:41+0800
+    //  * @after
+    //  */
+    // public function tearDownPop(){
+    //     echo "{asdf}";
+    // }
+
+    // /**
+    //  * @Author   Lerko
+    //  * @DateTime 2017-06-02T09:39:41+0800
+    //  * @after
+    //  */
+    // public static function tearDowntestPush(){
+    //     echo "{asdf2}";
+    // }
 }

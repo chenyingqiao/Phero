@@ -37,6 +37,9 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 	public function addItem(interfaces\IConstrait $Constrait) {
 		$this->Constraits[$Constrait->getType()] = $Constrait;
 	}
+	public function clearItem(){
+		$this->Constraits=[];
+	}
 	public function getConstraits() {
 		return $this->Constraits;
 	}
@@ -69,6 +72,7 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
 		$bindData2 = $this->Constraits[MysqlConstraitBuild::Having]->getBindData();
 		$this->bindData = array_merge($bindData1, $bindData2);
+		$this->clearItem();
 		return $sql;
 	}
 	/**
@@ -92,6 +96,7 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 		}
 		$sql = $sql_head . " into " . $this->getTableName($Entiy) . " (" . $this->fragment(MysqlConstraitBuild::Field) . ") values " . $this->fragment(MysqlConstraitBuild::Value) . ";";
 		$this->bindData = $this->Constraits[MysqlConstraitBuild::Value]->getBindData();
+		$this->clearItem();
 		return $sql;
 	}
 
@@ -114,10 +119,11 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 		} else {
 			$as = '';
 		}
-		$sql = "update " . $this->getTableName($Entiy) . $as . " set " . $this->fragment(MysqlConstraitBuild::Set) . $this->fragment(MysqlConstraitBuild::Where) . ";";
+		$sql = "update `" . $this->getTableName($Entiy)."`" . $as . " set " . $this->fragment(MysqlConstraitBuild::Set) . $this->fragment(MysqlConstraitBuild::Where) . ";";
 		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
 		$bindData2 = $this->Constraits[MysqlConstraitBuild::Set]->getBindData();
 		$this->bindData = array_merge($bindData1, $bindData2);
+		$this->clearItem();
 		return $sql;
 	}
 
@@ -130,9 +136,10 @@ class MysqlConstraitBuild implements interfaces\IConstraitBuild, interfaces\IBin
 		if (empty($this->Constraits) && !empty($Entiy)) {
 			$this->addItem(new Constraits\WhereConstrait($Entiy, false));
 		}
-		$sql = "delete from " . $this->getTableName($Entiy) . $this->fragment(MysqlConstraitBuild::Where) . ";";
+		$sql = "delete from `" . $this->getTableName($Entiy) ."`". $this->fragment(MysqlConstraitBuild::Where) . ";";
 		$bindData1 = $this->Constraits[MysqlConstraitBuild::Where]->getBindData();
 		$this->bindData = $bindData1;
+		$this->clearItem();
 		return $sql;
 	}
 

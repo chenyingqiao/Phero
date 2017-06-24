@@ -5,8 +5,8 @@ namespace Phero\Map\Note;
  * 表关联注解
  */
 class Relation {
-	CONST OO = 'oo';
-	CONST OM = 'om';
+	CONST OO = 'oo';// one to one
+	CONST OM = 'om';// one to many
 
 	/**
 	 * 关联的类型  oo om

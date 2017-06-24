@@ -2,8 +2,8 @@
 /**
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-04-08 10:44:04
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-06-14 15:53:37
  */
 
 namespace Phero\Database\Traits;
@@ -26,6 +26,7 @@ trait TRelation {
      * @return bool 返回结果
      */
     private function getRelationIsEnable($Entiy){
+    	if(is_array($Entiy)&&isset($Entiy[0]))$Entiy=$Entiy[0];
     	if(empty($Entiy)){
     		return false;
     	}
@@ -57,7 +58,7 @@ trait TRelation {
 	 * @param  [type] $entiy [description]
 	 * @return [type]        [description]
 	 */
-	private function getRelation($entiy) {
+	private function getRelation($entiy,$relType=RelType::select) {
 		$nodeReflectionClass = new NodeReflectionClass($entiy);
 		$relation = $nodeReflectionClass->getProperties();
 		//取得关联的全部外键
@@ -67,9 +68,12 @@ trait TRelation {
 			$resolve = $value->resolve(new Relation());
 			if ($resolve) {
 				$property_name = $value->getName();
-				if ($entiy->$property_name) {
+				if ($relType!=RelType::select) {
 				    //关联插入需要对关联的数据自动赋值
 				    $result_entiy=$entiy->$property_name;
+				    if(empty($result_entiy)){
+				    	continue;
+				    }
                     $relation_key=$resolve->key;
                     if(empty($foreigns[$property_name])){
                         throw new \Exception("foreign key nonentity");
@@ -77,7 +81,7 @@ trait TRelation {
                     $parent_entiy_relation_key=$foreigns[$property_name];
                     $result_entiy->$relation_key=$entiy->$parent_entiy_relation_key;
                     //关联插入需要对关联的数据自动赋值
-					$properties[$property_name] = $entiy->$property_name;
+					$properties[$property_name] = $result_entiy;
 				} else {
 					$properties[$property_name]['relation'] = $resolve;
 					$entiy_resolve = $value->resolve(new Entiy());
@@ -105,10 +109,10 @@ trait TRelation {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
-				$foreign_key = $value['foreign'];
-				if (!isset($foreign_key)) {
+				if (!isset($value['foreign'])) {
 					continue;
 				}
+				$foreign_key = $value['foreign'];
 				$entiy = $this->buildEntiyByNode($entiy, $value);
 				if (empty($entiy)) {
 					continue;
@@ -130,16 +134,19 @@ trait TRelation {
 	 * @return [type]        [返回的是插入的行数]
 	 */
 	public function relation_insert($entiy) {
-		$relation = $this->getRelation($entiy);
+		if(is_array($entiy)){
+			$entiy=$entiy[0];
+		}
+		$relation = $this->getRelation($entiy,RelType::insert);
 		$effect = false;
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
-				$foreign_key = $value['foreign'];
-				if (!isset($foreign_key)) {
+				if (!isset($value['foreign'])) {
 					continue;
 				}
+				$foreign_key = $value['foreign'];
 				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::insert);
 				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
 				if (empty($entiy)) {
@@ -158,16 +165,16 @@ trait TRelation {
 	 * @return [type]        [description]
 	 */
 	public function relation_update($entiy) {
-		$relation = $this->getRelation($entiy);
+		$relation = $this->getRelation($entiy,RelType::update);
 		$effect = false;
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
-				$foreign_key = $value['foreign'];
-				if (!isset($foreign_key)) {
+				if (!isset($value['foreign'])) {
 					continue;
 				}
+				$foreign_key = $value['foreign'];
 				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::update);
 				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
 				if (empty($entiy)) {
@@ -186,14 +193,14 @@ trait TRelation {
 	 * @return [type]        [description]
 	 */
 	public function relation_delete($entiy) {
-		$relation = $this->getRelation($entiy);
+		$relation = $this->getRelation($entiy,RelType::delete);
 		$effect = false;
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
 				$foreign_key = $value['foreign'];
-				if (!isset($foreign_key)) {
+				if (!isset($value['foreign'])) {
 					continue;
 				}
 				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::delete);
@@ -279,7 +286,6 @@ trait TRelation {
 			break;
 		case RelType::insert:{
 				$entiy = $data->$rel;
-				var_dump($entiy);
 				if(empty($entiy)){
 					return null;
 				}

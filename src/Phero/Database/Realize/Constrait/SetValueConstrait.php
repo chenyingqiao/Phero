@@ -6,6 +6,7 @@ use Phero\Database\Realize as realize;
 use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
 use Phero\Map\Note\Field;
+use Phero\System\Tool;
 
 /**
  *生成 field和数据的sql片段
@@ -18,6 +19,7 @@ class SetValueConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	public function __construct($Entiy) {
 		if (is_array($Entiy)) {
 			foreach ($Entiy as $key => $value) {
+				$Entiy->map(new RelationEnable,null);
 				$this->resovleEntiy($value, $key);
 			}
 		} else {
@@ -58,6 +60,7 @@ class SetValueConstrait implements interfaces\IConstrait, interfaces\IBindData {
 				$field = $this->getTablePropertyNodeOver1($value, new note\Field());
 
 				$bind_key = ":" . $name . "_" . $index . "_set";
+				$bind_key=Tool::clearSpecialSymbal($bind_key);
 				$split = $index != count($propertys) - 1 ? "," : "";
 				$this->sql .= "`".$name . "`=" . $bind_key . $split;
 

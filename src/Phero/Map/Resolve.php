@@ -2,13 +2,16 @@
 namespace Phero\Map;
 
 use Phero\Cache as cache;
+use Phero\Cache\CacheOperationByConfig;
 use Phero\Cache\LocalFileCache;
 use Phero\System as sys;
+use Phero\System\Config;
 
 /**
  *
  */
 trait Resolve {
+
 	/**
 	 * 解析相应的注解 如果没有本注解就返回空
 	 * 并且吧注解映射到实体类中
@@ -20,28 +23,43 @@ trait Resolve {
 			$NodeReflection = $NodeClass;
 		} else {
 			$NodeReflection = new \ReflectionClass($NodeClass);
-		}
-		// $SelfReflectionClass = new \ReflectionClass(get_parent_class);
-		// $NodeName = get_parent_class();
-
-		/**
-		 * 这里可以通过缓存获取注解
-		 *
-		 * 缓存通过类名称（包括命名空间）作为key
-		 */
-		if (sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
-			//有注入缓存注解才会进行注解缓存
-			$parent_class_name = get_parent_class();
-			if ($parent_class_name == "ReflectionClass") {
-				$NodeKey = $this->getName();
-			} else {
-				$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+			$NodeName = $NodeReflection->getName();
+			if(isset($this->entiy)){
+				$Node=$this->entiy->getMap($NodeName);
+				if($Node!==false){
+					return $Node;
+				}
 			}
-			$NodeKey = md5($NodeKey);
-			$cache = LocalFileCache::read($NodeKey);
-			if (!empty($cache)) {return $cache;}
+		}
+		$debug=Config::config("debug");
+		$Node=CacheOperationByConfig::read($this->getCacheKey());
+		if(!empty($Node)&&empty($debug)){
+			return $Node;
 		}
 
+		$match=$this->_getDocCommentMatch($NodeReflection);
+		if(empty($match)){
+			return null;
+		}
+		$paramData=$this->_getDocNodeData($match);
+		$Node=$this->_checkNodePropertiseAndAssign($NodeReflection,$paramData);
+		// if(empty($debug))
+		CacheOperationByConfig::save($this->getCacheKey(),$Node);
+
+		return $Node;
+	}
+
+	/**
+	 * 取得node
+	 * @param  [type] $node [description]
+	 * @return [type]       [description]
+	 */
+	public function getNode($node) {
+		$nowNode = $this->resolve($node);
+		return empty($nowNode) ? $node : $nowNode;
+	}
+	
+	private function _getDocCommentMatch($NodeReflection){
 		$str = $this->getDocComment();
 		$NodeName = $NodeReflection->getName();
 		$NodeName = explode('\\', $NodeName);
@@ -52,7 +70,10 @@ trait Resolve {
 		if (empty($result)) {
 			return null;
 		}
+		return $match;
+	}
 
+	private function _getDocNodeData($match){
 		$ResolveNodeName = $match[1][0];
 		$ResolveNodeParam = $match[2][0];
 		$ResolveNodeParam = explode(',', $ResolveNodeParam);
@@ -76,6 +97,10 @@ trait Resolve {
 				$ParamMap[$param[0]] = $param[1];
 			}
 		}
+		return $ParamMap;
+	}
+
+	private function _checkNodePropertiseAndAssign($NodeReflection,$ParamMap){
 		$ReflectionPropertys = $NodeReflection->getProperties(\ReflectionProperty::IS_PUBLIC);
 		$ParamMapKeys = array_keys($ParamMap); //参数的key
 
@@ -87,24 +112,17 @@ trait Resolve {
 				$Node->$PropertyName = $ParamMap[$PropertyName];
 			}
 		}
-
-		/**
-		 * 这里可以缓存注解
-		 */
-		if (sys\DI::get(cache\Enum\CacheConfig::injectCache)) {
-			LocalFileCache::save($NodeKey, $Node);
-		}
-
 		return $Node;
 	}
 
-	/**
-	 * 取得node
-	 * @param  [type] $node [description]
-	 * @return [type]       [description]
-	 */
-	public function getNode($node) {
-		$nowNode = $this->resolve($node);
-		return empty($nowNode) ? $node : $nowNode;
+	private function getCacheKey(){
+		$parent_class_name = get_parent_class();
+		if ($parent_class_name == "ReflectionClass") {
+			$NodeKey = $this->getName();
+		} else {
+			$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+		}
+		$NodeKey = md5($NodeKey);
+		return $NodeKey;
 	}
 }

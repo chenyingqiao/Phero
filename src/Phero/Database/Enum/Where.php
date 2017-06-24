@@ -17,7 +17,8 @@ class Where {
 	CONST gt = " > ";
 	CONST ge = " >= ";
 	CONST regexp = " regexp ";
-	CONST is = " is ";
+	CONST isnotnull = " is not null";
+	CONST isnull = " is null";
 
 	CONST exists =" exists ";
 	CONST not_exists =" not exists ";
@@ -57,6 +58,10 @@ class Where {
 			return Where::all;
 		}else if($key=='any'){
 			return Where::any;
+		}else if($key=='isnotnull'){
+			return Where::isnotnull;
+		}else if($key=='isnull'){
+			return Where::isnull;
 		} else {
 			return "";
 		}

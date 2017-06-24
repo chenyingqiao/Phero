@@ -5,6 +5,7 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
+use Phero\System\Tool;
 
 /**
  * 列约束
@@ -45,10 +46,11 @@ class InsertValueConstrait implements interfaces\IConstrait, interfaces\IBindDat
 		$propertys = $this->getTableProperty($Entiy);
 		foreach ($propertys as $key => $value) {
 			$value_ = $value->getValue($Entiy);
-			if (isset($value_) && $value_ !== false) {
+			if (!empty($value_) && $value_ !== false) {
 				$field = $this->getTablePropertyNodeOver1($value, new note\Field());
 
 				$bind_key = ":" . $value->getName() . "_" . $index;
+				$bind_key=Tool::clearSpecialSymbal($bind_key);
 				$this->ValueList[] = $bind_key;
 				if ($field != null) {
 					$this->bindData[] = [$bind_key, $value_, note\Field::typeTrunPdoType($field->type)];
@@ -70,7 +72,7 @@ class InsertValueConstrait implements interfaces\IConstrait, interfaces\IBindDat
 	 * @return [type] [description]
 	 */
 	public function SqlFragmentPiece() {
-		$this->sql .= "( ";
+		$this->sql .= "(";
 		$i = 0;
 		foreach ($this->ValueList as $key => $value) {
 			if ($i < count($this->ValueList) - 1) {
