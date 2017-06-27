@@ -16,7 +16,7 @@ use Zend\Code\Generator\PropertyGenerator;
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 13:49:28
+ * @Last Modified time: 2017-06-27 15:16:34
  */
 class UnitBuilder
 {
@@ -80,11 +80,15 @@ class UnitBuilder
 		$DbHelp=new MysqlDbHelp();
 		$field=$DbHelp->queryResultArray("select * from information_schema.columns where table_schema = '{$dbname}' and table_name = '{$tablename}';");
 		foreach ($field as $key => $value) {
-			if(strstr($value["DATA_TYPE"],"int"))
+			if(strstr($value["DATA_TYPE"],"int")!==false)
 				$type="int";
 			else
 				$type="string";
-			$classes->addPropertyFromGenerator($this->_createProperty($value['COLUMN_NAME'],$type,$tablename,$value['COLUMN_COMMENT']));
+			if(strstr($value['COLUMN_KEY'],'PRI')!==false)
+				$is_primary=true;
+			else
+				$is_primary=false;
+			$classes->addPropertyFromGenerator($this->_createProperty($value['COLUMN_NAME'],$type,$tablename,$value['COLUMN_COMMENT'],$is_primary));
 		}
 		$content=$classes->generate();
 		file_put_contents($fileFloder."/".$classname.".php", "<?php\n".$content);
@@ -126,7 +130,7 @@ class UnitBuilder
 	 * @param    Field                    $field [description]
 	 * @return   [type]                          [description]
 	 */
-	private function _createPropertyDocBlock(Field $field,$discription=""){
+	private function _createPropertyDocBlock(Field $field,$discription="",$is_primary=false){
 		$GeneratorData=[];
 		$name=$field->name;
 		$type=$field->type;
@@ -139,6 +143,8 @@ class UnitBuilder
 		else $description.="]";
 		$GeneratorData['tags'][]=["name"=>"Field","description"=>$description];
 		$GeneratorData['longDescription']=$discription;
+		if($is_primary)
+			$GeneratorData['tags'][]=["name"=>"Primary","description"=>""];
 		return DocBlockGenerator::fromArray($GeneratorData);
 	}
 
@@ -149,12 +155,12 @@ class UnitBuilder
 	 * @param    [type]                   $name [description]
 	 * @return   [type]                         [description]
 	 */
-	private function _createProperty($name,$type,$tablename,$discription=""){
+	private function _createProperty($name,$type,$tablename,$discription="",$is_primary=false){
 		$field=new Field();
 		$field->name=$name;
 		$field->type=$type;
 		$field->alias=$this->base64_sp($tablename.".".$name);
-		return (new PropertyGenerator($name))->setDocBlock($this->_createPropertyDocBlock($field,$discription));
+		return (new PropertyGenerator($name))->setDocBlock($this->_createPropertyDocBlock($field,$discription,$is_primary));
 	}
 
 	/**

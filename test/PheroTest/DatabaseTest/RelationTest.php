@@ -10,13 +10,12 @@ use PheroTest\DatabaseTest\Unit\MotherInfo;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 17:00:10
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 14:15:59
+ * @Last Modified time: 2017-06-27 15:00:52
  */
 class RelationTest extends BaseTest
 {
 	/**
 	 * 目前只支持单个的插入关联
-	 * @test
 	 * @Author   Lerko
 	 * @DateTime 2017-06-14T14:05:58+0800
 	 * @return   [type]                   [description]

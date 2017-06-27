@@ -64,7 +64,7 @@ trait Resolve {
 		$NodeName = $NodeReflection->getName();
 		$NodeName = explode('\\', $NodeName);
 		$NodeName = $NodeName[count($NodeName) - 1];
-		$result = preg_match_all("/@$NodeName(\[([\S]+){0,}\]){0,}/", $str, $match);
+		$result = preg_match_all("/@{$NodeName}[\s]*(\[([\S]+){0,}\]){0,}/", $str, $match);
 
 		//没有找到注解
 		if (empty($result)) {
