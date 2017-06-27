@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 14:18:37
+ * @Last Modified time: 2017-06-27 15:28:08
  */
 
 trait OtherUnitTrait{
@@ -104,7 +104,6 @@ trait OtherUnitTrait{
 	 */
 	public function checkSaveForUpdateOrDelete(){
 		$primary=$this->getPrimaryKey($this);
-		var_dump($this->where);
 		if(empty($primary)&&empty($this->$primary)&&empty($this->where)){
 			return false;
 		}elseif(!empty($primary)&&!empty($this->$primary)&&empty($this->where)){

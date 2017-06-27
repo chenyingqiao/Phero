@@ -12,7 +12,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-08 16:45:36
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 11:37:07
+ * @Last Modified time: 2017-06-27 15:28:42
  */
 class SelectCacheTest extends BaseTest
 {
@@ -59,15 +59,11 @@ class SelectCacheTest extends BaseTest
 		$ParentsJoinField=Parents::FF("id");
 		$dataBigTable=Marry::Inc()->join(Parents::Inc(),"{$MarryJoinField}={$ParentsJoinField}")
 			->whereLike(Parents::FF("name"),"parent1__")->select();
-		var_dump(Marry::lastInc()->sql());
-		var_dump(Marry::lastInc()->error());
 		$this->TablePrint($dataBigTable);
 		$this->timer(false,"小表join大表耗时：");
 		$this->timer();
 		$dataSmallTable=Parents::Inc()->join(Marry::Inc(),"{$MarryJoinField}={$ParentsJoinField}")
 			->whereLike(Parents::FF("name"),"parent1__")->select();
-		var_dump(Parents::lastInc()->sql());
-		var_dump(Parents::lastInc()->error());
 		$this->TablePrint($dataSmallTable);		
 		$this->timer(false,"大表join小表耗时：");
 	}

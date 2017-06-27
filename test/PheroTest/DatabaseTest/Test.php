@@ -41,9 +41,7 @@ class Test extends BaseTest {
 
     public function testInterfaces(){
         $reflection=new NodeReflectionClass(new DbUnit);
-        var_dump($reflection->getInterfaceNames());
         $interfaceMothers=new NodeReflectionClass("Phero\System\Interfaces\Section\ISectionCacheRead");
-        var_dump($interfaceMothers->getMethods());
     }
 
     public function testConfigSet(){
