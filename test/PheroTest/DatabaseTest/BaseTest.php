@@ -3,6 +3,13 @@
 namespace PheroTest\DatabaseTest;
 
 use PHPUnit\Framework\TestCase;
+use PheroTest\DatabaseTest\Unit\Children;
+use PheroTest\DatabaseTest\Unit\Marry;
+use PheroTest\DatabaseTest\Unit\Mother;
+use PheroTest\DatabaseTest\Unit\MotherInfo;
+use PheroTest\DatabaseTest\Unit\ParentInfo;
+use PheroTest\DatabaseTest\Unit\Parents;
+use Phero\Database\Model;
 use Phero\System\DI;
 use Webmozart\Console\IO\BufferedIO;
 use Webmozart\Console\UI\Component\Table;
@@ -10,7 +17,7 @@ use Webmozart\Console\UI\Component\Table;
  * @Author: lerko
  * @Date:   2017-05-31 15:53:30
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-08 14:36:48
+ * @Last Modified time: 2017-06-27 12:16:07
  */
 class BaseTest extends TestCase
 {
@@ -20,8 +27,29 @@ class BaseTest extends TestCase
 	 * @DateTime 2017-06-02T09:49:02+0800
 	 */
 	public static function setUpConfig(){
-		self::TablePrint("初始化配置文件位置");
+		self::TablePrint("初始化数据库");
 		DI::inj("config",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
+		Parents::Inc()->truncate();
+		Mother::Inc()->truncate();
+		Marry::Inc()->truncate();
+		MotherInfo::Inc()->truncate();
+		ParentInfo::Inc()->truncate();
+		self::_createData();
+	}
+
+	/**
+	 * @afterClass
+	 * @Author   Lerko
+	 * @DateTime 2017-06-27T11:42:58+0800
+	 * @return   [type]                   [description]
+	 */
+	public static function tearDownClearData(){
+		Parents::Inc()->truncate();
+		Mother::Inc()->truncate();
+		Marry::Inc()->truncate();
+		MotherInfo::Inc()->truncate();
+		ParentInfo::Inc()->truncate();
+		self::TablePrint("清空数据库");
 	}
 
 	/**
@@ -78,5 +106,38 @@ class BaseTest extends TestCase
 				$this->TablePrint([$msg,$time]);
 			}
 		}
+	}
+
+	/**
+	 * @Author   Lerko
+	 * @DateTime 2017-06-02T12:02:59+0800
+	 * @return   [type]                   [description]
+	 */
+	private static function _createData(){
+		(new Parents)->truncate();
+		(new Mother)->truncate();
+		(new Marry)->truncate();
+		(new ParentInfo)->truncate();
+		(new MotherInfo)->truncate();
+		(new Children)->truncate();
+		for ($i=0; $i < 10; $i++) {
+			$parentsName="parent{$i}";
+			$motherName="mother{$i}";
+			$UnitsParent[]=new Parents(["name"=>$parentsName]);
+			$UnitsMother[]=new Mother(["name"=>$motherName]);
+			$UnitsMarry[]=new Marry(["pid"=>$i+1,"mid"=>$i+1]);
+			$UnitsParentInfo[]=new ParentInfo(["pid"=>$i+1,"phone"=>"1506013{$i}03"]);
+			$UnitsMotherInfo[]=new MotherInfo(["mid"=>$i+1,"email"=>"6143257{$i}@qq.com"]);
+			$UnitsChildren[]=new Children(['name'=>"小明{$i}","marry_id"=>$i+1]);
+			$UnitsChildren[]=new Children(['name'=>"小黄{$i}","marry_id"=>$i+1]);
+		}
+		$Model=new Model();
+		$Model->insert($UnitsParent);
+		$Model->insert($UnitsMother);
+		$Model->insert($UnitsMarry);
+		$Model->insert($UnitsParentInfo);
+		$Model->insert($UnitsMotherInfo);
+		$Model->insert($UnitsChildren);
+
 	}
 }

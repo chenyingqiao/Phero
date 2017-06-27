@@ -12,7 +12,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-08 16:45:36
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-12 17:32:58
+ * @Last Modified time: 2017-06-27 11:37:07
  */
 class SelectCacheTest extends BaseTest
 {
@@ -53,7 +53,7 @@ class SelectCacheTest extends BaseTest
 	 * @DateTime 2017-06-12T11:05:29+0800
 	 * @return   [type]                   [description]
 	 */
-	public function testJoinBigTable(){
+	public function JoinBigTable(){
 		$this->timer();
 		$MarryJoinField=Marry::FF("pid");
 		$ParentsJoinField=Parents::FF("id");

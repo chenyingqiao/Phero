@@ -70,11 +70,12 @@ class PdoWarehouse {
 			throw new \Exception("Do not specify a configuration file", 1);
 		}
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
-		if ($pdo_di) {
+		if (!empty($pdo_di)) {
+			$this->pdo=$pdo_di;
 			return;
 		}
 		if (array_key_exists("dsn", $config)) {
-			DI::inj(DatabaseConfig::pdo_instance, new PDO($config['dsn'], $config['user'], $config['password']));
+			$this->pdo= new PDO($config['dsn'], $config['user'], $config['password']);
 		} elseif (array_key_exists('master', $config)) {
 			$master = $config['master'];
 			$slave_pdo = [];
@@ -93,11 +94,10 @@ class PdoWarehouse {
 				$value=$config['master'];
 				$master_pdo=new PDO($value['dsn'], $value['user'], $value['password']);
 			}
-			$pdo = [
+			$this->pdo = [
 				"master" => $master_pdo,
 				"slave" => $slave_pdo,
 			];
-			DI::inj(DatabaseConfig::pdo_instance, $pdo);
 		}
 	}
 }
