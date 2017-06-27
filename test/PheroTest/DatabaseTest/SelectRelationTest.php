@@ -10,7 +10,7 @@ use Phero\Map\Note\RelationEnable;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 13:26:40
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-07 09:12:48
+ * @Last Modified time: 2017-06-27 15:56:02
  */
 class SelectRelationTest extends BaseTest
 {
@@ -33,6 +33,21 @@ class SelectRelationTest extends BaseTest
 		$this->assertArrayNotHasKey("info", $data);
 	}
 
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-06-27T15:55:20+0800
+	 */
+	public function RelationJoinChange(){
+		$data=Mother::Inc()->relSelect();
+		var_export($data);
+	}
+
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-06-27T15:54:31+0800
+	 */
 	public function Inc(){
 		Mother::Inc()->select();
 		Parents::Inc()->select();

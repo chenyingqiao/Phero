@@ -5,6 +5,7 @@ use Phero\Database\DbUnitBase;
 use Phero\Database\Enum as enum;
 use Phero\Database\Enum\Where;
 use Phero\Database\Realize\MysqlDbHelp;
+use Phero\Map\Note\RelationEnable;
 
 /**
  * 实体化数据的载入载体
@@ -21,6 +22,11 @@ class DbUnit extends DbUnitBase {
 			return $data[0];
 		}
 		return [];
+	}
+
+	public function relFind($field=null){
+		$this->map(new RelationEnable);
+		$this->find($field);
 	}
 
 	/**
@@ -59,6 +65,23 @@ class DbUnit extends DbUnitBase {
 		$this->_callWhereAndHavingCatch($function_name,$argument);
 		$this->_callPolymerization($function_name,$argument);
 		return $this;
+	}
+
+	public function relSelect($yield=false){
+		$this->map(new RelationEnable);
+		return parent::select($yield);
+	}
+	public function relUpdate($transaction_type=false){
+		$this->map(new RelationEnable);
+		return parent::update($transaction_type);
+	}
+	public function relInsert($transaction_type=false){
+		$this->map(new RelationEnable);
+		return parent::insert($transaction_type);
+	}
+	public function relDelete($transaction_type=false){
+		$this->map(new RelationEnable);
+		return parent::delete($transaction_type);
 	}
 
 	private function _callWhereAndHavingCatch($function_name, $argument){

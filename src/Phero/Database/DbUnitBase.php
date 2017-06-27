@@ -247,8 +247,8 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * 存储map 用来外部设置注解数据
 	 * @Author   Lerko
 	 * @DateTime 2017-06-04T14:35:25+0800
-	 * @param    [type]                   $noteName [description]
-	 * @param    [type]                   $value    [description]
+	 * @param    [type]                   $noteName [相关node的类名]
+	 * @param    [type]                   $value    [如果前面noteName是string的话，写入的值就是$value]
 	 * @return   [type]                             [description]
 	 */
 	public function map($note,$value=false)
