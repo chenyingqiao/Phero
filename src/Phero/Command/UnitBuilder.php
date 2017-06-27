@@ -16,7 +16,7 @@ use Zend\Code\Generator\PropertyGenerator;
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 11:21:30
+ * @Last Modified time: 2017-06-27 13:49:28
  */
 class UnitBuilder
 {
@@ -76,7 +76,7 @@ class UnitBuilder
 		$tableNode=new Table();
 		$tableNode->name=$tablename;
 		$tableNode->alias=$this->base64_sp($tablename);
-		$classes->setDocblock($this->_createTableDocBlock($tableNode,new RelationEnable));
+		$classes->setDocblock($this->_createTableDocBlock($tableNode));
 		$DbHelp=new MysqlDbHelp();
 		$field=$DbHelp->queryResultArray("select * from information_schema.columns where table_schema = '{$dbname}' and table_name = '{$tablename}';");
 		foreach ($field as $key => $value) {

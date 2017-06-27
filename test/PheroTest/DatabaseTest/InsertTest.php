@@ -12,7 +12,7 @@ use Phero\System\DI;
  * @Author: lerko
  * @Date:   2017-05-31 14:23:48
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 12:13:58
+ * @Last Modified time: 2017-06-27 13:48:03
  */
 
 class InsertTest extends BaseTest
@@ -54,8 +54,6 @@ class InsertTest extends BaseTest
 		}
 		$result=$Unit->count();
 		$this->assertEquals($result,100);
-		$this->TablePrint($Unit->sql());
-		$this->TablePrint($sql);
 		$Unit->truncate();
 		$t2=microtime(true);
 		echo "\n耗时".round($t2-$t1,5)."秒\n";

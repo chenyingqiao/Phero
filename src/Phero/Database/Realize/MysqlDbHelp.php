@@ -63,6 +63,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			if (isset($relation_data) && $relation_data > 0) {
 				return $result;
 			} else {
+				$this->error="关联表数据写入失败";
 				return 0;
 			}
 		}
