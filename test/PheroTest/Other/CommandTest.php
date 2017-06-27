@@ -8,7 +8,7 @@ use PheroTest\DatabaseTest\BaseTest;
  * @Author: lerko
  * @Date:   2017-06-23 16:46:35
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-23 17:04:44
+ * @Last Modified time: 2017-06-27 11:16:49
  */
 
 class CommandTest extends BaseTest
@@ -60,14 +60,14 @@ class CommandTest extends BaseTest
 		  'job'  => '<blink>Engineer</blink>',
 		]);
 
-		//输入
-		$input = $climate->input('How you doin?');
-		$response = $input->prompt();
+		// //输入
+		// $input = $climate->input('How you doin?');
+		// $response = $input->prompt();
 
-		//输入选项
-		$input = $climate->input('How you doin?');
-		$input->accept(['Fine', 'Ok']);
-		$response = $input->prompt();
+		// //输入选项
+		// $input = $climate->input('How you doin?');
+		// $input->accept(['Fine', 'Ok']);
+		// $response = $input->prompt();
 
 		//选项进度条
 		$languages = [
@@ -81,7 +81,7 @@ class CommandTest extends BaseTest
 		$progress = $climate->progress()->total(count($languages));
 
 		foreach ($languages as $key => $language) {
-		  $progress->current($key + 1, $language);
+		  $progress->current($key + 1);
 
 		  // Simulate something happening
 		  usleep(80000);

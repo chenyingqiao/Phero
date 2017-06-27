@@ -40,9 +40,9 @@ class PdoWarehouse {
 			$hit_classname = "Phero\Database\Realize\Hit\RandomSlaveHit";
 		}
 		$this->pdo_hit = new $hit_classname;
-		$this->init($database_config);
 		//注入后解析
 		$this->inject();
+		$this->init($database_config);
 		if (is_array($this->pdo)&&!empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
 			if ($pattern == 0) {
 				$pdo = $this->pdo_hit->hit($this->pdo['slave']);
@@ -66,7 +66,7 @@ class PdoWarehouse {
 		return $pdo;
 	}
 	private function init($config) {
-		if(!$config){
+		if(!$config&&empty($this->pdo)){
 			throw new \Exception("Do not specify a configuration file", 1);
 		}
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
