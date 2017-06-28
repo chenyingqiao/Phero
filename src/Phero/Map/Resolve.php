@@ -23,16 +23,16 @@ trait Resolve {
 			$NodeReflection = $NodeClass;
 		} else {
 			$NodeReflection = new \ReflectionClass($NodeClass);
-			$NodeName = $NodeReflection->getName();
-			if(isset($this->entiy)){
-				$Node=$this->entiy->getMap($NodeName);
-				if($Node!==false){
-					return $Node;
-				}
+		}
+		$NodeName = $NodeReflection->getName();
+		if(isset($this->entiy)){
+			$Node=$this->entiy->getMap($NodeName);
+			if($Node!==false){
+				return $Node;
 			}
 		}
 		$debug=Config::config("debug");
-		$Node=CacheOperationByConfig::read($this->getCacheKey());
+		$Node=CacheOperationByConfig::read($this->getCacheKey($NodeName));
 		if(!empty($Node)&&empty($debug)){
 			return $Node;
 		}
@@ -44,7 +44,7 @@ trait Resolve {
 		$paramData=$this->_getDocNodeData($match);
 		$Node=$this->_checkNodePropertiseAndAssign($NodeReflection,$paramData);
 		// if(empty($debug))
-		CacheOperationByConfig::save($this->getCacheKey(),$Node);
+		CacheOperationByConfig::save($this->getCacheKey($NodeName),$Node);
 
 		return $Node;
 	}
@@ -115,14 +115,13 @@ trait Resolve {
 		return $Node;
 	}
 
-	private function getCacheKey(){
+	private function getCacheKey($nodeName){
 		$parent_class_name = get_parent_class();
 		if ($parent_class_name == "ReflectionClass") {
 			$NodeKey = $this->getName();
 		} else {
-			$NodeKey = $this->getDeclaringClass()->getName() . ":" . $this->getName();
+			$NodeKey = $this->getDeclaringClass()->getName() .':'.$nodeName. ":" . $this->getName();
 		}
-		$NodeKey = md5($NodeKey);
 		return $NodeKey;
 	}
 }

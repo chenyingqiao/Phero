@@ -2,7 +2,7 @@
 namespace Phero\Map\Note;
 
 /**
- *
+ *这个是一个注解链接的查询描述
  */
 class Entiy {
 	/**

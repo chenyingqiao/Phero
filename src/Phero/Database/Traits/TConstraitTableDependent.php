@@ -24,6 +24,23 @@ trait TConstraitTableDependent {
 	}
 
 	/**
+	 * 获取Property的名称 如果@Field注解有name就取Field的name没有就用本身的名称
+	 * @Author   Lerko
+	 * @DateTime 2017-06-28T11:54:54+0800
+	 * @param    [type]                   $Entiy        [description]
+	 * @param    [type]                   $propertyName [description]
+	 * @return   [type]                                 [description]
+	 */
+	public final function getPropertyNameClever($Entiy,$propertyName){
+		$property=$this->getTablePropertySingle($Entiy,$propertyName);
+		$name=$property->resolve(new Field)->name;
+		if(empty($name)){
+			$name=$property->getName();
+		}
+		return $name;
+	}
+
+	/**
 	 * 获取表的别名
 	 * @param  [type] $Entiy [description]
 	 * @return [type]        [description]
@@ -86,6 +103,14 @@ trait TConstraitTableDependent {
 		return $propertys;
 	}
 
+	/**
+	 * 获取类相关属性的反射类
+	 * @Author   Lerko
+	 * @DateTime 2017-06-28T11:47:10+0800
+	 * @param    [type]                   $Entiy        [description]
+	 * @param    [type]                   $propertyName [可以使Field的name,也可以是属性名称]
+	 * @return   [type]                                 [description]
+	 */
 	public final function getTablePropertySingle($Entiy, $propertyName) {
 		$propertys = $this->getTableProperty($Entiy);
 		$name = [];
@@ -112,7 +137,7 @@ trait TConstraitTableDependent {
 	 * 返回属性相应的注解
 	 * @param  [type] $Entiy        [实体类]
 	 * @param  [type] $propertyName [属性名称]
-	 * @param  [type] $nodeClass    [注解名称]
+	 * @param  [type] $nodeClass    [注解的实例化]
 	 * @return [type]               [description]
 	 */
 	public final function getTablePropertyNode($Entiy, $propertyName, $nodeClass) {
