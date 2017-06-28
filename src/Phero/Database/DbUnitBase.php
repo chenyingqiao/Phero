@@ -209,7 +209,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		$this->dumpSql=$sql;
 	}
 
-	private $errormsg;
+	private $errormsg=false;
 	public function error()
 	{
 		return $this->errormsg;

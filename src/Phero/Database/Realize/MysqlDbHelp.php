@@ -20,7 +20,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	private $mode, $classname;
 
-	private $error;
+	private $error=false;
 
 	private $entiy;
 

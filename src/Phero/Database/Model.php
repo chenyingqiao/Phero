@@ -28,7 +28,7 @@ class Model implements interfaces\IModel {
 
 	protected $IConstraitBuild;
 
-	private $sql, $error;
+	private $sql, $error=false;
 
 	public function __construct() {
 		$this->help = new realize\MysqlDbHelp();
