@@ -122,6 +122,6 @@ trait Resolve {
 		} else {
 			$NodeKey = $this->getDeclaringClass()->getName() .':'.$nodeName. ":" . $this->getName();
 		}
-		return $NodeKey;
+		return base64_encode($NodeKey);
 	}
 }

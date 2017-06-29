@@ -12,7 +12,7 @@ use Phero\System\Config;
  * @Author: lerko
  * @Date:   2017-06-08 14:18:21
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-28 13:29:32
+ * @Last Modified time: 2017-06-29 10:07:05
  */
 class NodeResolveTest extends BaseTest
 {	
@@ -25,7 +25,7 @@ class NodeResolveTest extends BaseTest
 	 */
 	public function resolveDebugEnable(){
 		$this->timer();
-		for ($i=0; $i < 10000; $i++) { 
+		for ($i=0; $i < 100; $i++) { 
 			$reflection=new NodeReflectionClass(new Mother);
 			$table=$reflection->resolve(new Table);
 		}
@@ -42,7 +42,7 @@ class NodeResolveTest extends BaseTest
 		$this->timer();
 		//关闭debug
 		Config::config("debug",false);
-		for ($i=0; $i < 10000; $i++) { 
+		for ($i=0; $i < 100; $i++) { 
 			$reflection=new NodeReflectionClass(new Mother);
 			$table=$reflection->resolve(new Table);
 		}
