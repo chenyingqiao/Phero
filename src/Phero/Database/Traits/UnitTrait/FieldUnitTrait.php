@@ -1,11 +1,13 @@
 <?php 
 
 namespace Phero\Database\Traits\UnitTrait;
+
+use Phero\Database\DbUnitBase;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 16:59:28
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-07 15:02:41
+ * @Last Modified time: 2017-06-29 14:04:58
  */
 
 trait FieldUnitTrait{
@@ -17,11 +19,20 @@ trait FieldUnitTrait{
 	protected $values_cache, $inifalse;
 	public function getField() {return $this->field;}
 
-	public function field($field) {
+	public function field($field,$as="") {
 		if (is_array($field)) {
 			foreach ($field as $key => $value) {
 					$this->field[] = $value;
 			}
+		}elseif(is_object($field)&&$field instanceof DbUnitBase){
+			$sql="";
+			$field->fetchSql($sql);
+			if(empty($as)){
+				$as=$field->getField()[0];
+			}
+			$sql=rtrim($sql,";");
+			$field="({$sql}) as {$as}";
+			$this->field[]=$field;
 		} else {
 				$this->field[] = $field;
 		}

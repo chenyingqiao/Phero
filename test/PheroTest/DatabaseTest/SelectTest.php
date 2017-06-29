@@ -6,6 +6,7 @@ use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit\Children;
 use PheroTest\DatabaseTest\Unit\Marry;
 use PheroTest\DatabaseTest\Unit\Mother;
+use PheroTest\DatabaseTest\Unit\MotherInfo;
 use PheroTest\DatabaseTest\Unit\Parents;
 use Phero\Database\DbUnit;
 use Phero\Database\Enum\OrderType;
@@ -17,7 +18,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-19 18:01:58
+ * @Last Modified time: 2017-06-29 14:09:36
  */
 class SelectTest extends BaseTest
 {
@@ -144,6 +145,19 @@ class SelectTest extends BaseTest
 		$this->assertEquals($sql,"select ThisIsMyFuckingFun(`Mother`.`id`),`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
 	}
 
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-06-29T13:53:38+0800
+	 * @return   [type]                   [description]
+	 */
+	public function selectObjectField(){
+		$sql="";
+		MotherInfo::Inc(false)->field("email")->whereEq(MotherInfo::FF("mid"),Mother::FF("id"));
+		Mother::Inc()->field(MotherInfo::lastInc(),"email")->fetchSql($sql);
+		$this->assertEquals($sql,"");
+	}
+
 
 	/**
 	 * @depends clone testSelectJoin
@@ -166,7 +180,7 @@ class SelectTest extends BaseTest
 	 * @param    Marry                    $marry [description]
 	 * @return   [type]                          [description]
 	 */
-	public function testGroupByAndHave(Marry $marry){
+	public function testGroupByAndHaveing(Marry $marry){
 		$sql="";
 		$marry->sum("id")->group(Mother::FF("id"))->havingEq(Mother::FF("id"),1)->fetchSql($sql);
 		//$this->TablePrint($sql);
