@@ -12,7 +12,7 @@ use Phero\Database\Traits\TRelation;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 17:00:10
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-04 14:53:41
+ * @Last Modified time: 2017-07-04 15:51:03
  */
 class RelationTest extends BaseTest
 {
@@ -84,5 +84,18 @@ class RelationTest extends BaseTest
 	 */
 	public function getRelationInfo(){
 		var_dump($this->getRelation(Mother::Inc()));
+	}
+
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-07-04T15:47:14+0800
+	 * @param    string                   $value [description]
+	 * @return   [type]                          [description]
+	 */
+	public function selectRelation($value='')
+	{
+		$motherinfo=Mother::Inc()->limit(1,3)->relSelect();
+		$this->assertNotEmpty(array_shift($motherinfo)['info']);
 	}
 }
