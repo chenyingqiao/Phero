@@ -9,6 +9,6 @@ namespace Phero\Database\Interfaces;
  * 这里写入的是读取规则
  */
 
-interface IDbServletHit {
-	public function hit($ServletArr);
+interface IDbSlaveHit {
+	public function hit($slave);
 }

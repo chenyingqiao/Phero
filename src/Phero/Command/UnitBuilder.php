@@ -16,7 +16,7 @@ use Zend\Code\Generator\PropertyGenerator;
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 15:16:34
+ * @Last Modified time: 2017-07-03 15:43:09
  */
 class UnitBuilder
 {
@@ -51,11 +51,30 @@ class UnitBuilder
 		$input->defaultTo('');
 		$password=$input->prompt();
 
+		$input=$climate->input("是否只生成某些表？(默认为全部，表名逗号隔开)");
+		$input->defaultTo('');
+		$tables_input=$input->prompt();
+		if(!empty($tables_input)){
+			$tables_input=explode(",",$tables_input);
+		}
+
 		DI::inj("pdo_instance",new \PDO("mysql:dbname={$dbname};host={$host}",$username,$password));
 		$DbHelp=new MysqlDbHelp();
 		$tables=$DbHelp->queryResultArray("show tables");
-		$progress=$climate->progress()->total(count($tables));
-		foreach ($tables as $key => $value) {
+		$tables_gen=[];
+		if(empty($tables_input)){
+			foreach ($tables_input as $key => $value) {
+				if(in_array($value,$tables_input)){
+					$tables_gen[]=$value;
+				}else{
+					$climate->red("$value 不存在");
+				}
+			}
+		}else{
+			$tables_gen=$tables;
+		}
+		$progress=$climate->progress()->total(count($tables_gen));
+		foreach ($tables_gen as $key => $value) {
 			$value=$value["Tables_in_{$dbname}"];
 			$progress->current($key + 1);
 			$this->_createPhp($value,$dbname,$namespace,$fileFloder);
