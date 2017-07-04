@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-14 15:53:37
+ * @Last Modified time: 2017-07-04 14:54:20
  */
 
 namespace Phero\Database\Traits;
@@ -68,7 +68,7 @@ trait TRelation {
 			$resolve = $value->resolve(new Relation());
 			if ($resolve) {
 				$property_name = $value->getName();
-				if ($relType!=RelType::select) {
+				if ($relType==RelType::insert||$relType==RelType::update||$relType==RelType::delete) {
 				    //关联插入需要对关联的数据自动赋值
 				    $result_entiy=$entiy->$property_name;
 				    if(empty($result_entiy)){
@@ -82,7 +82,7 @@ trait TRelation {
                     $result_entiy->$relation_key=$entiy->$parent_entiy_relation_key;
                     //关联插入需要对关联的数据自动赋值
 					$properties[$property_name] = $result_entiy;
-				} else {
+				}else {
 					$properties[$property_name]['relation'] = $resolve;
 					$entiy_resolve = $value->resolve(new Entiy());
 					$properties[$property_name]['entiy'] = $entiy_resolve;
@@ -209,8 +209,10 @@ trait TRelation {
 					continue;
 				}
 				$effect = $entiy->delete();
+				var_dump($value);
 			} else {
 				$effect = $value->delete();
+				var_dump($value);
 			}
 		}
 		return $effect;
