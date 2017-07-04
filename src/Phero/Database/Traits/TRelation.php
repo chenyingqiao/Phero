@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-04 14:54:20
+ * @Last Modified time: 2017-07-04 15:39:25
  */
 
 namespace Phero\Database\Traits;
@@ -209,10 +209,8 @@ trait TRelation {
 					continue;
 				}
 				$effect = $entiy->delete();
-				var_dump($value);
 			} else {
 				$effect = $value->delete();
-				var_dump($value);
 			}
 		}
 		return $effect;
