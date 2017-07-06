@@ -53,7 +53,7 @@ return [
 DI::inj("config",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
 ```
 
-##执行第一条sql
+## 执行第一条sql
 
 ```php
 use Phero\Database\Db;
@@ -64,7 +64,7 @@ Db::exec("insert into phero.Mother (`name`) values (`test`)");//执行sql操作�
 
 ## 第一个ORM
 
-###创建一个Unit
+### 创建一个Unit
 
 ```php
 <?php 
