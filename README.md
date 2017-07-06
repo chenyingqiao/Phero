@@ -13,9 +13,10 @@
 - 命令行模型生成
 - 查询即时缓存（redis，mamcache，filesystem等）
 - 嵌套事务
-- 首先建立配置文件
 
-## 配置文件内容
+## 首先建立配置文件
+
+### 配置文件内容
 
 ```php
 use Symfony\Component\Cache\Simple\RedisCache;
