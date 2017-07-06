@@ -3,6 +3,9 @@ namespace PheroTest;
 
 use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit as unit;
+use Phero\Database\DbUnit;
+use Phero\Map\NodeReflectionClass;
+use Phero\System\Config;
 
 class Test extends BaseTest {
     public function testEmpty()
@@ -36,21 +39,29 @@ class Test extends BaseTest {
         echo "Pop";
     }
 
-    /**
-     * @Author   Lerko
-     * @DateTime 2017-06-02T09:39:41+0800
-     * @after
-     */
-    public function tearDownPop(){
-        echo "{asdf}";
+    public function testInterfaces(){
+        $reflection=new NodeReflectionClass(new DbUnit);
+        $interfaceMothers=new NodeReflectionClass("Phero\System\Interfaces\Section\ISectionCacheRead");
     }
 
-    /**
-     * @Author   Lerko
-     * @DateTime 2017-06-02T09:39:41+0800
-     * @after
-     */
-    public static function tearDowntestPush(){
-        echo "{asdf2}";
+    public function testConfigSet(){
+        var_dump(Config::config("cache"));
     }
+    // /**
+    //  * @Author   Lerko
+    //  * @DateTime 2017-06-02T09:39:41+0800
+    //  * @after
+    //  */
+    // public function tearDownPop(){
+    //     echo "{asdf}";
+    // }
+
+    // /**
+    //  * @Author   Lerko
+    //  * @DateTime 2017-06-02T09:39:41+0800
+    //  * @after
+    //  */
+    // public static function tearDowntestPush(){
+    //     echo "{asdf2}";
+    // }
 }

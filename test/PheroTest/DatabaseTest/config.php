@@ -1,9 +1,11 @@
 <?php 
+
+use Symfony\Component\Cache\Simple\RedisCache;
 /**
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 13:52:31
+ * @Last Modified time: 2017-06-08 13:10:18
  */
 return [
 	"database" => [
@@ -25,4 +27,6 @@ return [
 		// 	],
 		// ],
 	],
+	"cache"=>RedisCache::createConnection('redis://127.0.0.1'),
+	"debug"=>true
 ];

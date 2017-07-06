@@ -9,11 +9,15 @@ use Phero\System\DI;
 class Config {
 	protected static $config_path;
 	protected static $config;
-	public static function config($key) {
-		self::$config_path = DI::get("all_config_path");
+	public static function config($key,$value=null) {
+		self::$config_path = DI::get("config");
 		if (self::$config_path) {
 			if (!self::$config) {
 				self::$config = require_once self::$config_path;
+			}
+			if($value!==null){
+				self::$config[$key]=$value;
+				return $value;
 			}
 			return isset(self::$config[$key]) ? self::$config[$key] : null;
 		}

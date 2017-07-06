@@ -51,30 +51,19 @@ class FieldConstrait implements interfaces\IConstrait {
 	public function setFieldByEntiy($Entiy) {
 		$tableAlias = $this->getNameByCleverWay($Entiy);
 		$property = $this->getTableProperty($Entiy);
-		$fieldTemp = $Entiy->getFieldTemp();
 		$this->userSetField($Entiy);
 		foreach ($property as $key => $value) {
 			$fieldName = $value->getName();
-			$temp = null;
-			if (!empty($fieldTemp[$fieldName])) {
-				$temp = $fieldTemp[$fieldName];
-				$Entiy->$fieldName = true;
-			}
-
-			if ($Entiy->$fieldName === false) {
-				//属性值未true的才添加到field
+			$FieldNode=$value->getNode(new note\Field());
+			if ($Entiy->$fieldName === false||empty($FieldNode)) {
+				//有Field注解的才能添加到
 				continue;
 			}
-			$FieldNode=$value->getNode(new note\Field());
-			if ($Entiy->have_as) {
-				$as = $FieldNode->alias;
-			} else {
-				$as = null;
-			}
+			$as = $FieldNode->alias;
 			if(!empty($FieldNode->name)){
 				$fieldName=$FieldNode->name;
 			}
-			$this->setField($fieldName, $tableAlias, $as, $temp);
+			$this->setField($fieldName, $tableAlias, $as);
 		}
 	}
 	/**
@@ -87,7 +76,7 @@ class FieldConstrait implements interfaces\IConstrait {
 		$tableAlias = $this->getNameByCleverWay($Entiy);
 		if (count($field) > 0) {
 			foreach ($field as $key => $value) {
-				$this->setField($value, $tableAlias, null, null);
+				$this->setField($value, $tableAlias, null);
 			}
 		}
 	}
@@ -99,32 +88,15 @@ class FieldConstrait implements interfaces\IConstrait {
 	 * @param [type] $as    [别名]
 	 * @param [type] $temp  [字段使用函数]
 	 */
-	public function setField($name, $table = null, $as = null, $temp = null) {
+	public function setField($name, $table = null, $as = null) {
 		if (is_array($name)) {
 			return $this;
 		}
 		$index = count($this->fieldList);
 		if (empty($table)) {
-			$this->fieldList[$index][$index] = [$name];
-			$this->fieldList[$index][$index][] = $as;
-			$this->fieldList[$index][$index][] = $temp;
+			$this->fieldList[$index][$index] = [$name,$as];
 		} else {
-			$this->fieldList[$index][$table] = [$name];
-			$this->fieldList[$index][$table][] = $as;
-			$this->fieldList[$index][$table][] = $temp;
-		}
-		return $this;
-	}
-	/**
-	 * 批量设置
-	 * @param Array $arr ["table"=>[name,as,temp]]
-	 */
-	public function setFieldByList(Array $arr) {
-		foreach ($arr as $key => $value) {
-			if (!is_array($value)) {
-				$value = [$value];
-			}
-			$this->fieldList[][$key] = $value;
+			$this->fieldList[$index][$table] = [$name,$as];
 		}
 		return $this;
 	}
@@ -144,28 +116,19 @@ class FieldConstrait implements interfaces\IConstrait {
 			}
 
 			$i == count($this->fieldList) - 1 ? $split = " " : $split = ",";
-
-			$table = is_numeric($key)&&$this->isEntiyField($value[0]) ? "" : $key;
-			$name = !empty($value[0]) ? "`".$value[0]."`" : "";
+			$table = is_numeric($key)? "" : $key;
+			$name=$value[0];
 			$as = !empty($value[1]) ? " as " . $value[1] : "";
-			$temp = !empty($value[2]) ? $value[2] : "";
-
-			$fieldSql = "`".$table ."`.". $name;
-
-			if (empty($temp)) {
-				$sql .= $fieldSql . $as . $split;
-			} else {
-				$sql .= str_replace("?", $fieldSql, $temp) . $as . $split; //替换函数
+			if(!strstr($name,'.')){
+				$name = !empty($value[0]) ? "`".$value[0]."`" : "";
+				$fieldSql = "`".$table ."`.". $name;
 			}
+			else
+				$fieldSql = $name;
+			$sql .= $fieldSql . $as . $split;
 			$i++;
 		}
 		return $sql;
-	}
-
-	private function isEntiyField($value)
-	{
-		$propertys=$this->getTablePropertyNames($this->entiy);
-		return in_array($value);
 	}
 
 	public function getType() {

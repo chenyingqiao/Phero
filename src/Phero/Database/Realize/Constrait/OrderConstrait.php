@@ -37,11 +37,11 @@ class OrderConstrait implements interfaces\IConstrait {
 		if (empty($this->order[0])) {
 			return "";
 		} else {
-			$alias = $this->getNameByCleverWay($this->Entiy);
-			if (empty($alias)) {
+			$alias = $this->getNameByCleverWay($this->Entiy).".";
+			if (empty($alias)||strstr($this->order[0],'.')) {
 				$alias = "";
 			}
-			$sql .= $alias . "." . $this->order[0] . " ";
+			$sql .= $alias.$this->order[0]." ";
 		}
 		return $sql . $this->order[1];
 	}

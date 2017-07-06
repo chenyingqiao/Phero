@@ -6,6 +6,7 @@ use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\Database\Traits as Traits;
 use Phero\Map\Note as note;
+use Phero\System\Tool;
 
 /**
  *where约束
@@ -131,9 +132,9 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			$group2 = ")";
 		}
 
-		//给表的别名加点
-		if (!$this->enableAlias) {$from = "";} else { $from = "`".$from."`.";}
-		$field =$from."`".$key."`";
+		//为字段添加表明前缀
+		if (!$this->enableAlias||strstr($key,'.')) {$from = "";$dit="";} else { $from = "`".$from."`.";$dit="`";}
+		$field ="$from$dit$key$dit";
 		if (!empty($whereTemp)) {
 			$field = str_replace("?", $field, $whereTemp);
 		}
@@ -159,7 +160,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	public function getBindDataType($field) {
 		$type = $this->getTablePropertyNode($this->Entiy, $field, new note\Field());
 		if ($type == false) {
-			return false;
+			return 1;
 		}
 		return note\Field::typeTrunPdoType($type->type);
 	}
@@ -173,12 +174,12 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 	 * @param [type] $compare [比较符号]
 	 */
 	public function setBindDataAndGetBindKey($key, $values, $from, $compare) {
-		$bindType = $this->getBindDataType($key);
-		if ($bindType == false) {
+		if(empty($values)){
 			return "";
 		}
+		$bindType = $this->getBindDataType($key);
 		if ($compare == enum\Where::between) {
-			$key1 = ":" . $from . "_" . $key . "_" . rand();
+			$key1 = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 			$key2 = ":" . $from . "_" . $key . "_" . rand();
 			if (!empty($values)) {
 				$this->bindData[] = [$key1, $values[0], $bindType];
@@ -189,7 +190,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			$in_betweenBindKey = "(";
 			$i = 0;
 			foreach ($values as $key => $value) {
-				$bindKey = ":" . $from . "_" . $key . "_" . rand();
+				$bindKey = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 				$in_betweenBindKey .= $bindKey;
 				if ($i != count($values) - 1) {
 					$in_betweenBindKey .= ",";
@@ -201,7 +202,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			}
 			return $in_betweenBindKey . ")";
 		} else {
-			$bindKey = ":" . $from . "_" . $key . "_" . rand();
+			$bindKey = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 			if (!empty($values)) {
 				$this->bindData[] = [$bindKey, $values, $bindType];
 			}

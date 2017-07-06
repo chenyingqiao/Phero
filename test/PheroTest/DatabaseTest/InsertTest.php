@@ -12,7 +12,7 @@ use Phero\System\DI;
  * @Author: lerko
  * @Date:   2017-05-31 14:23:48
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 12:04:39
+ * @Last Modified time: 2017-06-27 13:48:03
  */
 
 class InsertTest extends BaseTest
@@ -27,9 +27,9 @@ class InsertTest extends BaseTest
 		$Unit=new Mother();
 		$name="now time".rand();
 		$Unit->name=$name;
-		$result=$Unit->fetchSql(FetchType::insert);
-		$sql[]=$Unit->sql();
-		$this->assertEquals($sql[0],"insert into Mother (`name`) values ('{$name}');");
+		$sql="";
+		$result=$Unit->fetchSql($sql,FetchType::insert);
+		$this->assertEquals($sql,"insert into Mother (`name`) values ('{$name}');");
 		$Unit->truncate();
 		$this->TablePrint($sql);
 		$this->TablePrint($result);
@@ -44,6 +44,7 @@ class InsertTest extends BaseTest
 	 */
 	public function testDefaultInsertMany(){
 		$t1=microtime(true);
+		Mother::Inc()->truncate();
 		$sql=[];
 		for ($i=0; $i < 100; $i++) { 
 			$Unit=new Mother(['name'=>"now{$i}"]);
@@ -53,8 +54,6 @@ class InsertTest extends BaseTest
 		}
 		$result=$Unit->count();
 		$this->assertEquals($result,100);
-		$this->TablePrint($Unit->sql());
-		$this->TablePrint($sql);
 		$Unit->truncate();
 		$t2=microtime(true);
 		echo "\n耗时".round($t2-$t1,5)."秒\n";
@@ -68,6 +67,7 @@ class InsertTest extends BaseTest
 	 */
 	public function testDefaultInsertManyInOneSql(){
 		$t1=microtime(true);
+		Mother::Inc()->truncate();
 		$Units=[];
 		for ($i=0; $i < 100; $i++) { 
 			$Unit=new Mother(['name'=>"now{$i}"]);

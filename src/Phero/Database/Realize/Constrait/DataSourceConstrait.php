@@ -36,15 +36,15 @@ class DataSourceConstrait implements interfaces\IConstrait {
 		$this->userSetDataSourse($Entiy);
 
 		$this->joinRecursion($Entiy);
-		// if (count($Entiy->getJoin()) > 0) {
-		// 	foreach ($Entiy->getJoin() as $key => $value) {
-		// 		$this->setJoinType($value[2]);
-		// 		$this->setDatasourse($this->getTableName($value[0]), $this->getTableAlias($value[0]), $this->getTableOn($Entiy, $value[0], $value[1]));
-		// 		$this->userSetDataSourse($value[0]);
-		// 	}
-		// }
 	}
 
+	/**
+	 * 地柜获取$Entiy的join数据 然后放置到datasource中通过getSqlFragment拼接
+	 * @Author   Lerko
+	 * @DateTime 2017-06-06T14:16:00+0800
+	 * @param    [type]                   $Entiy [description]
+	 * @return   [type]                          [description]
+	 */
 	private function joinRecursion($Entiy) {
 		$joinList = $Entiy->getJoin();
 		if (count($joinList) > 0) {

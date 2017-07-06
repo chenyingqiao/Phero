@@ -1,11 +1,13 @@
 <?php 
 
 namespace Phero\Database\Traits\UnitTrait;
+
+use Phero\Database\DbUnitBase;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 16:59:28
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 17:15:14
+ * @Last Modified time: 2017-06-29 14:04:58
  */
 
 trait FieldUnitTrait{
@@ -14,49 +16,26 @@ trait FieldUnitTrait{
 	 * @var array
 	 */
 	protected $field = [];
-		//行列模板
-	protected $fieldTemp = [];
-	public function getFieldTemp() {return $this->fieldTemp;}
+	protected $values_cache, $inifalse;
 	public function getField() {return $this->field;}
 
-	public function field($field, $temp = "") {
-		$temp_arr = [];
-		$has_temp = false;
-		if (!empty($temp)) {
-			$has_temp = true;
-		}
+	public function field($field,$as="") {
 		if (is_array($field)) {
-			if (count($field) != count($temp) && is_array($temp_arr)) {
-				throw new \Exception("field and temp length not equle");
-			}
 			foreach ($field as $key => $value) {
-				if (!$has_temp) {
 					$this->field[] = $value;
-				} else {
-					$temp_arr[$value] = $temp[$key];
-				}
-
 			}
+		}elseif(is_object($field)&&$field instanceof DbUnitBase){
+			$sql="";
+			$field->fetchSql($sql);
+			if(empty($as)){
+				$as=$field->getField()[0];
+			}
+			$sql=rtrim($sql,";");
+			$field="({$sql}) as {$as}";
+			$this->field[]=$field;
 		} else {
-			if (!$has_temp) {
 				$this->field[] = $field;
-			} else {
-				$temp_arr[$field] = $temp;
-			}
-
 		}
-		$this->fieldTemp($temp_arr);
-		return $this;
-	}
-
-	/**
-	 * 设置字段的函数  字段用？标示
-	 * 如  count(?)
-	 * @param  [type] $temp [description]
-	 * @return [type]       [description]
-	 */
-	public function fieldTemp($temp = []) {
-		$this->fieldTemp = $temp;
 		return $this;
 	}
 

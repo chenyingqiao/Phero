@@ -1,0 +1,6 @@
+#!/usr/bin/php -q
+<?php 
+require "vendor/autoload.php";
+use Phero\Command\UnitBuilder;
+$UnitBuilder=new UnitBuilder();
+$UnitBuilder->Builder();

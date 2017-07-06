@@ -40,9 +40,9 @@ class PdoWarehouse {
 			$hit_classname = "Phero\Database\Realize\Hit\RandomSlaveHit";
 		}
 		$this->pdo_hit = new $hit_classname;
-		$this->init($database_config);
 		//注入后解析
 		$this->inject();
+		$this->init($database_config);
 		if (is_array($this->pdo)&&!empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
 			if ($pattern == 0) {
 				$pdo = $this->pdo_hit->hit($this->pdo['slave']);
@@ -54,7 +54,7 @@ class PdoWarehouse {
 		}else{
 			$pdo=$this->pdo;
 		}
-		$charset = Config::config('hit_rule');
+		$charset = Config::config('charset');
 		$charset = empty($charset) ? "utf8" : $charset;
 		$pdo->exec("set names $charset");
 		$pdo->exec("set character_set_client=$charset");
@@ -66,15 +66,16 @@ class PdoWarehouse {
 		return $pdo;
 	}
 	private function init($config) {
-		if(!$config){
+		if(!$config&&empty($this->pdo)){
 			throw new \Exception("Do not specify a configuration file", 1);
 		}
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
-		if ($pdo_di) {
+		if (!empty($pdo_di)) {
+			$this->pdo=$pdo_di;
 			return;
 		}
 		if (array_key_exists("dsn", $config)) {
-			DI::inj(DatabaseConfig::pdo_instance, new PDO($config['dsn'], $config['user'], $config['password']));
+			$this->pdo= new PDO($config['dsn'], $config['user'], $config['password']);
 		} elseif (array_key_exists('master', $config)) {
 			$master = $config['master'];
 			$slave_pdo = [];
@@ -93,11 +94,10 @@ class PdoWarehouse {
 				$value=$config['master'];
 				$master_pdo=new PDO($value['dsn'], $value['user'], $value['password']);
 			}
-			$pdo = [
+			$this->pdo = [
 				"master" => $master_pdo,
 				"slave" => $slave_pdo,
 			];
-			DI::inj(DatabaseConfig::pdo_instance, $pdo);
 		}
 	}
 }
