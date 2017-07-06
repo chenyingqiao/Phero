@@ -60,10 +60,13 @@ use Phero\Database\Db;
 Db::queryResultArray("select * from phero.Mother");//直接返回所有的数据
 Db::query("select * from phero.Mother");//返回一个生成器（yield） 直接遍历循环取出数据，对内存占用小
 Db::exec("insert into phero.Mother (`name`) values (`test`)");//执行sql操作语句
-第一个ORM
+```
 
-创建一个Unit
+## 第一个ORM
 
+###创建一个Unit
+
+```php
 <?php 
 namespace PheroTest\DatabaseTest\Unit;
 use PheroTest\DatabaseTest\Traits\Truncate;
