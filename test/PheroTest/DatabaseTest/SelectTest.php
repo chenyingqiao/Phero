@@ -18,7 +18,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-04 15:46:57
+ * @Last Modified time: 2017-07-07 16:44:43
  */
 class SelectTest extends BaseTest
 {
@@ -141,8 +141,8 @@ class SelectTest extends BaseTest
 	public function selectJoinField(Marry $marry){
 		$sql="";
 		$id=Mother::FF("id");
-		$marry->field("ThisIsMyFuckingFun($id)")->fetchSql($sql);
-		$this->assertEquals($sql,"select ThisIsMyFuckingFun(`Mother`.`id`),`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
+		$marry->field("ThisIsMyFuckingFun($id)","fuckFun")->field("Fun2($id)","fcun2")->fetchSql($sql);
+		$this->assertEquals($sql,"select ThisIsMyFuckingFun(`Mother`.`id`) as fuckFun,Fun2(`Mother`.`id`) as fcun2,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
 	}
 
 	/**
@@ -153,9 +153,10 @@ class SelectTest extends BaseTest
 	 */
 	public function selectObjectField(){
 		$sql="";
-		MotherInfo::Inc(false)->field("email")->whereEq(MotherInfo::FF("mid"),Mother::FF("id"));
-		Mother::Inc()->field(MotherInfo::lastInc(),"email")->fetchSql($sql);
-		$this->assertEquals($sql,"");
+		$id=Mother::FF("id");
+		MotherInfo::Inc(false)->field("email")->field("Fun2($id)","f2")->whereEq(MotherInfo::FF("mid"),Mother::FF("id"));
+		Mother::Inc()->field(MotherInfo::lastInc(),"email")->field("MFUnc($id)","mf2")->fetchSql($sql);
+		$this->assertEquals($sql,"select (select `MotherInfo`.`email`,Fun2(`Mother`.`id`) as f2 from `MotherInfo` where `MotherInfo`.`mid` = '`Mother`.`id`') as email,MFUnc(`Mother`.`id`) as mf2,`Mother`.`id`,`Mother`.`name` from `Mother`;");
 	}
 
 

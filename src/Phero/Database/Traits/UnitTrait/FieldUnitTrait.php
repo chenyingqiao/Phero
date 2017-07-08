@@ -7,7 +7,7 @@ use Phero\Database\DbUnitBase;
  * @Author: lerko
  * @Date:   2017-06-02 16:59:28
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-29 14:04:58
+ * @Last Modified time: 2017-07-07 16:32:27
  */
 
 trait FieldUnitTrait{
@@ -20,11 +20,7 @@ trait FieldUnitTrait{
 	public function getField() {return $this->field;}
 
 	public function field($field,$as="") {
-		if (is_array($field)) {
-			foreach ($field as $key => $value) {
-					$this->field[] = $value;
-			}
-		}elseif(is_object($field)&&$field instanceof DbUnitBase){
+		if(is_object($field)&&$field instanceof DbUnitBase){
 			$sql="";
 			$field->fetchSql($sql);
 			if(empty($as)){
@@ -32,10 +28,12 @@ trait FieldUnitTrait{
 			}
 			$sql=rtrim($sql,";");
 			$field="({$sql}) as {$as}";
-			$this->field[]=$field;
-		} else {
-				$this->field[] = $field;
+		}else if(strstr($field,'(')&&strstr($field,')')){
+			if(!empty($as)){
+				$field="$field as $as";
+			}
 		}
+		$this->field[]=$field;
 		return $this;
 	}
 
