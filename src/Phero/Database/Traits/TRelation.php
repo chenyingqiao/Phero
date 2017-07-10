@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-04 15:39:25
+ * @Last Modified time: 2017-07-10 16:44:27
  */
 
 namespace Phero\Database\Traits;
@@ -99,12 +99,13 @@ trait TRelation {
 
 	/**
 	 * 级联查询
-	 * @param  [type] $entiy [这个是数据实体类  需要包含对应数据]
+	 * @param  [type] $entiy [这个是数据实体类(father) 需要包含对应数据]
 	 * @return [type]        [description]
 	 */
-	public function relation_select($entiy) {
+	public function relation_select(&$result,$entiy) {
 		$relation = $this->getRelation($entiy);
-		$data = [];
+		var_dump($relation);
+		$data=[];
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
@@ -113,20 +114,24 @@ trait TRelation {
 					continue;
 				}
 				$foreign_key = $value['foreign'];
-				$entiy = $this->buildEntiyByNode($entiy, $value);
+				$foreign_rel=$value['foreign_rel'];
+				$entiy = $this->buildEntiyByNode($result, $value);
 				if (empty($entiy)) {
 					continue;
 				}
-				if ($relation_node->type == Relation::OO) {
-					$data[$key] = $entiy->find();
-				} else {
-					$data[$key] = $entiy->select();
+				$data = $entiy->select();
+				foreach ($result as $key => &$value) {
+					$data_filter=array_filter($data,function($v)use($relation_node,$value,$foreign_key){
+						$node_key=$relation_node->key;
+						return $v[$node_key]==$value[$foreign_key];
+					});
+					if ($relation_node->type == Relation::OO) {
+						$data_filter=array_shift($data_filter);
+					}
+					$value[$foreign_rel]=$data_filter;
 				}
-			} else {
-				$data[$key] = $value->select();
 			}
 		}
-		return $data;
 	}
 	/**
 	 * 关联插入  是否需要进行事务处理取决于是否有Transaction这个note
@@ -239,7 +244,7 @@ trait TRelation {
 	/**
 	 * 通过注解来构建实体用来进行更新插入以及删除
 	 * @param  [type] $data [
-	 *                      select:关联key对应的值
+	 *                      select:主表查询的数据
 	 *                      insert:包含数据的entiy
 	 *                      update:更新的数据
 	 *                      delete:和select相同
@@ -248,7 +253,7 @@ trait TRelation {
 	 * @param  [type] $type                     [构建什么类型的entiy]
 	 * @return [type]                           [description]
 	 */
-	private function buildEntiyByNode($data, $nodes, $type = RelType::select) {
+	private function buildEntiyByNode(&$data, $nodes, $type = RelType::select) {
 		$relation_node = $nodes['relation'];
 		$entiy_node = $nodes['entiy'];
 		$rel = $nodes['foreign'];
@@ -269,10 +274,8 @@ trait TRelation {
 				} else {
 					$entiy = new $entiyClass();
 				}
-
 				//设置查询方式
-				$entiy->whereEq($relation_key, $data->$rel);
-
+				$entiy->whereIn($relation_key, array_column($data, $rel));
 				//设置排序
 				if ($entiy_node) {
 					$orderKey = $entiy_node->key;

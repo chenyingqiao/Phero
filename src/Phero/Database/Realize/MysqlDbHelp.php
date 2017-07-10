@@ -94,18 +94,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$this->sql_bind_execute($sql, $data);
 		$result_data = [];
-		while ($result = $sql->fetch($this->mode)) {
-		    if($this->enableRelation){
-                $result_data[] = $this->select_relation($result);
-            }else{
-                $result_data[]=$result;
-            }
-		}
+		$result_data=$sql->fetchAll($this->mode);
+		if($this->enableRelation)
+			$this->relation_select($result_data,$this->entiy);
 		return $result_data;
 	}
 
 	/**
-	 * 返回结果集
+	 * 返回结果集 不支持关联查询
 	 * @param  [type] $sql  [PDOStatement对象或者是sql语句]
 	 * @param  array  $data [绑定的数据]
 	 * @return array [返回结果集]
@@ -127,12 +123,12 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$this->sql_bind_execute($sql, $data);
 		while ($result = $sql->fetch($this->mode)) {
-		    //开启relation就进行自动关联
-		    if($this->enableRelation){
-                yield $this->select_relation($result);
-            }else{
+		    // //开启relation就进行自动关联
+		    // if($this->enableRelation){
+      //           yield $this->select_relation($result);
+      //       }else{
                 yield $result;
-            }
+            // }
 		}
 		yield null;
 	}
@@ -190,27 +186,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		return $this->pdo;
 	}
 
-	/**
-	 * 解析获取关联的数据
-	 * 并且合并到原始数据中
-	 * @param  [type] $result [可以是数组也可以是对象]
-	 * @return [type]         [description]
-	 */
-	private function select_relation($result) {
-		$entiy_fill = $this->fillEntiy($this->entiy, $result);
-		if ($entiy_fill instanceof IRelation) {
-			$entiy_fill->rel(RelType::select, $entiy_fill);
-		}
-		$relation_data = $this->relation_select($entiy_fill);
-		if (is_array($result)) {
-			$result = array_merge($result, $relation_data);
-		} else if (is_object($result)) {
-			foreach ($relation_data as $key => $value) {
-				$result->$key = $value;
-			}
-		}
-		return $result;
-	}
+
 
 	/**
 	 * 更新 插入 删除   本身不使用事务进行包裹
