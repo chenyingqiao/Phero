@@ -68,6 +68,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 		$where = $this->getBuildData($Entiy);
 		$i = 0;
 		foreach ($where as $key => &$value) {
+			//where 分组
 			if(count($value)==1&&array_key_exists("group",$value)){
 				$this->setWhere("","","","","",$value['group'],"");
 				continue;
