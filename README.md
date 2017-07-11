@@ -1,5 +1,3 @@
-# Phero快速入门
-
 ## 介绍
 
 >phero是一个数据库查询的orm类库，注解形式的model以及方便快速的数据库操作方法
@@ -14,55 +12,6 @@
 - 查询即时缓存（redis，mamcache，filesystem等）
 - 嵌套事务
 
-## 首先建立配置文件
-
-### 配置文件内容
-
-```php
-use Symfony\Component\Cache\Simple\RedisCache;
-return [
-    "database" => [
-        # master为主从中的主  slave为从  目前只支持一主多从
-        "master" => [
-            "dsn" => "mysql:dbname=phero;host=127.0.0.1",#pdo链接字符串
-            "user" => "{your username}",
-            "password" => "{your password}",
-        ],
-        // "slave" => [
-        //     [
-        //         "dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",
-        //         "user" => "admin",
-        //         "password" => "password",
-        //     ],
-        //     [
-        //         "dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.4",
-        //         "user" => "admin",
-        //         "password" => "password",
-        //     ],
-        // ],
-    ],
-    #缓存使用的是Symfony的缓存组件 这里可以对缓存组件进行创建 具体看Symfony文档
-    "cache"=>RedisCache::createConnection('redis://127.0.0.1'),
-    #是否开启debug{开启之后注解缓存将会每次都刷新}
-    "debug"=>true
-];
-```
-
-## 设置配置文件的位置
-
-```php
-DI::inj("config",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
-```
-
-## 执行第一条sql
-
-```php
-use Phero\Database\Db;
-Db::queryResultArray("select * from phero.Mother");//直接返回所有的数据
-Db::query("select * from phero.Mother");//返回一个生成器（yield） 直接遍历循环取出数据，对内存占用小
-Db::exec("insert into phero.Mother (`name`) values (`test`)");//执行sql操作语句
-```
-
 ## 第一个ORM
 
 ### 创建一个Unit
@@ -74,11 +23,6 @@ use PheroTest\DatabaseTest\Traits\Truncate;
 use Phero\Database\DbUnit;
 
 /**
- * #这里有其他的东西并不会干扰注解的工作
- * @Author: lerko
- * @Date:   2017-05-31 11:54:57
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 10:10:52
  * @Table[name=Parent,alias=parent]  
  * # name表示真正的表名称，如果没有配置就是类名为表明
  * # alias为别名
@@ -111,7 +55,7 @@ class Parents extends DbUnit
 +-------+-------------+------+-----+---------+----------------+
 ```
 
-### 查询
+### 简单的查询
 
 ```php
 $parent=new Parent("name");# 你也可以这样获取Unit的实例  $parent=Parent::Inc();
