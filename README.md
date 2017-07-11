@@ -9,7 +9,7 @@
 - 流畅的orm
 - 注解形式的模型关联
 - 命令行模型生成
-- 查询即时缓存（redis，mamcache，filesystem等）
+- 查询即时缓存（redis，mamcache）
 - 嵌套事务
 
 ## 第一个ORM
