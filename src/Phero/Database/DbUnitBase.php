@@ -92,12 +92,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @param  boolean $transaction_type [更新时是否开启一个事务]
 	 * @return [type]                    [description]
 	 */
-	public function update($transaction_type = false) {
+	public function update() {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
-		}
-		if ($transaction_type) {
-			$this->model->transaction(Model::begin_transaction);
 		}
 		$result = $this->model->update($this);
 		$this->dumpSql = $this->model->getSql();
@@ -109,12 +106,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @param  boolean $transaction_type [更新时是否开启一个事务]
 	 * @return [type]                    [description]
 	 */
-	public function delete($transaction_type = false) {
+	public function delete() {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
-		}
-		if ($transaction_type) {
-			$this->model->transaction(Model::begin_transaction);
 		}
 		$result = $this->model->delete($this);
 		$this->dumpSql = $this->model->getSql();
@@ -126,12 +120,9 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @param  boolean $transaction_type [更新时是否开启一个事务]
 	 * @return [type]                    [description]
 	 */
-	public function insert($transaction_type = false) {
+	public function insert() {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
-		}
-		if ($transaction_type) {
-			$this->model->transaction(Model::begin_transaction);
 		}
 		$result = $this->model->insert($this);
 		$this->dumpSql = $this->model->getSql();
@@ -139,15 +130,12 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		return $result;
 	}
 
-	public function replace($transaction_type = false) {
+	public function replace() {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
 		}
 		if ($this->model->getPdoDriverType() != enum\PdoDriverType::PDO_MYSQL) {
 			throw new \Exception("mysql驱动才支持replace", 1);
-		}
-		if ($transaction_type) {
-			$this->model->transaction(Model::begin_transaction);
 		}
 		$result = $this->model->insert($this, true);
 		$this->dumpSql = $this->model->getSql();
@@ -182,14 +170,15 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	}
 
 	public function start() {
-		$this->model->transaction(Model::begin_transaction);
+		$this->model->transaction(MysqlDbHelp::begin_transaction);
+		return $this;
 	}
 
 	public function rollback() {
-		$this->model->transaction(Model::rollback_transaction);
+		$this->model->transaction(MysqlDbHelp::rollback_transaction);
 	}
 	public function commit() {
-		$this->model->transaction(Model::commit_transaction);
+		$this->model->transaction(MysqlDbHelp::commit_transaction);
 	}
 
 	public function getModel() {

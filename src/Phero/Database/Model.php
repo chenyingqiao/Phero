@@ -17,10 +17,6 @@ class Model implements interfaces\IModel {
 	const fetch_arr_numberAkey = \PDO::FETCH_BOTH; //返回的是数值键和文本键都有
 	const fetch_obj = \PDO::FETCH_CLASS; //返回结果是类集合
 
-	const begin_transaction = 1;
-	const rollback_transaction = 2;
-	const commit_transaction = 3;
-
 	//obj无法使用
 	private $mode = self::fetch_arr_key, $classname = "Phero\\Database\\DbUnit";
 
@@ -109,19 +105,7 @@ class Model implements interfaces\IModel {
 	 * @return [type]       [description]
 	 */
 	public function transaction($type) {
-		$pdo = $this->help->getDbConn();
-		if ($type == self::begin_transaction) {
-			if ($pdo->inTransaction()) {
-				if (!(get_class($pdo) == "Phero\Database\PDO")) {
-					throw new \Exception("原生pdo类不支持事务嵌套", 1);
-				}
-			}
-			$pdo->beginTransaction();
-		} elseif ($type == self::rollback_transaction) {
-			$pdo->rollBack();
-		} elseif ($type == self::commit_transaction) {
-			$pdo->commit();
-		}
+		$this->help->transaction($type);
 	}
 	/**
 	 * 取得pdo

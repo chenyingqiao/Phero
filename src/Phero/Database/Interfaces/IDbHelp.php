@@ -15,4 +15,5 @@ interface IDbHelp {
 	public function queryResultArray($sql, $data);
 	public function error();
 	public function setFetchMode($mode, $classname = null);
+	public function transaction($type);
 }

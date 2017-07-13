@@ -84,7 +84,7 @@ class DbUnit extends DbUnitBase {
 		return parent::delete($transaction_type);
 	}
 
-	private function _callWhereAndHavingCatch($function_name, $argument){
+	private function _callwhereandhavingcatch($function_name, $argument){
 		//判断是having还是where
 		if(strstr($function_name,'where')) $call="where";
 		else $call="having";

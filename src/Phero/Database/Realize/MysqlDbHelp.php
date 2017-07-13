@@ -16,6 +16,10 @@ use Phero\System\Tool;
 class MysqlDbHelp implements interfaces\IDbHelp {
 	use TRelation;
 
+	const begin_transaction = 1;
+	const rollback_transaction = 2;
+	const commit_transaction = 3;
+
 	protected $pdo;
 
 	private $mode, $classname;
@@ -40,7 +44,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	public function exec($sql, $data = [],$type=RelType::insert) {
         $this->enableRelation=$this->getRelationIsEnable($this->entiy);
-        $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
+        if(!isset($this->pdo))//避免一个事务出现多个pdo这样造成事务不连续
+	        $this->pdo = PdoWarehouse::getInstance()->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			try {
@@ -123,12 +128,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$this->sql_bind_execute($sql, $data);
 		while ($result = $sql->fetch($this->mode)) {
-		    // //开启relation就进行自动关联
-		    // if($this->enableRelation){
-      //           yield $this->select_relation($result);
-      //       }else{
                 yield $result;
-            // }
 		}
 		yield null;
 	}
@@ -158,6 +158,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		// $this->mode = empty($this->mode)?database\Model::fetch_arr_key:$this->mode;
 		// $this->classname =empty($this->classname)?null:$this->;
 	}
+
 	/**
 	 * 设置遍历模式
 	 * @param [type] $mode      [description]
@@ -223,5 +224,21 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$this->bindData($sql, $data);
 		$sql->execute();
 		$this->errorMessage($sql);
+	}
+
+	public function transaction($type)
+	{
+		if ($type == self::begin_transaction) {
+			if ($this->pdo->inTransaction()) {
+				if (!(get_class($this->pdo) == "Phero\Database\PDO")) {
+					throw new \Exception("原生pdo类不支持事务嵌套", 1);
+				}
+			}
+			$this->pdo->beginTransaction();
+		} elseif ($type == self::rollback_transaction) {
+			$this->pdo->rollBack();
+		} elseif ($type == self::commit_transaction) {
+			$this->pdo->commit();
+		}
 	}
 }
