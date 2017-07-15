@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use Symfony\Component\Cache\Simple\RedisCache;
 /**
@@ -14,6 +14,7 @@ return [
 			"user" => "root",
 			"password" => "lerko",
 		],
+		"persistent"=>true,
 		// "slave" => [
 		// 	[
 		// 		"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",

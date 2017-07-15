@@ -59,7 +59,7 @@ class PdoWarehouse {
 		$pdo->exec("set names $charset");
 		$pdo->exec("set character_set_client=$charset");
 		$pdo->exec("set character_set_results=$charset");
-		//PDO::ATTR_STRINGIFY_FETCHES 提取的时候将数值转换为字符串。 
+		//PDO::ATTR_STRINGIFY_FETCHES 提取的时候将数值转换为字符串。
 		//PDO::ATTR_EMULATE_PREPARES 启用或禁用预处理语句的模拟。
 		$pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
 		$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
@@ -69,30 +69,34 @@ class PdoWarehouse {
 		if(!$config&&empty($this->pdo)){
 			throw new \Exception("Do not specify a configuration file", 1);
 		}
+		$pdo_config=[];
+		if(isset($config["database"]["persistent"])&&$config["database"]["persistent"] == true){
+			$pdo_config[PDO::ATTR_PERSISTENT]=true;
+		}
 		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
 		if (!empty($pdo_di)) {
 			$this->pdo=$pdo_di;
 			return;
 		}
 		if (array_key_exists("dsn", $config)) {
-			$this->pdo= new PDO($config['dsn'], $config['user'], $config['password']);
+			$this->pdo= new PDO($config['dsn'], $config['user'], $config['password'],$pdo_config);
 		} elseif (array_key_exists('master', $config)) {
 			$master = $config['master'];
 			$slave_pdo = [];
 			if (!empty($config['slave'])){
 				$slave = $config['slave'];
 				foreach ($slave as $value) {
-					$slave_pdo[] = new PDO($value['dsn'], $value['user'], $value['password']);
+					$slave_pdo[] = new PDO($value['dsn'], $value['user'], $value['password'],$pdo_config);
 				}
 			}
 			$master_pdo=[];
 			if(!empty($config['master'])&&is_array($config['master'])&&!array_key_exists("dsn",$config['master'])){
 				foreach ($config['master'] as $key => $value) {
-					$master_pdo[]=new PDO($value['dsn'], $value['user'], $value['password']);
+					$master_pdo[]=new PDO($value['dsn'], $value['user'], $value['password'],$pdo_config);
 				}
 			}else if(!empty($config['master'])){
 				$value=$config['master'];
-				$master_pdo=new PDO($value['dsn'], $value['user'], $value['password']);
+				$master_pdo=new PDO($value['dsn'], $value['user'], $value['password'],$pdo_config);
 			}
 			$this->pdo = [
 				"master" => $master_pdo,
