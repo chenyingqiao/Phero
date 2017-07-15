@@ -4,8 +4,8 @@ namespace PheroTest\DatabaseTest;
 /**
  * @Author: lerko
  * @Date:   2017-07-11 19:39:04
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-13 10:34:11
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-15 08:35:12
  */
 
 use PheroTest\DatabaseTest\BaseTest;
@@ -36,29 +36,5 @@ class Test extends BaseTest {
 		Mother::lastInc()->rollback();
 		$data=Mother::Inc()->whereEq("name","kkk_transaction_rollback")->find();
 		$this->assertEmpty($data);
-	}
-
-	/**
-	 * 多重嵌套
-	 * @test
-	 * @Author   Lerko
-	 * @DateTime 2017-07-13T10:11:50+0800
-	 * @param    string                   $value [description]
-	 * @return   [type]                          [description]
-	 */
-	public function multipleTransaction()
-	{
-		$mother_name1="transaction".rand();
-		$mother_name2="transaction".rand();
-		$Mother1=new Mother(["name"=>$mother_name1]);
-
-		$Mother1->start()->insert();
-			$Mother1->name=$mother_name2;
-			$Mother1->start()->insert();//这里外层事务自动被commit
-			$Mother1->commit();
-		$Mother1->commit();
-
-		$data=$Mother1->select();
-		var_dump($data);
 	}
 }

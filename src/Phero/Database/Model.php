@@ -6,11 +6,13 @@ use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Realize as realize;
 use Phero\System\Tool;
+use Phero\System\Traits\TInject;
 
 /**
  *
  */
 class Model implements interfaces\IModel {
+	use TInject;
 
 	const fetch_arr_number = \PDO::FETCH_NUM; //只有数值键
 	const fetch_arr_key = \PDO::FETCH_ASSOC; //只有文本键
@@ -20,6 +22,10 @@ class Model implements interfaces\IModel {
 	//obj无法使用
 	private $mode = self::fetch_arr_key, $classname = "Phero\\Database\\DbUnit";
 
+	/**
+	 * @Inject[di=dbhelp]
+	 * @var [type]
+	 */
 	protected $help;
 
 	protected $IConstraitBuild;
@@ -27,7 +33,9 @@ class Model implements interfaces\IModel {
 	private $sql, $error=false;
 
 	public function __construct() {
-		$this->help = new realize\MysqlDbHelp();
+		$this->inject();//执行注入解析
+		if(empty($this->help))
+			$this->help = new realize\MysqlDbHelp();
 		$this->IConstraitBuild = new realize\MysqlConstraitBuild();
 	}
 
