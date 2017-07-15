@@ -1,0 +1,4 @@
+<?php
+require "vendor/autoload.php";
+use Phero\SwoolePool\MysqlSwoolePool;
+(new MysqlSwoolePool(dirname(__FILE__).DIRECTORY_SEPARATOR."test/PheroTest/DatabaseTest/config.php"))->start();
