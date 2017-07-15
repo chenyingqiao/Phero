@@ -16,10 +16,8 @@ class SwooleTest extends BaseTest
      */
     public function swooleSelect()
     {
-        // DI::inj("dbhelp",new SwooleMysqlDbHelp());
-        // Mother::Inc()->select();
         $SwooleMysqlDbHelp=new SwooleMysqlDbHelp();
         $data=$SwooleMysqlDbHelp->queryResultArray("show tables");
-        var_dump($data);
+        $this->assertNotEmpty($data);
     }
 }
