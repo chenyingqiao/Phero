@@ -1,10 +1,11 @@
 <?php
 namespace Phero\SwoolePool;
 
-use Phero\System\DI;
-use Phero\System\Config;
-use Phero\Database\Realize\MysqlDbHelp;
 use League\CLImate\CLImate;
+use Phero\Database\Realize\MysqlDbHelp;
+use Phero\Database\Realize\SwooleMysqlDbHelp;
+use Phero\System\Config;
+use Phero\System\DI;
 /**
  *
  */
@@ -44,6 +45,7 @@ class MysqlSwoolePool
         static $db_help;
         if($db_help==null){
             $db_help=new MysqlDbHelp();
+            echo "Task {$task_id}:链接数据库 链接hash".spl_object_hash($db_help)."\n";
         }
         $seriData=unserialize($seriData);
         switch ($seriData[0]) {
@@ -83,7 +85,7 @@ class MysqlSwoolePool
     }
 
 
-    public function _finish($value='')
+    public function _finish($serv,$db_help,$data)
     {
         echo "AsyncTask Finish:Connect.PID=" . posix_getpid() . PHP_EOL;
     }
