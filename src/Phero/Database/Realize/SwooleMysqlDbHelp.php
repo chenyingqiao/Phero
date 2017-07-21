@@ -9,15 +9,26 @@ use Phero\System\Config;
  */
 class SwooleMysqlDbHelp extends MysqlDbHelp implements IDbHelp
 {
+    CONST Select=1;
+    CONST Exce=2;
     /**
      * @hit
      */
 	public function queryResultArray($sql, $data=[]){
         $client = $this->_get_swoole_client();
-        $client->send(serialize([$sql,$data]));
+        $client->send(serialize([self::Select,$sql,$data]));
         $data=unserialize($client->recv());
+        if(!$data){
+            $this->error=$data;
+            return 0;
+        }
         $client->close();
         return $data;
+    }
+
+    public function query($sql, $data=[])
+    {
+        return $this->queryResultArray($sql,$data);
     }
 
     /**

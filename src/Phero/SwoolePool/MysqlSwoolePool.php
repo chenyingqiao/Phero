@@ -24,7 +24,7 @@ class MysqlSwoolePool
         $this->_swoole_server->on("Finish",[$this,"_finish"]);
         $this->_swoole_server->on('WorkerStart',function($serv, $worker_id){
             $climate=new CLImate;
-            $climate->backgroundBlue()->out('已经开启swoole线程池'.$worker_id);
+            $climate->backgroundBlue()->out('已经开启swoole线程'.$worker_id);
         });
         $this->_swoole_server->start();
     }
@@ -39,15 +39,41 @@ class MysqlSwoolePool
         }
     }
 
-    public function _task($serv, $task_id, $from_id, $sql)
+    public function _task($serv, $task_id, $from_id, $seriData)
     {
         static $db_help;
         if($db_help==null){
             $db_help=new MysqlDbHelp();
         }
-        $data=unserialize($sql);
-        $sql=$data[0];
-        $bindData=$data[1];
+        $seriData=unserialize($seriData);
+        switch ($seriData[0]) {
+            case SwooleMysqlDbHelp::Select:
+                    $this->arraySelect($serv,$db_help,$seriData);
+                break;
+            case SwooleMysqlDbHelp::Exec:
+                    $this->exec($serv,$db_help,$seriData);
+                break;
+        }
+    }
+
+    private function exec($serv,&$db_help,$seriData)
+    {
+        
+    }
+
+    /**
+     * 连接池查询
+     * @Author   Lerko
+     * @DateTime 2017-07-19T15:15:23+0800
+     * @param    [type]                   $serv     [description]
+     * @param    [type]                   &$db_help [description]
+     * @param    [type]                   $seriData [description]
+     * @return   [type]                             [description]
+     */
+    private function arraySelect($serv,&$db_help,$seriData)
+    {
+        $sql=$seriData[1];
+        $bindData=$seriData[2];
         $result=$db_help->queryResultArray($sql,$bindData);
         if($result){
             $serv->finish(serialize($result));
@@ -55,6 +81,8 @@ class MysqlSwoolePool
             $serv->finish($db_help->error());
         }
     }
+
+
     public function _finish($value='')
     {
         echo "AsyncTask Finish:Connect.PID=" . posix_getpid() . PHP_EOL;
