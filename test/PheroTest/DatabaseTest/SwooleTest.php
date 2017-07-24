@@ -18,8 +18,7 @@ class SwooleTest extends BaseTest
     public function swooleSelect()
     {
         $SwooleMysqlDbHelp=new SwooleMysqlDbHelp();
-        Config::config("persistent",true);
-        for ($i=0; $i < 1; $i++) { 
+        for ($i=0; $i < 100; $i++) { 
             $data=$SwooleMysqlDbHelp->queryResultArray("show tables");
             // $this->TablePrint($data);
             $this->assertNotEmpty($data);

@@ -23,10 +23,6 @@ class MysqlSwoolePool
         $this->_swoole_server->on("Receive",[$this,"_receive"]);
         $this->_swoole_server->on("Task",[$this,"_task"]);
         $this->_swoole_server->on("Finish",[$this,"_finish"]);
-        $this->_swoole_server->on('WorkerStart',function($serv, $worker_id){
-            $climate=new CLImate;
-            $climate->backgroundBlue()->out('已经开启swoole线程'.$worker_id);
-        });
         $this->_swoole_server->start();
     }
 
@@ -46,6 +42,8 @@ class MysqlSwoolePool
         if($db_help==null){
             $db_help=new MysqlDbHelp();
             echo "Task {$task_id}:链接数据库 链接hash".spl_object_hash($db_help)."\n";
+        }else{
+            echo "命中 链接".spl_object_hash($db_help)."\n";
         }
         $seriData=unserialize($seriData);
         switch ($seriData[0]) {

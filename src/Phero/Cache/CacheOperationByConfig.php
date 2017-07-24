@@ -9,8 +9,8 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
 /**
  * @Author: lerko
  * @Date:   2017-06-08 11:43:47
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-15 08:50:38
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-07-24 13:46:23
  */
 class CacheOperationByConfig implements ICache
 {
