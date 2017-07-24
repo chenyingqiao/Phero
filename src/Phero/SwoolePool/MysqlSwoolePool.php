@@ -85,7 +85,7 @@ class MysqlSwoolePool
     }
 
 
-    public function _finish($serv,$db_help,$data)
+    public function _finish($serv, $data)
     {
         echo "AsyncTask Finish:Connect.PID=" . posix_getpid() . PHP_EOL;
     }
