@@ -31,7 +31,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	private $entiy;
 
-  private $enableRelation=false;
+	private $enableRelation=false;
+
+	private $now_dbType=PdoWarehouse::read;
 
 	/**
 	 * @Inject[di=pdo_hit]
@@ -56,12 +58,14 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]             [description]
 	 */
 	private function getPdo($type){
-		if(!empty($this->pdo['master']&&$type==PdoWarehouse::write)){
-			return $this->pdo['master'];
-		}elseif(!empty($this->pdo['slave']&&$type==PdoWarehouse::read)){
-			return $this->pdo_hit->hit($this->pdo['slave']);
-		}else{
+		$this->now_dbType=$type;
+		if(is_object($this->pdo)){
 			return $this->pdo;
+		}
+		if($type == PdoWarehouse::write||empty($this->pdo['slave'])){
+			return $this->pdo['master'];
+		}elseif($type==PdoWarehouse::read){
+			return $this->pdo_hit->hit($this->pdo['slave']);
 		}
 	}
 
@@ -211,7 +215,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	}
 
 	public function getDbConn() {
-		return $this->pdo;
+		return $this->getPdo($this->now_dbType);
 	}
 
 
