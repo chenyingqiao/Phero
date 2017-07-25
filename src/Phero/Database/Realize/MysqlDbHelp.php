@@ -6,6 +6,7 @@ use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Interfaces\IRelation;
 use Phero\Database\Realize\PdoWarehouse;
+use Phero\Database\Realize\Hit\RandomslaveHit;
 use Phero\Database\Traits\TRelation;
 use Phero\System\Config;
 use Phero\System\Tool;
@@ -43,6 +44,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$this->pdo = PdoWarehouse::getInstance()->getPdo();
 		$fetch_mode=Config::config("fetch_mode");
 		$this->mode = Tool::getInstance()->getConfigMode($fetch_mode);
+		if(!isset($this->pdo_hit)){
+			$this->pdo_hit=new RandomslaveHit();
+		}
 	}
 
 	/**
@@ -52,10 +56,12 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]             [description]
 	 */
 	private function getPdo($type){
-		if($type==PdoWarehouse::write){
+		if(!empty($this->pdo['master']&&$type==PdoWarehouse::write)){
 			return $this->pdo['master'];
-		}elseif($type==PdoWarehouse::read){
+		}elseif(!empty($this->pdo['slave']&&$type==PdoWarehouse::read)){
 			return $this->pdo_hit->hit($this->pdo['slave']);
+		}else{
+			return $this->pdo;
 		}
 	}
 
@@ -66,9 +72,9 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]       [返回影响的行数 0 就是没有修改或者插入成功]
 	 */
 	public function exec($sql, $data = [],$type=RelType::insert) {
-    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
-    // if(!isset($this->pdo))//避免一个事务出现多个pdo这样造成事务不连续
-    $pdo = $this->getPdo(PdoWarehouse::write);
+	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
+	    // if(!isset($this->pdo))//避免一个事务出现多个pdo这样造成事务不连续
+	    $pdo = $this->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			try {
@@ -105,8 +111,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return array [返回结果集]
 	 */
 	public function queryResultArray($sql, $data = []) {
-    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
-    $pdo = $this->getPdo(PdoWarehouse::read);
+	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
+	    $pdo = $this->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {
 			try {
@@ -135,7 +141,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return array [返回结果集]
 	 */
 	public function query($sql, $data = []) {
-    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
+	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
 		$pdo = $this->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
 		if (is_string($sql)) {

@@ -6,6 +6,7 @@ use Phero\Database\PDO;
 use Phero\System\Config;
 use Phero\System\DI;
 use Phero\System\Traits\TInject;
+use Phero\Database\Realize\Hit\RandomslaveHit;
 
 /**
  *pdo链接仓库
@@ -41,48 +42,39 @@ class PdoWarehouse {
 	}
 
 	//根据数据
-	public function getPdo($pattern=null) {
+	public function getPdo() {
 		$database_config = Config::config("database");
 		//注入后解析
 		$this->inject();
 		if (empty($this->pdo_hit)) {
-			$hit_classname = new RandomSlaveHit();
+			$hit_classname = new RandomslaveHit();
 		}
 		$this->init($database_config);
-		if (is_array($this->pdo)&&!empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
-			if ($pattern == 0) {
-				$pdo = $this->pdo_hit->hit($this->pdo['slave']);
-			} elseif($pattern == 1) {
-				$pdo = $this->pdo['master'];
-			}else{
-				$pdo=$this->pdo;
-			}
-		} else if(is_array($this->pdo)&&empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
-			$pdo = $this->pdo['master'];
-		}else{
-			$pdo=$this->pdo;
-		}
+		$pdo=$this->pdo;
 		$this->setPdo($pdo);
 		return $pdo;
 	}
 
 	private function setPdo(&$pdo){
 		if(!is_array($pdo)){
-			$pdo=[$pdo];
+			$this->setPdoItem($pdo);
+			return;
 		}
 		//设置master
 		foreach ($pdo['master'] as $key => &$value) {
-			if(!$pdo['master']->getAlrady){
+			if(!$pdo['master']['alreay']){
 				$this->setPdoItem($value);
 			}
-			$pdo['master']->getAlrady=true;
+			$pdo['master']['alreay']=true;
 		}
 		//设置slave
-		foreach($pdo['slave'] as $key=>$value){
-			if(!$pdo['slave']->getAlrady){
-				$this->setPdoItem($value);
+		if(isset($pdo['slave'])){
+			foreach($pdo['slave'] as $key=>$value){
+				if(!$pdo['slave']['alreay']){
+					$this->setPdoItem($value);
+				}
+				$pdo['slave']['alreay']=true;
 			}
-			$pdo['slave']->getAlrady=true;
 		}
 	}
 
