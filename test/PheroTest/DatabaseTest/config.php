@@ -5,7 +5,7 @@ use Symfony\Component\Cache\Simple\RedisCache;
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-08 13:10:18
+ * @Last Modified time: 2017-07-24 16:08:02
  */
 return [
 	"database" => [
@@ -14,7 +14,6 @@ return [
 			"user" => "root",
 			"password" => "lerko",
 		],
-		"persistent"=>true,
 		// "slave" => [
 		// 	[
 		// 		"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",
@@ -28,6 +27,6 @@ return [
 		// 	],
 		// ],
 	],
-	"cache"=>RedisCache::createConnection('redis://127.0.0.1'),
+	"cache"=>'redis://127.0.0.1',
 	"debug"=>true
 ];

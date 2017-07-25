@@ -15,6 +15,10 @@ use Phero\System\Traits\TInject;
 class PdoWarehouse {
 	use TInject;
 
+	/**
+	 * @Inject[di=pdo_hit]
+	 * @var [type]
+	 */
 	protected $pdo_hit;
 	private static $already_init = false;
 
@@ -24,36 +28,71 @@ class PdoWarehouse {
 	 */
 	protected $pdo;
 
+	private static $PdoWarehouse=null;
+
 	CONST read = 0;
 	CONST write = 1;
 
 	private function __construct() {}
 	public static function getInstance() {
-		return new PdoWarehouse();
+		if(!isset(self::$PdoWarehouse))
+			self::$PdoWarehouse=new PdoWarehouse();
+		return self::$PdoWarehouse;
 	}
 
 	//根据数据
-	public function getPdo($pattern) {
+	public function getPdo($pattern=null) {
 		$database_config = Config::config("database");
-		$hit_classname = Config::config('hit_rule');
-		if (empty($hit_classname)) {
-			$hit_classname = "Phero\Database\Realize\Hit\RandomSlaveHit";
-		}
-		$this->pdo_hit = new $hit_classname;
 		//注入后解析
 		$this->inject();
+		if (empty($this->pdo_hit)) {
+			$hit_classname = new RandomSlaveHit();
+		}
 		$this->init($database_config);
 		if (is_array($this->pdo)&&!empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
 			if ($pattern == 0) {
 				$pdo = $this->pdo_hit->hit($this->pdo['slave']);
-			} else {
+			} elseif($pattern == 1) {
 				$pdo = $this->pdo['master'];
+			}else{
+				$pdo=$this->pdo;
 			}
 		} else if(is_array($this->pdo)&&empty($this->pdo['slave'])&&!empty($this->pdo['master'])) {
 			$pdo = $this->pdo['master'];
 		}else{
 			$pdo=$this->pdo;
 		}
+		$this->setPdo($pdo);
+		return $pdo;
+	}
+
+	private function setPdo(&$pdo){
+		if(!is_array($pdo)){
+			$pdo=[$pdo];
+		}
+		//设置master
+		foreach ($pdo['master'] as $key => &$value) {
+			if(!$pdo['master']->getAlrady){
+				$this->setPdoItem($value);
+			}
+			$pdo['master']->getAlrady=true;
+		}
+		//设置slave
+		foreach($pdo['slave'] as $key=>$value){
+			if(!$pdo['slave']->getAlrady){
+				$this->setPdoItem($value);
+			}
+			$pdo['slave']->getAlrady=true;
+		}
+	}
+
+	/**
+	 * 设置初始化pdo链接
+	 * @method setPdoItem
+	 * @param  [type]     $pdo [description]
+	 */
+	public function setPdoItem(&$pdo)
+	{
 		$charset = Config::config('charset');
 		$charset = empty($charset) ? "utf8" : $charset;
 		$pdo->exec("set names $charset");
@@ -63,17 +102,17 @@ class PdoWarehouse {
 		//PDO::ATTR_EMULATE_PREPARES 启用或禁用预处理语句的模拟。
 		$pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, false);
 		$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-		return $pdo;
 	}
+
 	private function init($config) {
 		if(!$config&&empty($this->pdo)){
 			throw new \Exception("Do not specify a configuration file", 1);
 		}
 		$pdo_config=[];
-		if(isset($config["database"]["persistent"])&&$config["database"]["persistent"] == true){
-			$pdo_config[PDO::ATTR_PERSISTENT]=true;
+		if(isset($config["database"]["attr"])){
+			$pdo_config=$config["database"]["attr"];
 		}
-		$pdo_di = DI::get(DatabaseConfig::pdo_instance);
+		$pdo_di = DI::get(DI::pdo_instance);
 		if (!empty($pdo_di)) {
 			$this->pdo=$pdo_di;
 			return;

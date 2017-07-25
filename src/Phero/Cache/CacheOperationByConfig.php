@@ -6,19 +6,22 @@ use Phero\Cache\Interfaces\ICache;
 use Phero\System\Config;
 use Symfony\Component\Cache\Simple\AbstractCache;
 use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Cache\Simple\RedisCache;
 /**
  * @Author: lerko
  * @Date:   2017-06-08 11:43:47
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-24 13:46:23
+ * @Last Modified time: 2017-07-24 15:54:22
  */
 class CacheOperationByConfig implements ICache
 {
 	private static $cache;
 	private static function getCache(){
 		$cache=Config::config("cache");
-		if(is_object($cache)){
-			self::$cache= $cache;
+		if(strstr($cache,"redis")){
+			self::$cache=RedisCache::createConnection($cache);
+		}elseif(strstr($cache,"memcached")){
+			self::$cache=AbstractAdapter::createConnection($cache);
 		}else{
 			self::$cache= new FilesystemCache();
 		}

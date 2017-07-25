@@ -10,5 +10,5 @@ namespace Phero\Database\Interfaces;
  */
 
 interface IDbSlaveHit {
-	public function hit($slave);
+	public function hit(&$slave);
 }

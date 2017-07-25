@@ -41,9 +41,9 @@ class MysqlSwoolePool
         static $db_help;
         if($db_help==null){
             $db_help=new MysqlDbHelp();
-            echo "Task {$task_id}:链接数据库 链接hash".spl_object_hash($db_help)."\n";
+            echo "Task {$task_id}:链接数据库 链接hash".spl_object_hash($db_help->getDbConn())."\n";
         }else{
-            echo "命中 链接".spl_object_hash($db_help)."\n";
+            echo "命中 链接".spl_object_hash($db_help->getDbConn())."\n";
         }
         $seriData=unserialize($seriData);
         switch ($seriData[0]) {
