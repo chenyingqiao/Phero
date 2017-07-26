@@ -41,9 +41,11 @@ class MysqlSwoolePool
         static $db_help;
         if($db_help==null){
             $db_help=new MysqlDbHelp();
-            echo "Task {$task_id}:链接数据库 链接hash".spl_object_hash($db_help->getDbConn())."\n";
+            if(Config::config("debug"))
+                echo "Task {$task_id}:链接数据库 链接hash".spl_object_hash($db_help->getDbConn())."\n";
         }else{
-            echo "命中 链接".spl_object_hash($db_help->getDbConn())."\n";
+            if(Config::config("debug"))
+                echo "命中Task{$task_id} 链接".spl_object_hash($db_help->getDbConn())."\n";
         }
         $seriData=unserialize($seriData);
         switch ($seriData[0]) {
@@ -71,8 +73,12 @@ class MysqlSwoolePool
         $bindData=$seriData[2];
         $result=$db_help->exec($sql,$bindData);
         if($result){
+            if(Config::config("debug"))
+                var_dump($result);
             $serv->finish(serialize($result));
         }else{
+            if(Config::config("debug"))
+                var_dump($db_help->error());
             $serv->finish($db_help->error());
         }
     }
@@ -91,9 +97,13 @@ class MysqlSwoolePool
         $sql=$seriData[1];
         $bindData=$seriData[2];
         $result=$db_help->queryResultArray($sql,$bindData);
-        if($result){
+        if($result!==0){
+            if(Config::config("debug"))
+                var_dump($result);
             $serv->finish(serialize($result));
         }else{
+            if(Config::config("debug"))
+                var_dump($db_help->error());
             $serv->finish($db_help->error());
         }
     }
@@ -116,13 +126,12 @@ class MysqlSwoolePool
     private function _get_swoole_server_by_config()
     {
         $swoole_config=Config::config("swoole");
-        if(empty($swoole_config))
-            $swoole_server = new \swoole_server("127.0.0.1",54288);
-        else
-            $swoole_server =  new \swoole_server($swoole_config['ip'],$swoole_config['port']);
+        $ip=isset($swoole_config["ip"])?$swoole_config["ip"]:"127.0.0.1";
+        $port=isset($swoole_config["port"])?$swoole_config["port"]:54288;
+        $swoole_server =  new \swoole_server($ip,$port);
         $swoole_server->set([
-            'worker_num' => $swoole_config["worker_num"]?$swoole_config["worker_num"]:100,
-            'task_worker_num' => $swoole_config["pool_num"]?$swoole_config["pool_num"]:10,
+            'worker_num' => isset($swoole_config["worker_num"])?$swoole_config["worker_num"]:100,
+            'task_worker_num' => isset($swoole_config["pool_num"])?$swoole_config["pool_num"]:10,
         ]);
         return $swoole_server;
     }
