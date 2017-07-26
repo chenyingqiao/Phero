@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-10 16:44:27
+ * @Last Modified time: 2017-07-26 15:29:57
  */
 
 namespace Phero\Database\Traits;
@@ -104,7 +104,6 @@ trait TRelation {
 	 */
 	public function relation_select(&$result,$entiy) {
 		$relation = $this->getRelation($entiy);
-		var_dump($relation);
 		$data=[];
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {

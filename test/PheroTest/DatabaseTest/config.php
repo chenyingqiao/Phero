@@ -5,7 +5,7 @@ use Symfony\Component\Cache\Simple\RedisCache;
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-24 16:08:02
+ * @Last Modified time: 2017-07-26 11:54:34
  */
 return [
 	"database" => [
@@ -28,5 +28,4 @@ return [
 		// ],
 	],
 	"cache"=>'redis://127.0.0.1',
-	"debug"=>true
 ];

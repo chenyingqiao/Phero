@@ -56,9 +56,25 @@ class MysqlSwoolePool
         }
     }
 
+    /**
+     * 连接词执行
+     * @Author   Lerko
+     * @DateTime 2017-07-26T16:57:10+0800
+     * @param    [type]                   $serv     [description]
+     * @param    [type]                   &$db_help [description]
+     * @param    [type]                   $seriData [description]
+     * @return   [type]                             [description]
+     */
     private function exec($serv,&$db_help,$seriData)
     {
-        
+        $sql=$seriData[1];
+        $bindData=$seriData[2];
+        $result=$db_help->exec($sql,$bindData);
+        if($result){
+            $serv->finish(serialize($result));
+        }else{
+            $serv->finish($db_help->error());
+        }
     }
 
     /**

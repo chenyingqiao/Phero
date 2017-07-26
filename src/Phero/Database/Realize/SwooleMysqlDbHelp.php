@@ -17,9 +17,10 @@ class SwooleMysqlDbHelp extends MysqlDbHelp implements IDbHelp
 	public function queryResultArray($sql, $data=[]){
         $client = $this->_get_swoole_client();
         $client->send(serialize([self::Select,$sql,$data]));
-        $data=unserialize($client->recv());
-        if(!$data){
-            $this->error=$data;
+        $recv=$client->recv();
+        $data=unserialize($recv);
+        if($data===false){
+            $this->error=$recv;
             return 0;
         }
         $client->close();
