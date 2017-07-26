@@ -6,7 +6,7 @@ use Phero\Database\PDO;
 use Phero\System\Config;
 use Phero\System\DI;
 use Phero\System\Traits\TInject;
-use Phero\Database\Realize\Hit\RandomslaveHit;
+use Phero\Database\Realize\Hit\RandomSlaveHit;
 
 /**
  *pdo链接仓库
@@ -47,7 +47,7 @@ class PdoWarehouse {
 		//注入后解析
 		$this->inject();
 		if (empty($this->pdo_hit)) {
-			$hit_classname = new RandomslaveHit();
+			$hit_classname = new RandomSlaveHit();
 		}
 		$this->init($database_config);
 		$pdo=$this->pdo;

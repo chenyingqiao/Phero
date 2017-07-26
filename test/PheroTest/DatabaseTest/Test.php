@@ -1,67 +1,53 @@
 <?php
 namespace PheroTest;
 
+use PHPUnit\Framework\TestCase;
 use PheroTest\DatabaseTest\BaseTest;
 use PheroTest\DatabaseTest\Unit as unit;
+use PheroTest\DatabaseTest\Unit\Children;
+use PheroTest\DatabaseTest\Unit\Marry;
+use PheroTest\DatabaseTest\Unit\Mother;
+use PheroTest\DatabaseTest\Unit\MotherInfo;
+use PheroTest\DatabaseTest\Unit\ParentInfo;
+use PheroTest\DatabaseTest\Unit\Parents;
 use Phero\Database\DbUnit;
+use Phero\Database\Model;
 use Phero\Map\NodeReflectionClass;
 use Phero\System\Config;
+use Phero\System\DI;
 
-class Test extends BaseTest {
-    public function testEmpty()
-    {
-        $stack = [];
-        $this->assertEmpty($stack);
-        echo "testEmpty";
-        return $stack;
-    }
-
+class Test extends TestCase {
     /**
-     * @depends testEmpty
-     */
-    public function testPush(array $stack)
-    {
-        array_push($stack, 'foo');
-        $this->assertEquals('foo', $stack[count($stack)-1]);
-        $this->assertNotEmpty($stack);
-        echo "testPush";
-        return $stack;
-    }
-
-    /**
-     * @depends testPush
      * @test
+     * @Author   Lerko
+     * @DateTime 2017-07-26T15:41:32+0800
+     * @return   [type]                   [description]
      */
-    public function Pop(array $stack)
-    {
-        $this->assertEquals('foo', array_pop($stack));
-        $this->assertEmpty($stack);
-        echo "Pop";
+    public function createTestData(){
+        DI::inj(DI::config,"/home/lerko/Desktop/config.php");
+        (new Parents)->truncate();
+        (new Mother)->truncate();
+        (new Marry)->truncate();
+        (new ParentInfo)->truncate();
+        (new MotherInfo)->truncate();
+        (new Children)->truncate();
+        for ($i=0; $i < 1; $i++) {
+            $parentsName="parent{$i}";
+            $motherName="mother{$i}";
+            $UnitsParent[]=new Parents(["name"=>$parentsName]);
+            $UnitsMother[]=new Mother(["name"=>$motherName]);
+            $UnitsMarry[]=new Marry(["pid"=>$i+1,"mid"=>$i+1]);
+            $UnitsParentInfo[]=new ParentInfo(["pid"=>$i+1,"phone"=>"1506013{$i}03"]);
+            $UnitsMotherInfo[]=new MotherInfo(["mid"=>$i+1,"email"=>"6143257{$i}@qq.com"]);
+            $UnitsChildren[]=new Children(['name'=>"小明{$i}","marry_id"=>$i+1]);
+            $UnitsChildren[]=new Children(['name'=>"小黄{$i}","marry_id"=>$i+1]);
+        }
+        $Model=new Model();
+        $Model->insert($UnitsParent);
+        $Model->insert($UnitsMother);
+        $Model->insert($UnitsMarry);
+        $Model->insert($UnitsParentInfo);
+        $Model->insert($UnitsMotherInfo);
+        $Model->insert($UnitsChildren);
     }
-
-    public function testInterfaces(){
-        $reflection=new NodeReflectionClass(new DbUnit);
-        $interfaceMothers=new NodeReflectionClass("Phero\System\Interfaces\Section\ISectionCacheRead");
-    }
-
-    public function testConfigSet(){
-        var_dump(Config::config("cache"));
-    }
-    // /**
-    //  * @Author   Lerko
-    //  * @DateTime 2017-06-02T09:39:41+0800
-    //  * @after
-    //  */
-    // public function tearDownPop(){
-    //     echo "{asdf}";
-    // }
-
-    // /**
-    //  * @Author   Lerko
-    //  * @DateTime 2017-06-02T09:39:41+0800
-    //  * @after
-    //  */
-    // public static function tearDowntestPush(){
-    //     echo "{asdf2}";
-    // }
 }

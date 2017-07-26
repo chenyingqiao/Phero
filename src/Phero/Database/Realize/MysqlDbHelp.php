@@ -6,7 +6,7 @@ use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
 use Phero\Database\Interfaces\IRelation;
 use Phero\Database\Realize\PdoWarehouse;
-use Phero\Database\Realize\Hit\RandomslaveHit;
+use Phero\Database\Realize\Hit\RandomSlaveHit;
 use Phero\Database\Traits\TRelation;
 use Phero\System\Config;
 use Phero\System\Tool;
@@ -33,7 +33,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	private $enableRelation=false;
 
-	private $now_dbType=PdoWarehouse::read;
+	private $pdoType=PdoWarehouse::read;
 
 	/**
 	 * @Inject[di=pdo_hit]
@@ -47,7 +47,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$fetch_mode=Config::config("fetch_mode");
 		$this->mode = Tool::getInstance()->getConfigMode($fetch_mode);
 		if(!isset($this->pdo_hit)){
-			$this->pdo_hit=new RandomslaveHit();
+			$this->pdo_hit=new RandomSlaveHit();
 		}
 	}
 
@@ -58,11 +58,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]             [description]
 	 */
 	private function getPdo($type){
-		$this->now_dbType=$type;
+		$this->pdoType=$type;
 		if(is_object($this->pdo)){
 			return $this->pdo;
 		}
-		if($type == PdoWarehouse::write||empty($this->pdo['slave'])){
+		if($type==PdoWarehouse::write||empty($this->pdo['slave'])){
 			return $this->pdo['master'];
 		}elseif($type==PdoWarehouse::read){
 			return $this->pdo_hit->hit($this->pdo['slave']);
@@ -161,7 +161,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		}
 		$this->sql_bind_execute($sql, $data);
 		while ($result = $sql->fetch($this->mode)) {
-                yield $result;
+            yield $result;
 		}
 		yield null;
 	}
@@ -215,7 +215,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	}
 
 	public function getDbConn() {
+<<<<<<< HEAD
 		return $this->getPdo($this->now_dbType);
+=======
+		return $this->getPdo($this->pdoType);
+>>>>>>> ff38a1168b2b93082ac34741703ec4b1d98f7938
 	}
 
 

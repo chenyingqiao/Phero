@@ -7,7 +7,7 @@ use Phero\System\Config;
 /**
  *
  */
-class SwooleMysqlDbHelp extends MysqlDbHelp implements IDbHelp
+class SwooleMysqlDbHelp implements IDbHelp
 {
     CONST Select=1;
     CONST Exce=2;
@@ -17,9 +17,10 @@ class SwooleMysqlDbHelp extends MysqlDbHelp implements IDbHelp
 	public function queryResultArray($sql, $data=[]){
         $client = $this->_get_swoole_client();
         $client->send(serialize([self::Select,$sql,$data]));
-        $data=unserialize($client->recv());
-        if(!$data){
-            $this->error=$data;
+        $recv=$client->recv();
+        $data=unserialize($recv);
+        if($data===false){
+            $this->error=$recv;
             return 0;
         }
         $client->close();
@@ -47,8 +48,36 @@ class SwooleMysqlDbHelp extends MysqlDbHelp implements IDbHelp
             $connect=$swoole_client->connect($swoole_config['ip'],$swoole_config['port'],-1);
         if(!$connect){
             throw new \Exception("swoole connection exception", 1);
-
         }
         return $swoole_client;
+    }
+
+    public function setEntiy($entiy)
+    {
+        return $this;
+    }
+
+    public function getDbConn()
+    {
+        return $this;
+    }
+
+    public function exec($sql, $data=[],$type=RelType::insert)
+    {
+        return $this;
+    }
+
+    public function error()
+    {
+        return $this->error;
+    }
+
+    public function setFetchMode($mode, $classname = null)
+    {
+        return $this;
+    }
+
+    public function transaction($type)
+    {
     }
 }
