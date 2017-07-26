@@ -215,11 +215,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	}
 
 	public function getDbConn() {
-<<<<<<< HEAD
-		return $this->getPdo($this->now_dbType);
-=======
 		return $this->getPdo($this->pdoType);
->>>>>>> ff38a1168b2b93082ac34741703ec4b1d98f7938
 	}
 
 
