@@ -5,7 +5,7 @@ use Symfony\Component\Cache\Simple\RedisCache;
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-26 17:56:28
+ * @Last Modified time: 2017-07-27 16:08:18
  */
 return [
 	"database" => [
@@ -28,8 +28,10 @@ return [
 		// ],
 	],
 	"swoole"=>[
-		"worker_num"=>100,
-		"pool_num"=>20
+		"worker_num"=>16,
+		"pool_num"=>50,
+		"worker_num_block"=>100,
+		"pool_num_block"=>20
 	],
 	"cache"=>'redis://127.0.0.1',
 	"debug"=>false

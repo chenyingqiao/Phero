@@ -1,12 +1,11 @@
 <?php
 /**
- * task非阻塞性 可以创建较多的task进程
+ * 这个是task阻塞版本
  * @Author: lerko
- * @Date:   2017-07-27 16:00:35
+ * @Date:   2017-07-27 15:07:27
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 16:01:17
+ * @Last Modified time: 2017-07-27 16:00:19
  */
-
 namespace Phero\SwoolePool;
 
 use League\CLImate\CLImate;
@@ -15,8 +14,7 @@ use Phero\Database\Realize\SwooleMysqlDbHelp;
 use Phero\System\Config;
 use Phero\System\DI;
 
-
-class MysqlSwoolePool
+class MysqlSwoolePoolBlock
 {
     private $_swoole_server;
     public function __construct($config_path)
@@ -35,9 +33,12 @@ class MysqlSwoolePool
 
     public function _receive($serv, $fd, $from_id, $data)
     {
-        $data=unserialize($data);
-        $data['fd']=$fd;
-        $result=$serv->task($data);
+        $result=$serv->taskwait($data);
+        if($result!==false){
+            $serv->send($fd,$result);
+        }else{
+            $serv->send($fd,"error");
+        }
     }
 
     public function _task($serv, $task_id, $from_id, $seriData)
@@ -51,6 +52,7 @@ class MysqlSwoolePool
             if(Config::config("debug"))
                 echo "命中Task{$task_id} 链接".spl_object_hash($db_help->getDbConn())."\n";
         }
+        $seriData=unserialize($seriData);
         switch ($seriData[0]) {
             case SwooleMysqlDbHelp::Select:
                     $this->arraySelect($serv,$db_help,$seriData);
@@ -75,22 +77,14 @@ class MysqlSwoolePool
         $sql=$seriData[1];
         $bindData=$seriData[2];
         $result=$db_help->exec($sql,$bindData);
-        if($result>0){
+        if($result){
             if(Config::config("debug"))
                 var_dump($result);
-            $exec_result=[
-                    "data"=>$result,
-                    md5("fd")=>$seriData['fd']
-                ];
-            $serv->finish($exec_result);
+            $serv->finish(serialize($result));
         }else{
             if(Config::config("debug"))
                 var_dump($db_help->error());
-            $exec_result=[
-                    "data"=>$db_help->error(),
-                    md5("fd")=>$seriData['fd']
-                ];
-            $serv->finish($exec_result);
+            $serv->finish($db_help->error());
         }
     }
 
@@ -108,39 +102,28 @@ class MysqlSwoolePool
         $sql=$seriData[1];
         $bindData=$seriData[2];
         $result=$db_help->queryResultArray($sql,$bindData);
-        var_dump($result);
         if($result!==0){
             if(Config::config("debug"))
                 var_dump($result);
-            $data=[
-                "data"=>$result,
-                md5("fd")=>$seriData['fd']
-            ];
-            $serv->finish($data);
+            $serv->finish(serialize($result));
         }else{
             if(Config::config("debug"))
                 var_dump($db_help->error());
-            $data=[
-                md5("fd")=>$seriData['fd'],
-                "data"=>$db_help->error()
-            ];
-            $serv->finish($data);
+            $serv->finish($db_help->error());
         }
     }
 
-    public function _finish($serv,$task_id, $data)
+
+    public function _finish($serv, $data)
     {
         echo "AsyncTask Finish:Connect.PID=" . posix_getpid() . PHP_EOL;
-        $serv->send($data[md5("fd")],serialize($data['data']));
     }
-
-
     /**
      * {
      *  ip:"ip"
      *  port:"端口"
-     *  worker_num:"工作线程数量"
-     *  pool_num:"连接池数量"
+     *  worker_num_block:"工作线程数量"//task阻塞版本
+     *  pool_num_block:"连接池数量"//task阻塞版本
      * }
      * @method _get_swoole_server_by_config
      * @return [type]                       [description]
@@ -152,8 +135,8 @@ class MysqlSwoolePool
         $port=isset($swoole_config["port"])?$swoole_config["port"]:54288;
         $swoole_server =  new \swoole_server($ip,$port);
         $swoole_server->set([
-            'worker_num' => isset($swoole_config["worker_num"])?$swoole_config["worker_num"]:2,
-            'task_worker_num' => isset($swoole_config["pool_num"])?$swoole_config["pool_num"]:20,
+            'worker_num' => isset($swoole_config["worker_num_block"])?$swoole_config["worker_num_block"]:100,
+            'task_worker_num' => isset($swoole_config["pool_num_block"])?$swoole_config["pool_num_block"]:10,
         ]);
         return $swoole_server;
     }

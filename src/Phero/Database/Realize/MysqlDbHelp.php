@@ -250,7 +250,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$errorCode=$sql->errorCode();
 		$errorInfo=$sql->errorInfo();
 		if($errorCode=="HY000"||$errorInfo=="MySQL server has gone away"){
-			echo "断线重连\n";
+			if(Config::config("debug"))
+				echo "断线重连\n";
 			$this->reConnect();
 			if(isset($sql->sql))
 				$sql=$this->sqlPrepare($sql->sql,$this->pdoType);
