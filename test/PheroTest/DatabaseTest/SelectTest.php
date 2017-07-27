@@ -18,7 +18,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-07 16:44:43
+ * @Last Modified time: 2017-07-27 14:29:50
  */
 class SelectTest extends BaseTest
 {
@@ -196,7 +196,7 @@ class SelectTest extends BaseTest
 	public function testSimpleGroupByAndHaving(){
 		$data=Children::Inc()->whereIsNotNull("name")->limit(10)->group(Children::FF("pid"))->select();
 		$sql= Children::lastInc()->sql();
-		$this->assertEquals("select `children`.`id`,`children`.`name`,`children`.`pid` from `Children` as `children` where `children`.`name` is not null group by children.`children`.`pid` limit 10;",$sql);
+		$this->assertEquals("select `children`.`id`,`children`.`name`,`children`.`pid` from `Children` as `children` where `children`.`name` is not null group by `children`.`pid` limit 10;",$sql);
 	}
 
 }

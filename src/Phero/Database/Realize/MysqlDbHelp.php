@@ -77,23 +77,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	public function exec($sql, $data = [],$type=RelType::insert) {
 	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
-	    // if(!isset($this->pdo))//避免一个事务出现多个pdo这样造成事务不连续
-	    $pdo = $this->getPdo(PdoWarehouse::write);
 		$data = $data == null ? [] : $data;
-		if (is_string($sql)) {
-			try {
-				$sql = $pdo->prepare($sql);
-			} catch (\PDOException $e) {
-				$this->error=$e->getMessage();
-				return 0;
-			}
-			if(empty($sql)){
-				$this->error="sql prepare 失败 请检查表名或者字段名称或者语句结构是否错误！";
-				return 0;
-			}
-		}
-		$this->sql_bind_execute($sql, $data);
-		$result = $sql->rowCount();
+		$Statement=$this->sqlPrepare($sql,PdoWarehouse::write);
+		if(!$Statement)return 0;
+		$this->sql_bind_execute($Statement, $data);
+		$result = $Statement->rowCount();
 
 		$is_realtion = false;
 		if ($result&&$this->enableRelation) {
@@ -116,27 +104,18 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	public function queryResultArray($sql, $data = []) {
 	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
-	    $pdo = $this->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
-		if (is_string($sql)) {
-			try {
-				$sql = $pdo->prepare($sql);
-			} catch (\PDOException $e) {
-				$this->error=$e->getMessage();
-				return 0;
-			}
-			if(empty($sql)){
-				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
-				return 0;
-			}
-		}
-		$this->sql_bind_execute($sql, $data);
+		$Statement=$this->sqlPrepare($sql,PdoWarehouse::read);
+		if(!$Statement)return 0;
+		$this->sql_bind_execute($Statement, $data);
 		$result_data = [];
-		$result_data=$sql->fetchAll($this->mode);
+		$result_data=$Statement->fetchAll($this->mode);
 		if($this->enableRelation)
 			$this->relation_select($result_data,$this->entiy);
 		return $result_data;
 	}
+
+
 
 	/**
 	 * 返回结果集 不支持关联查询
@@ -146,21 +125,11 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	public function query($sql, $data = []) {
 	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
-		$pdo = $this->getPdo(PdoWarehouse::read);
 		$data = $data == null ? [] : $data;
-		if (is_string($sql)) {
-			try {
-				$sql = $pdo->prepare($sql);
-			} catch (\PDOException $e) {
-				$this->error=$e->getMessage();
-			}
-			if(empty($sql)){
-				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
-				yield 0;
-			}
-		}
-		$this->sql_bind_execute($sql, $data);
-		while ($result = $sql->fetch($this->mode)) {
+		$Statement=$this->sqlPrepare($sql,PdoWarehouse::read);
+		if(!$Statement)return 0;
+		$this->sql_bind_execute($Statement, $data);
+		while ($result = $Statement->fetch($this->mode)) {
             yield $result;
 		}
 		yield null;
@@ -244,7 +213,30 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			};
 		}
 	}
-
+	/**
+	 * 对sql进行准备获取Statement
+	 * @method sqlPrepare
+	 * @param  [type]     $sql [description]
+	 * @return [type]          [description]
+	 */
+	private function sqlPrepare($sql,$pdo_type){
+		$pdo = $this->getPdo($pdo_type);
+		if (is_string($sql)) {
+			try {
+				$backup_sql=$sql;
+				$sql = $pdo->prepare($sql);
+				$sql->sql=$backup_sql;//将字符串的sql存储起来
+			} catch (\PDOException $e) {
+				$this->error=$e->getMessage();
+				return 0;
+			}
+			if(empty($sql)){
+				$this->error="sql prepare 失败 请检查表明或者字段名称是否错误！";
+				return 0;
+			}
+		}
+		return $sql;
+	}
 	/**
 	 * 绑定sql数据并且执行sql
 	 * @param  string $value [description]
@@ -253,8 +245,30 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	private function sql_bind_execute(&$sql, $data) {
 		$this->PDOStatementFactory($sql);
 		$this->bindData($sql, $data);
-		$sql->execute();
+		@$result=$sql->execute();
+		//这里如果execute失败就检查是不是mysql断线了
+		$errorCode=$sql->errorCode();
+		$errorInfo=$sql->errorInfo();
+		if($errorCode=="HY000"||$errorInfo=="MySQL server has gone away"){
+			echo "断线重连\n";
+			$this->reConnect();
+			if(isset($sql->sql))
+				$sql=$this->sqlPrepare($sql->sql,$this->pdoType);
+			$this->PDOStatementFactory($sql);
+			$this->bindData($sql, $data);
+			$result=$sql->execute();
+		}
 		$this->errorMessage($sql);
+	}
+
+	/**
+	 * 断线重新链接
+	 * @Author   Lerko
+	 * @DateTime 2017-07-27T13:36:14+0800
+	 * @return   [type]                   [description]
+	 */
+	private function reConnect(){
+		$this->pdo = PdoWarehouse::getInstance()->getPdo();
 	}
 
 	public function transaction($type)
@@ -271,5 +285,10 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		} elseif ($type == self::commit_transaction) {
 			$this->pdo->commit();
 		}
+	}
+
+	public function disconnect(&$pdo)
+	{
+		$pdo=null;
 	}
 }

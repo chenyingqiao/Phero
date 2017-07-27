@@ -37,7 +37,11 @@ class GroupConstrait implements interfaces\IConstrait {
 			if (empty($alias)) {
 				$sql .= $this->group_field;
 			} else {
-				$sql .= $alias . "." . $this->group_field;
+				if(strstr($this->group_field,".")){
+					$sql.=$this->group_field;
+				}else{
+					$sql .= $alias . "." . $this->group_field;
+				}
 			}
 		}
 		return $sql;

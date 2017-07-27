@@ -80,4 +80,9 @@ class SwooleMysqlDbHelp implements IDbHelp
     public function transaction($type)
     {
     }
+
+    public function disconnect(&$pdo)
+    {
+        
+    }
 }

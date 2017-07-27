@@ -16,4 +16,5 @@ interface IDbHelp {
 	public function error();
 	public function setFetchMode($mode, $classname = null);
 	public function transaction($type);
+	public function disconnect(&$pdo);
 }

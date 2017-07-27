@@ -7,7 +7,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 15:28:08
+ * @Last Modified time: 2017-07-27 14:25:57
  */
 
 trait OtherUnitTrait{
