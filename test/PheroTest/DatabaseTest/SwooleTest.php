@@ -2,6 +2,7 @@
 namespace PheroTest\DatabaseTest;
 
 use PheroTest\DatabaseTest\BaseTest;
+use PheroTest\DatabaseTest\BuildUnit\Mother;
 use Phero\Database\Realize\SwooleMysqlDbHelp;
 use Phero\System\Config;
 use Phero\System\DI;
@@ -18,31 +19,39 @@ class SwooleTest extends BaseTest
     public function swooleSelect()
     {
         $SwooleMysqlDbHelp=new SwooleMysqlDbHelp();
-        for ($i=0; $i < 100; $i++) { 
-            $data=$SwooleMysqlDbHelp->queryResultArray("show tables");
-            // $this->TablePrint($data);
-            $this->assertNotEmpty($data);
-        }
+        $data=$SwooleMysqlDbHelp->queryResultArray("show tables");
+        $this->assertNotEmpty($data);
     }
 
     /**
-     * 测试持久化链接
+     * @test
      * @Author   Lerko
-     * @DateTime 2017-07-21T18:11:39+0800
+     * @DateTime 2017-07-27T16:44:22+0800
      * @return   [type]                   [description]
      */
-    public function pdoPersistent(){
-
+    public function swooleSelectUnit(){
+        DI::inj("dbhelp",new SwooleMysqlDbHelp);
+        $data=Mother::Inc()->select();
+        $this->TablePrint($data);
+        $this->assertNotEmpty($data);
     }
 
     /**
-     * 测试普通pdo
+     * @test
      * @Author   Lerko
-     * @DateTime 2017-07-21T18:12:33+0800
+     * @DateTime 2017-07-27T16:52:42+0800
      * @return   [type]                   [description]
      */
-    public function pdoNormal()
-    {
-        # code...
+    public function swooleExec(){
+        DI::inj("dbhelp",new SwooleMysqlDbHelp);
+        $effect=Mother::Inc(['id'=>1])->delete();
+        $data=Mother::Inc()->select();
+        $this->TablePrint($data);
+        $effect=Mother::Inc(['name'=>"ying89"])->insert();
+        $data=Mother::Inc()->select();
+        $this->TablePrint($data);
+        $effect=Mother::Inc(["id"=>2,'name'=>"ying8923"])->update();
+        $data=Mother::Inc()->select();
+        $this->TablePrint($data);
     }
 }

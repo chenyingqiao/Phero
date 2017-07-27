@@ -4,6 +4,8 @@
 
 >phero是一个数据库查询的orm类库，注解形式的model以及方便快速的数据库操作方法
 
+<h1>简单 性能</h1>
+
 支持下列特性:
 
 - 注解形式的Unit
@@ -13,6 +15,7 @@
 - 命令行模型生成
 - 查询即时缓存（redis，mamcache，filesystem等）
 - 嵌套事务
+- swoole task线程池(阻塞以及非阻塞)
 
 ## 首先建立配置文件
 
@@ -41,9 +44,10 @@ return [
         //     ],
         // ],
     ],
-    #缓存使用的是Symfony的缓存组件 这里可以对缓存组件进行创建 具体看Symfony文档
-    "cache"=>RedisCache::createConnection('redis://127.0.0.1'),
-    #是否开启debug{开启之后注解缓存将会每次都刷新}
+    #缓存使用的是Symfony的缓存组件 这里可以对缓存组件进行创建 具体看Symfony cache方面的文档  写好的类支持redis和memcache
+    #但是必须安装memcache和redis相关的扩展
+    "cache"=>'redis://127.0.0.1:{这里可以定义端口}',
+    #是否开启debug{开启之后注解缓存将会每次都刷新} 并且swoole 线程池会打印调试信息
     "debug"=>true
 ];
 ```
@@ -51,6 +55,7 @@ return [
 ## 设置配置文件的位置
 
 ```php
+#配置文件可以放到任意php可读的位置
 DI::inj("config",dirname(__FILE__).DIRECTORY_SEPARATOR."config.php");
 ```
 
@@ -74,11 +79,6 @@ use PheroTest\DatabaseTest\Traits\Truncate;
 use Phero\Database\DbUnit;
 
 /**
- * #这里有其他的东西并不会干扰注解的工作
- * @Author: lerko
- * @Date:   2017-05-31 11:54:57
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-02 10:10:52
  * @Table[name=Parent,alias=parent]  
  * # name表示真正的表名称，如果没有配置就是类名为表明
  * # alias为别名

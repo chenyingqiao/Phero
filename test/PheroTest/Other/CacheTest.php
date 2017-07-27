@@ -12,12 +12,11 @@ use Phero\Database\Realize\Hit\RandomSlaveHit;
  * @Author: lerko
  * @Date:   2017-06-08 09:35:38
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-08 16:44:02
+ * @Last Modified time: 2017-07-27 16:16:32
  */
 class CacheTest extends BaseTest
 {
     /**
-     * @test
      * 内存共享区域的文件存储
      * @Author   Lerko
      * @DateTime 2017-06-08T09:36:56+0800
@@ -35,7 +34,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * 普通磁盘文件存储
      * @Author   Lerko
      * @DateTime 2017-06-08T10:00:31+0800
@@ -53,7 +51,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * @Author   Lerko
      * @DateTime 2017-06-08T10:40:34+0800
      * @return   [type]                   [description]
@@ -70,7 +67,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * @Author   Lerko
      * @DateTime 2017-06-08T10:40:43+0800
      * @return   [type]                   [description]
@@ -88,7 +84,6 @@ class CacheTest extends BaseTest
 
 
     /**
-     * @test
      * 内存共享区域的文件存储
      * @Author   Lerko
      * @DateTime 2017-06-08T09:36:56+0800
@@ -105,7 +100,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * 普通磁盘文件存储
      * @Author   Lerko
      * @DateTime 2017-06-08T10:00:31+0800
@@ -122,7 +116,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * @Author   Lerko
      * @DateTime 2017-06-08T10:40:34+0800
      * @return   [type]                   [description]
@@ -138,7 +131,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * @Author   Lerko
      * @DateTime 2017-06-08T10:40:43+0800
      * @return   [type]                   [description]
@@ -154,7 +146,6 @@ class CacheTest extends BaseTest
     }
 
     /**
-     * @test
      * @method saveObject
      * @return [type]     [description]
      */

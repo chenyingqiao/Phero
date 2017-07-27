@@ -5,7 +5,7 @@ use Symfony\Component\Cache\Simple\RedisCache;
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 16:08:18
+ * @Last Modified time: 2017-07-27 16:24:01
  */
 return [
 	"database" => [
@@ -14,6 +14,7 @@ return [
 			"user" => "root",
 			"password" => "lerko",
 		],
+		"attr"=>[],//pdo初始化的时候会进行赋值
 		// "slave" => [
 		// 	[
 		// 		"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",

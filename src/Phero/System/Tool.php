@@ -2,12 +2,14 @@
 
 namespace Phero\System;
 
+use League\CLImate\TerminalObject\Basic\Table;
 use Phero\Database\Model;
+use Webmozart\Console\IO\BufferedIO;
 /**
  * @Author: ‘chenyingqiao’
  * @Date:   2017-04-23 10:50:45
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-12 17:11:28
+ * @Last Modified time: 2017-07-27 16:54:40
  */
 
 /**
@@ -117,5 +119,25 @@ class Tool
      */
     public static function clearSpecialSymbal($content){
         return preg_replace("/[^\w:]+/","",$content);
+    }
+
+    /**
+     * 格式化输出数据
+     * @Author   Lerko
+     * @DateTime 2017-05-31T15:59:36+0800
+     * @param    [type]                   $data [description]
+     * @return   [type]                         [description]
+     */
+    public static function TablePrint($data){
+        $io=new BufferedIO();
+        $table = new Table();
+        is_array($data)?"":$data=[$data];
+        foreach ($data as $value) {
+            if(!is_array($value))
+                $value=[$value];
+            $table->addRow($value);
+        }
+        $table->render($io);
+        echo "\n".$io->fetchOutput();
     }
 }

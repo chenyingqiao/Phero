@@ -1,6 +1,7 @@
 <?php
 namespace Phero\Database\Realize;
 
+use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces\IDbHelp;
 use Phero\Database\Realize\MysqlDbHelp;
 use Phero\System\Config;
@@ -10,7 +11,23 @@ use Phero\System\Config;
 class SwooleMysqlDbHelp implements IDbHelp
 {
     CONST Select=1;
-    CONST Exce=2;
+    CONST Exec=2;
+    private $error="";
+
+    public function exec($sql, $data=[],$type=RelType::insert)
+    {
+        $client = $this->_get_swoole_client();
+        $client->send(serialize([self::Exec,$sql,$data]));
+        $recv=$client->recv();
+        $data=unserialize($recv);
+        if($data===false){
+            $this->error=$recv;
+            return 0;
+        }
+        $client->close();
+        return $data;
+    }
+
     /**
      * @hit
      */
@@ -42,12 +59,13 @@ class SwooleMysqlDbHelp implements IDbHelp
     {
         $swoole_config=Config::config("swoole");
         $swoole_client = new \swoole_client(SWOOLE_SOCK_TCP);
-        if(empty($swoole_config))
-            $connect=$swoole_client->connect('127.0.0.1',54288,-1);
-        else
+        if(!empty($swoole_config)&&isset($swoole_config['ip'])&&isset($swoole_config['port']))
             $connect=$swoole_client->connect($swoole_config['ip'],$swoole_config['port'],-1);
+        else{
+            $connect=$swoole_client->connect('127.0.0.1',54288,-1);
+        }
         if(!$connect){
-            throw new \Exception("swoole connection exception", 1);
+            throw new \Exception("Swoole connection exception! Check your swoole mysql connect pool!", 1);
         }
         return $swoole_client;
     }
@@ -62,10 +80,6 @@ class SwooleMysqlDbHelp implements IDbHelp
         return $this;
     }
 
-    public function exec($sql, $data=[],$type=RelType::insert)
-    {
-        return $this;
-    }
 
     public function error()
     {

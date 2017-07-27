@@ -4,7 +4,7 @@
  * @Author: lerko
  * @Date:   2017-07-27 16:00:35
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 16:01:17
+ * @Last Modified time: 2017-07-27 17:01:31
  */
 
 namespace Phero\SwoolePool;
@@ -14,6 +14,7 @@ use Phero\Database\Realize\MysqlDbHelp;
 use Phero\Database\Realize\SwooleMysqlDbHelp;
 use Phero\System\Config;
 use Phero\System\DI;
+use Phero\System\Tool;
 
 
 class MysqlSwoolePool
@@ -77,7 +78,7 @@ class MysqlSwoolePool
         $result=$db_help->exec($sql,$bindData);
         if($result>0){
             if(Config::config("debug"))
-                var_dump($result);
+                Tool::TablePrint($result);
             $exec_result=[
                     "data"=>$result,
                     md5("fd")=>$seriData['fd']
@@ -85,7 +86,7 @@ class MysqlSwoolePool
             $serv->finish($exec_result);
         }else{
             if(Config::config("debug"))
-                var_dump($db_help->error());
+                Tool::TablePrint($db_help->error());
             $exec_result=[
                     "data"=>$db_help->error(),
                     md5("fd")=>$seriData['fd']
@@ -108,10 +109,9 @@ class MysqlSwoolePool
         $sql=$seriData[1];
         $bindData=$seriData[2];
         $result=$db_help->queryResultArray($sql,$bindData);
-        var_dump($result);
         if($result!==0){
             if(Config::config("debug"))
-                var_dump($result);
+                Tool::TablePrint($result);
             $data=[
                 "data"=>$result,
                 md5("fd")=>$seriData['fd']
@@ -119,7 +119,7 @@ class MysqlSwoolePool
             $serv->finish($data);
         }else{
             if(Config::config("debug"))
-                var_dump($db_help->error());
+                Tool::TablePrint($db_help->error());
             $data=[
                 md5("fd")=>$seriData['fd'],
                 "data"=>$db_help->error()
