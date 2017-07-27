@@ -2,7 +2,7 @@
     "name": "lerko/p-hero",
     "type": "library",
     "description": "orm database library",
-    "keywords": ["database", "sql","mysql","p-hero"],
+    "keywords": ["database","swoole","sql","mysql","p-hero","连接池"],
     "authors": [
         {
             "name": "CYQ19931115",

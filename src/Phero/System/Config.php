@@ -11,7 +11,7 @@ class Config {
 	protected static $config;
 	public static function config($key,$value=null) {
 		self::$config_path = DI::get("config");
-		if (self::$config_path) {
+		if (self::$config_path&&is_file(self::$config_path)) {
 			if (!self::$config) {
 				self::$config = require_once self::$config_path;
 			}
@@ -20,6 +20,8 @@ class Config {
 				return $value;
 			}
 			return isset(self::$config[$key]) ? self::$config[$key] : null;
+		}else{
+			self::$config=self::$config_path;
 		}
 		return null;
 	}
