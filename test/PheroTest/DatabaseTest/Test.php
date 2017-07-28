@@ -18,6 +18,7 @@ use Phero\System\DI;
 
 class Test extends TestCase {
     /**
+     * @test
      * @Author   Lerko
      * @DateTime 2017-07-26T15:41:32+0800
      * @return   [type]                   [description]
@@ -30,7 +31,7 @@ class Test extends TestCase {
         (new ParentInfo)->truncate();
         (new MotherInfo)->truncate();
         (new Children)->truncate();
-        for ($i=0; $i < 1; $i++) {
+        for ($i=0; $i < 10; $i++) {
             $parentsName="parent{$i}";
             $motherName="mother{$i}";
             $UnitsParent[]=new Parents(["name"=>$parentsName]);

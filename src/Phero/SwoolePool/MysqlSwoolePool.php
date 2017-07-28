@@ -4,7 +4,7 @@
  * @Author: lerko
  * @Date:   2017-07-27 16:00:35
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-28 12:14:35
+ * @Last Modified time: 2017-07-28 13:27:41
  */
 
 namespace Phero\SwoolePool;
@@ -77,16 +77,12 @@ class MysqlSwoolePool
         $bindData=$seriData[2];
         $result=$db_help->exec($sql,$bindData);
         if($result>0){
-            if(Config::config("debug"))
-                Tool::TablePrint($result);
             $exec_result=[
                     "data"=>$result,
                     md5("fd")=>$seriData['fd']
                 ];
             $serv->finish($exec_result);
         }else{
-            if(Config::config("debug"))
-                Tool::TablePrint($db_help->error());
             $exec_result=[
                     "data"=>$db_help->error(),
                     md5("fd")=>$seriData['fd']
@@ -110,16 +106,12 @@ class MysqlSwoolePool
         $bindData=$seriData[2];
         $result=$db_help->queryResultArray($sql,$bindData);
         if($result!==0){
-            if(Config::config("debug"))
-                Tool::TablePrint($result);
             $data=[
                 "data"=>$result,
                 md5("fd")=>$seriData['fd']
             ];
             $serv->finish($data);
         }else{
-            if(Config::config("debug"))
-                Tool::TablePrint($db_help->error());
             $data=[
                 md5("fd")=>$seriData['fd'],
                 "data"=>$db_help->error()
