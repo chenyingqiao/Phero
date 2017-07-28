@@ -8,6 +8,7 @@ use PheroTest\DatabaseTest\Unit\Marry;
 use PheroTest\DatabaseTest\Unit\Mother;
 use PheroTest\DatabaseTest\Unit\MotherInfo;
 use PheroTest\DatabaseTest\Unit\Parents;
+use Phero\Database\Db;
 use Phero\Database\DbUnit;
 use Phero\Database\Enum\OrderType;
 use Phero\Database\Enum\Where;
@@ -18,7 +19,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 14:29:50
+ * @Last Modified time: 2017-07-27 18:12:28
  */
 class SelectTest extends BaseTest
 {
@@ -46,6 +47,17 @@ class SelectTest extends BaseTest
 		$result=$Parents->count();
 		$this->assertEquals($result, 10);
 		$this->timer(false,__METHOD__);
+	}
+
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-07-27T18:11:31+0800
+	 * @return   [type]                   [description]
+	 */
+	public function query(){
+		$data=Db::query("show tables;");
+		$this->TablePrint($data);
 	}
 
 	/**

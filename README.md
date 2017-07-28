@@ -4,6 +4,7 @@
 
 支持下列特性:
 
+- swoole task数据库连接池
 - 注解形式的Unit
 - 读写分离配置
 - 流畅的orm
@@ -12,16 +13,13 @@
 - 查询即时缓存（redis，mamcache）
 - 嵌套事务
 
+
 ## 第一个ORM
 
 ### 创建一个Unit
 
 ```php
 <?php 
-namespace PheroTest\DatabaseTest\Unit;
-use PheroTest\DatabaseTest\Traits\Truncate;
-use Phero\Database\DbUnit;
-
 /**
  * @Table[name=Parent,alias=parent]  
  * # name表示真正的表名称，如果没有配置就是类名为表明
