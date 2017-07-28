@@ -19,7 +19,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 18:12:28
+ * @Last Modified time: 2017-07-28 12:01:19
  */
 class SelectTest extends BaseTest
 {
@@ -56,8 +56,12 @@ class SelectTest extends BaseTest
 	 * @return   [type]                   [description]
 	 */
 	public function query(){
-		$data=Db::query("show tables;");
+		echo "query";
+		$data=Db::queryResultArray("show tables;");
 		$this->TablePrint($data);
+		$data=Db::exec("insert into Mother('name') values ('kkk');");
+		$data2=Db::queryResultArray("select * from Mother;");
+		$this->TablePrint($data2);
 	}
 
 	/**

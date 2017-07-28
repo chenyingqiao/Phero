@@ -11,8 +11,8 @@ interface IDbHelp {
 	public function setEntiy($entiy);
 	public function getDbConn();
 	public function exec($sql, $data=[],$type=RelType::insert);
-	public function query($sql, $data);
-	public function queryResultArray($sql, $data);
+	public function query($sql, $data=[]);
+	public function queryResultArray($sql, $data=[]);
 	public function error();
 	public function setFetchMode($mode, $classname = null);
 	public function transaction($type);

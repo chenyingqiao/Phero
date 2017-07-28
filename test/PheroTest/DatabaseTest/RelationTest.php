@@ -12,7 +12,7 @@ use Phero\Database\Traits\TRelation;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 17:00:10
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-04 15:51:03
+ * @Last Modified time: 2017-07-28 12:12:01
  */
 class RelationTest extends BaseTest
 {
@@ -35,7 +35,7 @@ class RelationTest extends BaseTest
 			]);
 		$Mother->relInsert();
 		$motherInfo=MotherInfo::Inc()->whereEq("email","00000000@qq.com")->find();
-		var_dump($motherInfo);
+		$this->TablePrint($motherInfo);
 		$this->assertNotEmpty($motherInfo);
 	}
 
@@ -56,7 +56,7 @@ class RelationTest extends BaseTest
 			]);
 		$Mother->relUpdate();
 		$data=MotherInfo::Inc()->whereEq("email","relationupdate@qq.com")->find();
-		var_dump($data);
+		$this->TablePrint($data);
 		$this->assertNotEmpty($data);
 	}
 
@@ -72,7 +72,7 @@ class RelationTest extends BaseTest
 		$Mother->info=MotherInfo::Inc(["mid"=>12]);
 		$Mother->relDelete();
 		$data=MotherInfo::Inc()->whereEq("mid",12)->find();
-		var_dump($data);
+		$this->TablePrint($data);
 		$this->assertEmpty($data);
 	}
 
@@ -96,6 +96,7 @@ class RelationTest extends BaseTest
 	public function selectRelation($value='')
 	{
 		$motherinfo=Mother::Inc()->limit(1,3)->relSelect();
+		var_dump($motherinfo);
 		$this->assertNotEmpty(array_shift($motherinfo)['info']);
 	}
 }

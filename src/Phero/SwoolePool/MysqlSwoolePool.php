@@ -4,7 +4,7 @@
  * @Author: lerko
  * @Date:   2017-07-27 16:00:35
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 17:01:31
+ * @Last Modified time: 2017-07-28 12:14:35
  */
 
 namespace Phero\SwoolePool;
@@ -130,7 +130,8 @@ class MysqlSwoolePool
 
     public function _finish($serv,$task_id, $data)
     {
-        echo "AsyncTask Finish:Connect.PID=" . posix_getpid() . PHP_EOL;
+        if(Config::config("debug"))
+            echo "AsyncTask Finish:Connect.PID=" . posix_getpid() . PHP_EOL;
         $serv->send($data[md5("fd")],serialize($data['data']));
     }
 

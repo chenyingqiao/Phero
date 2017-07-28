@@ -8,7 +8,6 @@ use Phero\Database\Enum\Cache;
 use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\JoinType;
 use Phero\Database\Interfaces\INodeMap;
-use Phero\Database\Model;
 use Phero\Database\Realize\MysqlDbHelp;
 use Phero\Database\Traits\ArrayAccessTrait;
 use Phero\Database\Traits\TConstraitTableDependent;
@@ -51,7 +50,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @param boolean $IniFalse [反向设置false false表示的是这个列不出现在select列表中]
 	 */
 	public function __construct($values = null) {
-		$this->model = new Model();
+		// $this->model = new Model();
 		$this->values_cache = $values;
 		if($values!==null)
 			$this->allFalse();
@@ -79,7 +78,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 				return $data;
 			}
 		}
-		$result = $this->model->select($this, $yield);
+		$result = $this->getModel()->select($this, $yield);
 		$this->dumpSql = $sql;
 		$this->unit_new();
 		if($cache){
@@ -96,8 +95,8 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$result = $this->model->update($this);
-		$this->dumpSql = $this->model->getSql();
+		$result = $this->getModel()->update($this);
+		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
 		return $result;
 	}
@@ -110,8 +109,8 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$result = $this->model->delete($this);
-		$this->dumpSql = $this->model->getSql();
+		$result = $this->getModel()->delete($this);
+		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
 		return $result;
 	}
@@ -124,8 +123,8 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$result = $this->model->insert($this);
-		$this->dumpSql = $this->model->getSql();
+		$result = $this->getModel()->insert($this);
+		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
 		return $result;
 	}
@@ -134,11 +133,11 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		if(!$this->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		if ($this->model->getPdoDriverType() != enum\PdoDriverType::PDO_MYSQL) {
+		if ($this->getModel()->getPdoDriverType() != enum\PdoDriverType::PDO_MYSQL) {
 			throw new \Exception("mysql驱动才支持replace", 1);
 		}
-		$result = $this->model->insert($this, true);
-		$this->dumpSql = $this->model->getSql();
+		$result = $this->getModel()->insert($this, true);
+		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
 		return $result;
 	}
@@ -163,26 +162,22 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 */
 	public function fetchSql(&$sql="",$type=FetchType::select) {
 		$this->checkSaveForUpdateOrDelete();
-		$bindValues = $this->model->fetchSql($this,$type);
-		$this->dumpSql = $this->model->getSql();
+		$bindValues = $this->getModel()->fetchSql($this,$type);
+		$this->dumpSql = $this->getModel()->getSql();
 		$sql=$this->dumpSql;
 		return $bindValues;
 	}
 
 	public function start() {
-		$this->model->transaction(MysqlDbHelp::begin_transaction);
+		$this->getModel()->transaction(MysqlDbHelp::begin_transaction);
 		return $this;
 	}
 
 	public function rollback() {
-		$this->model->transaction(MysqlDbHelp::rollback_transaction);
+		$this->getModel()->transaction(MysqlDbHelp::rollback_transaction);
 	}
 	public function commit() {
-		$this->model->transaction(MysqlDbHelp::commit_transaction);
-	}
-
-	public function getModel() {
-		return $this->model;
+		$this->getModel()->transaction(MysqlDbHelp::commit_transaction);
 	}
 
 	public function dumpSql() {

@@ -4,21 +4,21 @@ namespace Phero\Database;
 
 use Phero\Database\Model;
 use Phero\Database\Realize\MysqlDbHelp;
+use Phero\System\DI;
 
 /**
  * @Author: lerko
  * @Date:   2017-06-26 14:07:22
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-27 18:15:08
+ * @Last Modified time: 2017-07-28 12:01:47
  */
 class Db
 {
 	private static $model_fun=["insert","update","delete","select"];
-	private static $dbHelp_fun=["exec","queryResultArray","query"];
+	private static $dbHelp_fun=["exec","queryResultArray","query","error"];
 
 	private static $dbhelp;
 	public static function __callStatic($name,$argument){
-		self::injectStatic();
 		if(!empty(DI::get("dbhelp"))){
 			self::$dbhelp=DI::get("dbhelp");
 		}else{

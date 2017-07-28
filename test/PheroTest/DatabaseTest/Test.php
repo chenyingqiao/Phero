@@ -18,7 +18,6 @@ use Phero\System\DI;
 
 class Test extends TestCase {
     /**
-     * @test
      * @Author   Lerko
      * @DateTime 2017-07-26T15:41:32+0800
      * @return   [type]                   [description]
