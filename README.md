@@ -14,6 +14,17 @@
 - 查询即时缓存（redis，mamcache）
 - 嵌套事务
 
+## 安装
+ 
+- composer 
+```
+composer require lerko/p-hero
+```
+
+- git clone
+```
+git clone https://github.com/chenyingqiao/Phero.git;
+```
 
 ## 第一个ORM
 
