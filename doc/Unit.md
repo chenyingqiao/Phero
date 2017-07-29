@@ -82,3 +82,14 @@ lerko@lerko-PC:/var/www/html/Phero$ php UnitBuilder
 是否只生成某些表？(默认为全部，表名逗号隔开)
 ================================================================================> 100%
 ```
+
+
+## Unit的实例化
+
+- 方式1
+
+$mother=new Mother();
+
+- 方式2
+$mother=Mother::Inc();
+Mother::lastInc()==$mother;//lastInc会等于最近的那个Inc

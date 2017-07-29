@@ -140,10 +140,10 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			if (is_array($value)) {
 				$sql->bindValue($value[0], $value[1], $value[2]);
 			} else {
-				if (isset($data[1])) {
+				if (is_array($value)&&isset($value[1])) {
 					$sql->bindValue($key, $value[0], $value[1]);
 				} else {
-					$sql->bindValue($key, $value[0]);
+					$sql->bindValue($key, $value);
 				}
 				return;
 			}

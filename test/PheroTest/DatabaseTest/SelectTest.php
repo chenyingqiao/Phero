@@ -18,8 +18,8 @@ use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-28 12:01:19
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-29 20:12:38
  */
 class SelectTest extends BaseTest
 {
@@ -56,11 +56,25 @@ class SelectTest extends BaseTest
 	 * @return   [type]                   [description]
 	 */
 	public function query(){
-		$data=Db::queryResultArray("show tables;");
-		$data=Db::exec("insert into Mother('name') values (:name);",["name"=>"exec_text"]);
-		// var_dump(Mother::Inc()->select());
-		$data2=Db::queryResultArray("select * from Mother where id=:id;",['id'=>1]);
+		$data=Db::exec("insert into Mother(name) values (:name);",["name"=>"exec_text"]);
+		var_dump(Db::error());
+
+		$data2=Db::queryResultArray("select * from Mother where id=:id",["id"=>1]);
+		var_dump(Db::error());
 		$this->TablePrint($data2);
+
+		$mother=new Mother(["name"=>"test".rand(1,100)]);
+		Db::insert($mother);
+
+		$mother=new Mother(["id"=>11,"name"=>"test".rand(1,100)]);
+		Db::update($mother);
+
+		$mother=new Mother(["id"=>2]);
+		Db::delete($mother);
+		var_dump(Db::getSql());
+
+		$this->TablePrint(Mother::Inc()->select());
+
 	}
 
 	/**

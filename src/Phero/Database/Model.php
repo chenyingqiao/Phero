@@ -72,6 +72,9 @@ class Model implements interfaces\IModel {
 		return $data;
 	}
 	public function update($Entiy) {
+		if(!$Entiy->checkSaveForUpdateOrDelete()){
+			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
+		}
 		$sql = $this->IConstraitBuild->buildUpdataSql($Entiy);
 		$this->help->setEntiy($Entiy);
 		$bindData=$this->IConstraitBuild->getBindData();
@@ -80,6 +83,9 @@ class Model implements interfaces\IModel {
 		return $return;
 	}
 	public function delete($Entiy) {
+		if(!$Entiy->checkSaveForUpdateOrDelete()){
+			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
+		}
 		$sql = $this->IConstraitBuild->buildDeleteSql($Entiy);
 		$this->help->setEntiy($Entiy);
 		$bindData=$this->IConstraitBuild->getBindData();
