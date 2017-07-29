@@ -8,7 +8,8 @@ use Phero\Database\DbUnit;
  * @Author: lerko
  * @Date:   2017-05-31 11:54:57
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 11:56:38
+ * @Last Modified time: 2017-07-29 20:50:16
+ * @Table[name=Mother,alias=mother]
  */
 class Mother extends DbUnit
 {

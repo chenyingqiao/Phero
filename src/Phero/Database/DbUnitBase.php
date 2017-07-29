@@ -46,6 +46,7 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 *                          array:标示启用的列  【带有费数值key的就会进行赋值】
 	 *                          false :禁用原本所有的数据
 	 *                          null :不填
+	 *                          ======================================================================可以考虑可以添加不存在的函数string==========
 	 * ]
 	 * @param boolean $IniFalse [反向设置false false表示的是这个列不出现在select列表中]
 	 */

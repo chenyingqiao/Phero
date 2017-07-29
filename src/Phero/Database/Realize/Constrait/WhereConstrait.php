@@ -178,7 +178,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 			return "";
 		}
 		$bindType = $this->getBindDataType($key);
-		if ($compare == enum\Where::between) {
+		if ($compare == enum\Where::get("between")) {
 			$key1 = Tool::clearSpecialSymbal(":" . $from . "_" . $key . "_" . rand());
 			$key2 = ":" . $from . "_" . $key . "_" . rand();
 			if (!empty($values)) {
@@ -186,7 +186,7 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 				$this->bindData[] = [$key2, $values[1], $bindType];
 			}
 			return $key1 . " AND " . $key2;
-		} else if ($compare == enum\Where::in_) {
+		} else if ($compare == enum\Where::get("in_")) {
 			$in_betweenBindKey = "(";
 			$i = 0;
 			foreach ($values as $key => $value) {

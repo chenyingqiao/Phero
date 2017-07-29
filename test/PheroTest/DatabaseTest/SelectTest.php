@@ -19,7 +19,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 20:12:38
+ * @Last Modified time: 2017-07-29 22:28:00
  */
 class SelectTest extends BaseTest
 {
@@ -57,11 +57,11 @@ class SelectTest extends BaseTest
 	 */
 	public function query(){
 		$data=Db::exec("insert into Mother(name) values (:name);",["name"=>"exec_text"]);
-		var_dump(Db::error());
+		// var_dump(Db::error());
 
 		$data2=Db::queryResultArray("select * from Mother where id=:id",["id"=>1]);
-		var_dump(Db::error());
-		$this->TablePrint($data2);
+		// var_dump(Db::error());
+		// $this->TablePrint($data2);
 
 		$mother=new Mother(["name"=>"test".rand(1,100)]);
 		Db::insert($mother);
@@ -71,9 +71,11 @@ class SelectTest extends BaseTest
 
 		$mother=new Mother(["id"=>2]);
 		Db::delete($mother);
-		var_dump(Db::getSql());
+		// var_dump(Db::getSql());
 
-		$this->TablePrint(Mother::Inc()->select());
+		$mother=new Mother();
+		$data_select=Db::select($mother);
+		// $this->TablePrint($data_select);
 
 	}
 
@@ -88,6 +90,8 @@ class SelectTest extends BaseTest
 		$Parents=new Parents();
 		$result=$Parents->select();
 		$this->assertEquals($result, $data);
+
+		Mother::Inc()->select();
 	}
 
 	/**
@@ -99,13 +103,19 @@ class SelectTest extends BaseTest
 	public function testSelectOneTableWhere(){
 		$Parents=new Parents();
 		$result=$Parents
-			->where(["id",10,Where::eq_],null,1,"Fun(?)")
-			->where(["name","%test%",Where::like,WhereCon::and_],null,2,"Fun2(?)")
+			->where(["id",10,Where::$eq_],null,1,"Fun(?)")
+			->where(["name","%test%",Where::$like,WhereCon::and_],null,2,"Fun2(?)")
 			->fetchSql();
 		$sql=$Parents->sql();
 		//$this->TablePrint($result);
 		$this->assertEquals($sql,
 			"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where (Fun(`parent`.`id`) = 10  and Fun2(`parent`.`name`) like '%test%');");
+	}
+
+	public function testSelectWhereClaver(){
+		$Parents->whereEq("id",1)
+			->whereOrIsnull("id")->fetchSql();
+		var_dump($Parents->sql());
 	}
 
 	/**
@@ -123,7 +133,7 @@ class SelectTest extends BaseTest
 		$MarryClone=clone $Marry;
 		$result=$Marry->fetchSql();
 		//$this->TablePrint($result);
-		$this->assertEquals($Marry->sql(), "select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
+		$this->assertEquals($Marry->sql(), "select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`mother`.`id`,`mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` as `mother` on `Marry`.`mid`=`mother`.`id` ;");
 		return $MarryClone;
 	}
 
@@ -144,7 +154,7 @@ class SelectTest extends BaseTest
 			->whereOrExists($Marry);
 		$result=$Parents->fetchSql();
 		//$this->TablePrint($result);
-		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.`id`  and `Marry`.`id` in (select `Mother`.`id` from `Mother` where `Mother`.`id` between 1 AND 10));");
+		$this->assertEquals($Parents->sql(),"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where `parent`.`id` = 1  or  exists (select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid` from `Marry` where `Marry`.`pid` = `parent`.`id`  and `Marry`.`id` in (select `mother`.`id` from `Mother` as `mother` where `mother`.`id` between 1 AND 10));");
 	}
 
 	/**
@@ -157,7 +167,7 @@ class SelectTest extends BaseTest
 	public function selectField(){
 		$sql="";
 		$data=Mother::Inc(["name"])->fetchSql($sql);
-		$this->assertEquals($sql,"select `Mother`.`name` from `Mother`;");
+		$this->assertEquals($sql,"select `mother`.`name` from `Mother` as `mother`;");
 	}
 
 	/**
@@ -171,7 +181,7 @@ class SelectTest extends BaseTest
 		$sql="";
 		$id=Mother::FF("id");
 		$marry->field("ThisIsMyFuckingFun($id)","fuckFun")->field("Fun2($id)","fcun2")->fetchSql($sql);
-		$this->assertEquals($sql,"select ThisIsMyFuckingFun(`Mother`.`id`) as fuckFun,Fun2(`Mother`.`id`) as fcun2,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id` ;");
+		$this->assertEquals($sql,"select ThisIsMyFuckingFun(`mother`.`id`) as fuckFun,Fun2(`mother`.`id`) as fcun2,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`mother`.`id`,`mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` as `mother` on `Marry`.`mid`=`mother`.`id` ;");
 	}
 
 	/**
@@ -185,7 +195,7 @@ class SelectTest extends BaseTest
 		$id=Mother::FF("id");
 		MotherInfo::Inc(false)->field("email")->field("Fun2($id)","f2")->whereEq(MotherInfo::FF("mid"),Mother::FF("id"));
 		Mother::Inc()->field(MotherInfo::lastInc(),"email")->field("MFUnc($id)","mf2")->fetchSql($sql);
-		$this->assertEquals($sql,"select (select `MotherInfo`.`email`,Fun2(`Mother`.`id`) as f2 from `MotherInfo` where `MotherInfo`.`mid` = '`Mother`.`id`') as email,MFUnc(`Mother`.`id`) as mf2,`Mother`.`id`,`Mother`.`name` from `Mother`;");
+		$this->assertEquals($sql,"select (select `MotherInfo`.`email`,Fun2(`mother`.`id`) as f2 from `MotherInfo` where `MotherInfo`.`mid` = '`mother`.`id`') as email,MFUnc(`mother`.`id`) as mf2,`mother`.`id`,`mother`.`name` from `Mother` as `mother`;");
 	}
 
 
@@ -200,7 +210,7 @@ class SelectTest extends BaseTest
 		$marry->order(Mother::FF("id"),OrderType::desc);
 		$sql=$marry->fetchSql();
 		//$this->TablePrint($sql);
-		$this->assertEquals($marry->sql(),"select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  order by `Mother`.`id` desc;");
+		$this->assertEquals($marry->sql(),"select `Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`mother`.`id`,`mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` as `mother` on `Marry`.`mid`=`mother`.`id`  order by `mother`.`id` desc;");
 	}
 
 	/**
@@ -214,7 +224,7 @@ class SelectTest extends BaseTest
 		$sql="";
 		$marry->sum("id")->group(Mother::FF("id"))->havingEq(Mother::FF("id"),1)->fetchSql($sql);
 		//$this->TablePrint($sql);
-		$this->assertEquals($sql,"select `Marry`.`sum(id) as sum_id`,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`Mother`.`id`,`Mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` on `Marry`.`mid`=`Mother`.`id`  group by `Mother`.`id` having  `Mother`.`id` = 1;");
+		$this->assertEquals($sql,"select `Marry`.`sum(id) as sum_id`,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`mother`.`id`,`mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` as `mother` on `Marry`.`mid`=`mother`.`id`  group by `mother`.`id` having  `mother`.`id` = 1;");
 	}
 
 	/**
