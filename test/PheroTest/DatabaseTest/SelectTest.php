@@ -19,7 +19,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 22:28:00
+ * @Last Modified time: 2017-07-29 23:23:05
  */
 class SelectTest extends BaseTest
 {
@@ -109,13 +109,18 @@ class SelectTest extends BaseTest
 		$sql=$Parents->sql();
 		//$this->TablePrint($result);
 		$this->assertEquals($sql,
-			"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where (Fun(`parent`.`id`) = 10  and Fun2(`parent`.`name`) like '%test%');");
+			"select `parent`.`id`,`parent`.`name` from `Parent` as `parent` where Fun(`parent`.`id`) = 10  and Fun2(`parent`.`name`) like '%test%';");
 	}
 
 	public function testSelectWhereClaver(){
-		$Parents->whereEq("id",1)
-			->whereOrIsnull("id")->fetchSql();
-		var_dump($Parents->sql());
+		Mother::Inc()->Set(function(){
+			$this->whereEq("id",1)->whereOrLike("name","sss_");
+			return $this;
+		},WhereCon::or_)->Set(function(){
+			$this->whereEq("id",2)->whereOrLike("name","ddd_");
+			return $this;
+		})->fetchSql();
+		echo Mother::lastInc()->sql();
 	}
 
 	/**

@@ -205,6 +205,85 @@ WHERE
         AND FUN2(`parent`.`name`) LIKE '%test%');
 ```
 
+### where分组
+
+```php
+Mother::Inc()->Set(function(){
+	$this->whereEq("id",1)->whereOrLike("name","sss_");
+	return $this;
+},WhereCon::or_)->Set(function(){
+	$this->whereEq("id",2)->whereOrLike("name","ddd_");
+	return $this;
+})->select()
+```
+
+```sql
+SELECT
+    `mother`.`id`, `mother`.`name`
+FROM
+    `Mother` AS `mother`
+WHERE
+    (`mother`.`id` = 1
+        OR `mother`.`name` LIKE 'sss_')
+    OR (`mother`.`id` = 2
+        OR `mother`.`name` LIKE 'ddd_');
+```
+
+### 列选取以及聚合查询
+
+- 聚合函数
+
+
+
+- 带函数的field
+
+```php
+$id=Mother::FF("id");
+$marry->field("ThisIsMyFuckingFun($id)","fuckFun")->field("Fun2($id)","fcun2")->fetchSql($sql);
+```
+
+```sql
+SELECT
+    THISISMYFUCKINGFUN(`mother`.`id`) AS fuckFun,
+    FUN2(`mother`.`id`) AS fcun2,
+    `Marry`.`id`,
+    `Marry`.`pid`,
+    `Marry`.`mid`
+FROM
+    `Marry`;
+```
+
+### 排序
+
+### 分组以及分组having
+
+###
+
 ### join查询
+
+```php
+$Parents=new Parents();
+$Marry=new Marry();
+$Mother=new Mother();
+$Marry->join($Parents,"$.`pid`=#.`id`");//$ 代表主动join的实体  # 代表被join的实体
+$Marry->join($Mother,"$.`mid`=#.`id`")->select();
+```
+
+```sql
+SELECT
+    `Marry`.`id`,
+    `Marry`.`pid`,
+    `Marry`.`mid`,
+    `parent`.`id`,
+    `parent`.`name`,
+    `mother`.`id`,
+    `mother`.`name`
+FROM
+    `Marry`
+        INNER JOIN
+    `Parent` AS `parent` ON `Marry`.`pid` = `parent`.`id`
+        INNER JOIN
+    `Mother` AS `mother` ON `Marry`.`mid` = `mother`.`id`;
+```
 
 ### 分组查询

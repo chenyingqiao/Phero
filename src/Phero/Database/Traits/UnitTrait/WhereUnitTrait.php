@@ -7,7 +7,7 @@ use Phero\System\Tool;
  * @Author: lerko
  * @Date:   2017-06-02 16:11:42
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-06-04 15:02:20
+ * @Last Modified time: 2017-07-29 23:22:49
  */
 trait WhereUnitTrait
 {
@@ -26,7 +26,7 @@ trait WhereUnitTrait
 	 *                       		下个字段连接符 可选---index:3(默认为空字符串)
 	 * ]
 	 * @param  [type] $from  [来自那个表  如果是多表链接的话]
-	 * @param  boolean $group     [是否进行where分组 1:左括号 2:右括号]
+	 * @param  boolean $group     [是否进行where分组 true:开启分组 false关闭分组]
 	 * @param  string  $whereTemp [where字段模板]
 	 * @return [type]             [description]
 	 */
@@ -37,11 +37,9 @@ trait WhereUnitTrait
 		if (isset($from)) {
 			$where['from'] = $from;
 		}
-		if($this->whereGroup!==false)
-			$group = $this->whereGroup;
-		//这里的wheregroup是通过where进行添加的
 		if ($group !== false) {
-			$where['group'] = $group;
+			if($this->whereGroup!==false)
+				$where['group'] = $this->whereGroup;
 		}
 		if (!empty($whereTemp)) {
 			$where['temp'] = $whereTemp;
@@ -56,11 +54,12 @@ trait WhereUnitTrait
 	 * @DateTime 2017-03-20T15:12:01+0800
 	 * @param    Closure                  $func [description]
 	 */
-	public function Set(\Closure $func){
+	public function Set(\Closure $func,$Con=""){
 		$this->setGroup();
 		$func=$func->bindTo($this);
 		$this_self=$func();
-		$this->setGroup(parent::GroupEnd);
+		$this->setGroup(self::GroupEnd);
+		$this->where([null,null,null,$Con]);
 		return $this_self;
 	}
 

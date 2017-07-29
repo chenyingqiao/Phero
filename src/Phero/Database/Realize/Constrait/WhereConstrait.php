@@ -73,6 +73,10 @@ class WhereConstrait implements interfaces\IConstrait, interfaces\IBindData {
 				$this->setWhere("","","","","",$value['group'],"");
 				continue;
 			}
+			if(empty($value[0])&&empty($value[1])&&empty($value[2])&&!empty($value[3])){
+				$this->setWhere("","","","",$value[3],"","");
+				continue;
+			}
 			if (isset($value['from'])) {
 				$from = $value['from'];
 			} else {
