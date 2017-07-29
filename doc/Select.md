@@ -37,7 +37,7 @@ select `mother`.`name` from `Mother` as `mother`;
 
 ### 条件查询
 
-- 比较符号查询(Lt Lr Gt Ge Eq Neq 用法相同 )
+> 比较符号查询(Lt Lr Gt Ge Eq Neq 用法相同 )
 
 ```php
 Mother::Inc()->whereLt("id",4)->select();
@@ -52,7 +52,8 @@ WHERE
     `mother`.`id` < 4;
 ```
 
-- 范围查询
+> 范围查询
+
 ```
 Mother::Inc()->whereBetween("id",[1,10])->select();
 ```
@@ -65,7 +66,8 @@ WHERE
     `mother`.`id` BETWEEN 1 AND 10;
 ```
 
-- in查询
+> in查询
+
 ```php
 # 第二个参数也可传入对象 但是对象查询出来的列必须为一列
 Mother::Inc()->whereIn("id",[1,10])->select();
@@ -79,7 +81,8 @@ WHERE
     `mother`.`id` IN (1 , 10);
 ```
 
-- like查询(not like同理)
+> like查询(not like同理)
+
 ```php
 Mother::Inc()->whereLike("name","test%")->select();
 ```
@@ -93,7 +96,7 @@ WHERE
     `mother`.`name` LIKE 'test%';
 ```
 
-- is null
+> is null
 
 ```php
 $Parents->whereEq("id",1)
@@ -110,7 +113,7 @@ WHERE
         OR `parent`.`id` IS NULL;
 ```
 
-- exists查询
+> exists查询
 
 ```php
 $Parents=new Parents();
@@ -137,7 +140,7 @@ WHERE
             `Marry`.`pid` = `parent`.`id`);
 ```
 
-- all 和any
+> all 和any
 
 ```php
 $Parents=new Parents();
@@ -231,11 +234,11 @@ WHERE
 
 ### 列选取以及聚合查询
 
-- 聚合函数
+> 聚合函数
 
 
 
-- 带函数的field
+> 带函数的field
 
 ```php
 $id=Mother::FF("id");
