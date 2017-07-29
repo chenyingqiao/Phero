@@ -25,30 +25,10 @@
 use Symfony\Component\Cache\Simple\RedisCache;
 return [
     "database" => [
-        # master为主从中的主  slave为从  目前只支持一主多从
-        "master" => [
             "dsn" => "mysql:dbname=phero;host=127.0.0.1",#pdo链接字符串
             "user" => "{your username}",
             "password" => "{your password}",
-        ],
-        // "slave" => [
-        //     [
-        //         "dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",
-        //         "user" => "admin",
-        //         "password" => "password",
-        //     ],
-        //     [
-        //         "dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.4",
-        //         "user" => "admin",
-        //         "password" => "password",
-        //     ],
-        // ],
-    ],
-    #缓存使用的是Symfony的缓存组件 这里可以对缓存组件进行创建 具体看Symfony cache方面的文档  写好的类支持redis和memcache
-    #但是必须安装memcache和redis相关的扩展
-    "cache"=>'redis://127.0.0.1:{这里可以定义端口}',
-    #是否开启debug{开启之后注解缓存将会每次都刷新} 并且swoole 线程池会打印调试信息
-    "debug"=>true
+    ]
 ];
 ```
 

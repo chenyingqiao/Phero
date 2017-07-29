@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Phero\Command;
 
@@ -62,7 +62,7 @@ class UnitBuilder
 		$DbHelp=new MysqlDbHelp();
 		$tables=$DbHelp->queryResultArray("show tables");
 		$tables_gen=[];
-		if(empty($tables_input)){
+		if(!empty($tables_input)){
 			foreach ($tables_input as $key => $value) {
 				if(in_array($value,$tables_input)){
 					$tables_gen[]=$value;

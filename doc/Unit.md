@@ -56,3 +56,29 @@ class Mother extends DbUnit
     - type：{oo：一对一  om：一对多}
     - class：关联的Unit的类名
     - key：关联的Unit的具体的字段
+- @Entity
+    - field: 需要查询出来包含的类
+    - sort:排序
+    - key：排序的键值
+
+## 从数据库生成unit
+
+我们只需要运行一个php文件就可以生成Unit文件到指定目录
+cd到本包的根目录
+运行 `php UnitBuilder`
+
+就可以自动生成Unit到自定目录
+
+```shell
+lerko@lerko-PC:/var/www/html/Phero$ php UnitBuilder
+-----------------------------------------------------------------------------------------
+请输入生成文件的位置： /home/lerko/Desktop/Test/
+输入统一的命名空间： Test
+
+输入数据库名称： phero
+输入数据库地址：(默认 localhost)
+输入数据库用户名：(默认 root)
+输入数据库密码：(默认为空) lerko
+是否只生成某些表？(默认为全部，表名逗号隔开)
+================================================================================> 100%
+```
