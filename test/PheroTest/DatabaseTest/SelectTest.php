@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace PheroTest\DatabaseTest;
 
@@ -30,7 +30,7 @@ class SelectTest extends BaseTest
 	 */
 	public function getParentTableData(){
 		$data=[];
-		for ($i=0; $i < 10; $i++) { 
+		for ($i=0; $i < 10; $i++) {
 			$data[]=["id"=>$i+1,"name"=>"parent{$i}"];
 		}
 		return $data;
@@ -56,11 +56,10 @@ class SelectTest extends BaseTest
 	 * @return   [type]                   [description]
 	 */
 	public function query(){
-		echo "query";
 		$data=Db::queryResultArray("show tables;");
-		$this->TablePrint($data);
-		$data=Db::exec("insert into Mother('name') values ('kkk');");
-		$data2=Db::queryResultArray("select * from Mother;");
+		$data=Db::exec("insert into Mother('name') values (:name);",["name"=>"exec_text"]);
+		// var_dump(Mother::Inc()->select());
+		$data2=Db::queryResultArray("select * from Mother where id=:id;",['id'=>1]);
 		$this->TablePrint($data2);
 	}
 
