@@ -4,7 +4,7 @@ namespace Phero\Map\Note;
 /**
  *这个是一个注解链接的查询描述
  */
-class Entiy {
+class Entity {
 	/**
 	 * 选取的field
 	 */
@@ -12,7 +12,7 @@ class Entiy {
 	/**
 	 * 排序 asc desc
 	 */
-	public $type;
+	public $sort;
 	/**
 	 * 排序的key
 	 */

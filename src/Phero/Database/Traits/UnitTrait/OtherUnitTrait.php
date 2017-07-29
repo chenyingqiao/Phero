@@ -6,8 +6,8 @@ use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-28 11:12:39
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-29 18:27:13
  */
 
 trait OtherUnitTrait{
@@ -74,7 +74,7 @@ trait OtherUnitTrait{
      */
 	protected function unit_new($reloadFieldValueFormCache=true) {
 		$this->errormsg=$this->model->getError();
-		$this->model = new Model();
+		// $this->model = new Model();
 		$this->where = [];
 		$this->having = [];
 		$this->join = [];
@@ -113,8 +113,9 @@ trait OtherUnitTrait{
 	}
 
 	public function getModel() {
-		if(empty($this->model))
+		if(empty($this->model)){
 			$this->model=new Model;
+		}
 		return $this->model;
 	}
 }

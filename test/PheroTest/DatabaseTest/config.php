@@ -1,11 +1,9 @@
 <?php
-
-use Symfony\Component\Cache\Simple\RedisCache;
 /**
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-28 13:25:20
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-29 15:55:41
  */
 return [
 	"database" => [
@@ -14,7 +12,7 @@ return [
 			"user" => "root",
 			"password" => "lerko",
 		],
-		"attr"=>[],//pdo初始化的时候会进行赋值
+		"attr"=>[],//pdo初始化的时候会进行赋值  比如长链接的配置
 		// "slave" => [
 		// 	[
 		// 		"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",
@@ -30,7 +28,7 @@ return [
 	],
 	"swoole"=>[
 		"worker_num"=>16,
-		"pool_num"=>100,
+		"pool_num"=>10,
 		"worker_num_block"=>100,
 		"pool_num_block"=>20
 	],

@@ -58,7 +58,7 @@ trait Resolve {
 		$nowNode = $this->resolve($node);
 		return empty($nowNode) ? $node : $nowNode;
 	}
-	
+
 	private function _getDocCommentMatch($NodeReflection){
 		$str = $this->getDocComment();
 		$NodeName = $NodeReflection->getName();

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace PheroTest\DatabaseTest\Unit;
 
@@ -7,8 +7,8 @@ use Phero\Database\DbUnit;
 /**
  * @Author: lerko
  * @Date:   2017-05-31 11:54:57
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 16:18:43
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-29 11:56:38
  */
 class Mother extends DbUnit
 {
@@ -28,6 +28,7 @@ class Mother extends DbUnit
 
 	/**
 	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\MotherInfo,key=mid]
+	 * @Entity[field=mid,sort=desc,key=mid]
 	 * @var [type]
 	 */
 	public $info;

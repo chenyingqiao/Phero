@@ -57,7 +57,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @param  [type]       $type [description]
 	 * @return [type]             [description]
 	 */
-	private function getPdo($type){
+	private function &getPdo($type){
 		$this->pdoType=$type;
 		if(is_object($this->pdo)){
 			return $this->pdo;
@@ -274,17 +274,18 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 
 	public function transaction($type)
 	{
+		$pdo=&$this->getPdo(PdoWarehouse::write);
 		if ($type == self::begin_transaction) {
-			if ($this->pdo->inTransaction()) {
-				if (!(get_class($this->pdo) == "Phero\Database\PDO")) {
+			if ($pdo->inTransaction()) {
+				if (!(get_class($pdo) == "Phero\Database\PDO")) {
 					throw new \Exception("原生pdo类不支持事务嵌套", 1);
 				}
 			}
-			$this->pdo->beginTransaction();
+			$pdo->beginTransaction();
 		} elseif ($type == self::rollback_transaction) {
-			$this->pdo->rollBack();
+			$pdo->rollBack();
 		} elseif ($type == self::commit_transaction) {
-			$this->pdo->commit();
+			$pdo->commit();
 		}
 	}
 

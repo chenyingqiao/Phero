@@ -2,8 +2,8 @@
 /**
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-26 15:29:57
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-29 15:20:21
  */
 
 namespace Phero\Database\Traits;
@@ -11,7 +11,7 @@ namespace Phero\Database\Traits;
 use Phero\Database\Enum\OrderType;
 use Phero\Database\Enum\RelType;
 use Phero\Map\NodeReflectionClass;
-use Phero\Map\Note\Entiy;
+use Phero\Map\Note\Entity;
 use Phero\Map\Note\Foreign;
 use Phero\Map\Note\Relation;
 use Phero\Map\Note\RelationEnable;
@@ -54,7 +54,7 @@ trait TRelation {
 	}
 
 	/**
-	 * 解析关系 获取关系数据 
+	 * 解析关系 获取关系数据
 	 * @param  [type] $entiy [description]
 	 * @return [type]        [description]
 	 */
@@ -84,7 +84,7 @@ trait TRelation {
 					$properties[$property_name] = $result_entiy;
 				}else {
 					$properties[$property_name]['relation'] = $resolve;
-					$entiy_resolve = $value->resolve(new Entiy());
+					$entiy_resolve = $value->resolve(new Entity());
 					$properties[$property_name]['entiy'] = $entiy_resolve;
 					//判断这个外键是否有和关联查询的字段对应
 					if (array_key_exists($property_name, $foreigns)) {
@@ -278,7 +278,7 @@ trait TRelation {
 				//设置排序
 				if ($entiy_node) {
 					$orderKey = $entiy_node->key;
-					$orderType = $entiy_node->type;
+					$orderType = $entiy_node->sort;
 					if ($orderKey && $orderType) {
 						$orderType = $orderType == 'asc' ? OrderType::asc : OrderType::desc;
 						$entiy->order($orderKey, $orderType);
