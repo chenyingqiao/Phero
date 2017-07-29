@@ -5,7 +5,7 @@ namespace PheroTest\DatabaseTest;
  * @Author: lerko
  * @Date:   2017-07-11 19:39:04
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 19:10:45
+ * @Last Modified time: 2017-07-29 19:20:40
  */
 
 use PheroTest\DatabaseTest\BaseTest;
@@ -37,7 +37,6 @@ class Test extends BaseTest {
 	 * @return   [type]                   [description]
 	 */
 	public function transactionRollback(){
-		echo "=============================================================================================";
 		Mother::Inc(["name"=>"kkk_transaction_rollback"])->start()->insert();
 		Mother::lastInc()->rollback();
 		$data=Mother::Inc()->whereEq("name","kkk_transaction_rollback")->find();
