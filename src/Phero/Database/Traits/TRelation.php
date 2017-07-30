@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 15:20:21
+ * @Last Modified time: 2017-07-30 10:48:50
  */
 
 namespace Phero\Database\Traits;
@@ -82,6 +82,7 @@ trait TRelation {
                     $result_entiy->$relation_key=$entiy->$parent_entiy_relation_key;
                     //关联插入需要对关联的数据自动赋值
 					$properties[$property_name] = $result_entiy;
+					// $properties[$property_name]['foreign_rel'] = $property_name;
 				}else {
 					$properties[$property_name]['relation'] = $resolve;
 					$entiy_resolve = $value->resolve(new Entity());
@@ -102,7 +103,7 @@ trait TRelation {
 	 * @param  [type] $entiy [这个是数据实体类(father) 需要包含对应数据]
 	 * @return [type]        [description]
 	 */
-	public function relation_select(&$result,$entiy) {
+	public function relation_select(&$result,&$entiy) {
 		$relation = $this->getRelation($entiy);
 		$data=[];
 		foreach ($relation as $key => $value) {
@@ -114,11 +115,12 @@ trait TRelation {
 				}
 				$foreign_key = $value['foreign'];
 				$foreign_rel=$value['foreign_rel'];
-				$entiy = $this->buildEntiyByNode($result, $value);
-				if (empty($entiy)) {
+				$entity_childer = $this->buildEntiyByNode($result, $value);
+				if (empty($entity_childer)) {
 					continue;
 				}
-				$data = $entiy->select();
+				$data = $entity_childer->select();
+				$entiy->$foreign_rel=$entity_childer;
 				foreach ($result as $key => &$value) {
 					$data_filter=array_filter($data,function($v)use($relation_node,$value,$foreign_key){
 						$node_key=$relation_node->key;
@@ -137,7 +139,7 @@ trait TRelation {
 	 * @param  [type] $entiy [description]
 	 * @return [type]        [返回的是插入的行数]
 	 */
-	public function relation_insert($entiy) {
+	public function relation_insert(&$entiy) {
 		if(is_array($entiy)){
 			$entiy=$entiy[0];
 		}
@@ -151,12 +153,12 @@ trait TRelation {
 					continue;
 				}
 				$foreign_key = $value['foreign'];
-				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::insert);
+				$entity_childer = $this->buildEntiyByNode($entiy, $value,RelType::insert);
 				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
-				if (empty($entiy)) {
+				if (empty($entity_childer)) {
 					continue;
 				}
-				$effect = $entiy->insert();
+				$effect = $entity_childer->insert();
 			} else {
 				$effect = $value->insert();
 			}
@@ -179,12 +181,12 @@ trait TRelation {
 					continue;
 				}
 				$foreign_key = $value['foreign'];
-				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::update);
+				$entity_childer = $this->buildEntiyByNode($entiy, $value,RelType::update);
 				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
-				if (empty($entiy)) {
+				if (empty($entity_childer)) {
 					continue;
 				}
-				$effect = $entiy->update();
+				$effect = $entity_childer->update();
 			} else {
 				$effect = $value->update();
 			}
@@ -314,7 +316,6 @@ trait TRelation {
 			# code...
 			break;
 		}
-
 		return $entiy;
 	}
 }

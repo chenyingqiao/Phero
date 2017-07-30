@@ -11,8 +11,8 @@ use Phero\Database\Traits\TRelation;
  * 关联插入测试
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 17:00:10
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-28 12:12:01
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-30 10:54:29
  */
 class RelationTest extends BaseTest
 {
@@ -37,6 +37,8 @@ class RelationTest extends BaseTest
 		$motherInfo=MotherInfo::Inc()->whereEq("email","00000000@qq.com")->find();
 		$this->TablePrint($motherInfo);
 		$this->assertNotEmpty($motherInfo);
+		var_dump($Mother->sql());
+		var_dump($Mother->info->sql());
 	}
 
 	/**
@@ -58,6 +60,8 @@ class RelationTest extends BaseTest
 		$data=MotherInfo::Inc()->whereEq("email","relationupdate@qq.com")->find();
 		$this->TablePrint($data);
 		$this->assertNotEmpty($data);
+		var_dump($Mother->sql());
+		var_dump($Mother->info->sql());
 	}
 
 	/**
@@ -74,6 +78,8 @@ class RelationTest extends BaseTest
 		$data=MotherInfo::Inc()->whereEq("mid",12)->find();
 		$this->TablePrint($data);
 		$this->assertEmpty($data);
+		var_dump($Mother->sql());
+		var_dump($Mother->info->sql());
 	}
 
 	/**
@@ -96,7 +102,9 @@ class RelationTest extends BaseTest
 	public function selectRelation($value='')
 	{
 		$motherinfo=Mother::Inc()->limit(1,3)->relSelect();
-		var_dump($motherinfo);
+		var_export($motherinfo);
+		var_dump(Mother::lastInc()->sql());
+		var_dump(Mother::lastInc()->info->sql());
 		$this->assertNotEmpty(array_shift($motherinfo)['info']);
 	}
 }

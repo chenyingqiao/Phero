@@ -30,7 +30,6 @@ $data_select=Db::select($mother);
 ```php
 $data=Mother::Inc(["name"])->select();
 ```
-
 ```sql
 select `mother`.`name` from `Mother` as `mother`;
 ```
@@ -42,7 +41,6 @@ select `mother`.`name` from `Mother` as `mother`;
 ```php
 Mother::Inc()->whereLt("id",4)->select();
 ```
-
 ```sql
 SELECT
     `mother`.`id`, `mother`.`name`
@@ -100,7 +98,7 @@ WHERE
 
 ```php
 $Parents->whereEq("id",1)
-			->whereOrIsnull("id")->select();
+	->whereOrIsnull("id")->select();
 ```
 
 ```sql
@@ -132,12 +130,14 @@ FROM
     `Parent` AS `parent`
 WHERE
     `parent`.`id` = 1
-        OR EXISTS( SELECT
-            `Marry`.`id`, `Marry`.`pid`, `Marry`.`mid`
-        FROM
-            `Marry`
-        WHERE
-            `Marry`.`pid` = `parent`.`id`);
+        OR EXISTS(
+            SELECT
+                `Marry`.`id`, `Marry`.`pid`, `Marry`.`mid`
+            FROM
+                `Marry`
+            WHERE
+                `Marry`.`pid` = `parent`.`id`
+        );
 ```
 
 > all 和any
@@ -157,12 +157,14 @@ FROM
     `Parent` AS `parent`
 WHERE
     `parent`.`id` = 1
-        OR `parent`.`id` < ALL (SELECT
+        OR `parent`.`id` < ALL (
+            SELECT
             `Marry`.`id`, `Marry`.`pid`, `Marry`.`mid`
         FROM
             `Marry`
         WHERE
-            `Marry`.`pid` = `parent`.`id`);
+            `Marry`.`pid` = `parent`.`id`
+    );
 ```
 
 > where支持多种查询条件，只要在后面添加相应的关键字就行  and 和or这个条件连接词可以加中间
@@ -212,6 +214,7 @@ WHERE
 
 ```php
 Mother::Inc()->Set(function(){
+	//当前的$this对象就是代表Unit实体
 	$this->whereEq("id",1)->whereOrLike("name","sss_");
 	return $this;
 },WhereCon::or_)->Set(function(){
@@ -236,7 +239,17 @@ WHERE
 
 > 聚合函数
 
+```php
+$Parents=new Parents();
+$result=$Parents->count();
+```
 
+```sql
+select count(*) as count from Parent;
+```
+
+count的别名是count
+但是其他的聚合函数的别名会使用{聚合函数}_{字段名}这样的方式
 
 > 带函数的field
 
@@ -258,9 +271,32 @@ FROM
 
 ### 排序
 
+```php
+Mother::Inc()->order("id",OrderType::asc)->select();
+```
+
+```sql
+SELECT
+    `mother`.`id`, `mother`.`name`
+FROM
+    `Mother` AS `mother`
+ORDER BY mother.id ASC;
+```
+
 ### 分组以及分组having
 
-###
+```php
+Mother::Inc()->sum("id")->group("name")->havingEq("name","test1")->select();
+```
+```sql
+SELECT
+    SUM(`mother`.`id`) AS sum_id, `mother`.`id`, `mother`.`name`
+FROM
+    `Mother` AS `mother`
+GROUP BY mother.name
+HAVING `mother`.`name` = 'test1'
+```
+
 
 ### join查询
 
@@ -289,4 +325,133 @@ FROM
     `Mother` AS `mother` ON `Marry`.`mid` = `mother`.`id`;
 ```
 
-### 分组查询
+## 关联查询
+
+> 如果Unit实体已经使用@Relation以及@Foreign等注解标示了关联的Unit实体那么可以使用下面的方法进行
+> 关联查询
+
+> Unit说明中的Mother就是一个标示好的关联实体类
+
+> 关联查询的方法有relInsert(),relUpdate(),relSelect(),relDelete()
+
+### 关联Unit实例
+
+```php
+class Mother extends DbUnit
+{
+	use Truncate;
+	/**
+	 * @Primary
+	 * @Foreign[rel=info]
+	 * @Field[name=id,alias=mother_id,type=int]
+	 * @var [type]
+	 */
+	public $id;
+	/**
+	 * @Field
+	 * @var [type]
+	 */
+	public $name;
+
+	/**
+	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\MotherInfo,key=mid]
+	 * @var [type]
+	 */
+	public $info;
+}
+```
+
+### 关联Select
+
+```php
+Mother::Inc()->limit(1,3)->relSelect();
+```
+
+```sql
+select `mother`.`id`,`mother`.`name` from `Mother` as `mother` limit 1,3;
+select `MotherInfo`.`mid` from `MotherInfo` where `MotherInfo`.`mid` in (2,3,4) order by MotherInfo.mid desc;
+```
+
+### 关联Insert
+
+```php
+$Mother=new Mother;
+$Mother->id=12;
+$Mother->name="relation_test关联插入测试";
+$Mother->info=new MotherInfo([
+		"email"=>"00000000@qq.com"
+	]);
+$Mother->relInsert();
+```
+
+执行下面两条语句
+```sql
+insert into Mother (`id`,`name`) values (12,'relation_test关联插入测试');
+insert into MotherInfo (`mid`,`email`) values (12,'00000000@qq.com');
+```
+
+查询结果
+```php
+array (
+  0 =>
+  array (
+    'id' => '2',
+    'name' => 'mother1',
+    'info' =>
+    array (
+      'mid' => '2',
+    ),
+  ),
+  1 =>
+  array (
+    'id' => '3',
+    'name' => 'mother2',
+    'info' =>
+    array (
+      'mid' => '3',
+    ),
+  ),
+  2 =>
+  array (
+    'id' => '4',
+    'name' => 'mother3',
+    'info' =>
+    array (
+      'mid' => '4',
+    ),
+  ),
+)
+```
+
+
+### 关联update
+
+```php
+$Mother=new Mother;
+$Mother->id=12;
+$Mother->name="relation_test关联插入测试".rand();
+$Mother->info=new MotherInfo([
+		"email"=>"relationupdate@qq.com"
+	]);
+$Mother->relUpdate();
+```
+
+```sql
+update `Mother` as mother set `id`=12,`name`='relation_test关联插入测试225671052' where `mother`.`id` = 12;
+update `MotherInfo` set `mid`=12,`email`='relationupdate@qq.com' where `MotherInfo`.`mid` = 12;
+```
+
+
+### 关联Delete
+
+```php
+$Mother=new Mother;
+$Mother->id=12;
+$Mother->info=MotherInfo::Inc(["mid"=>12]);
+$Mother->relDelete();
+```
+
+```sql
+delete from `Mother` where id = 12;
+delete from `MotherInfo` where mid = 12;
+```

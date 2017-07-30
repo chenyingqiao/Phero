@@ -179,7 +179,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 			$this->error .= $value . "	";
 		}
 	}
-	public function setEntiy($entiy) {
+	public function setEntiy(&$entiy) {
 		$this->entiy = $entiy;
 	}
 

@@ -48,9 +48,11 @@ class DbUnit extends DbUnitBase {
 		if(!$in_polymerization){
 			return ;
 		}
-		$temp="{$function_name}(?) as {$function_name}_{$field}";
-		$field=str_replace("?", $field, $temp);
-		$this->field($field);
+
+		$field_name=self::FF($field);
+		$as="{$function_name}_{$field}";
+		$field_name="$function_name($field_name)";
+		$this->field($field_name,$as);
 	}
 	/**
 	 * where扩展函数

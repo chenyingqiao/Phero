@@ -8,7 +8,7 @@ use Phero\Database\Enum\RelType;
  * 通过这个借口扩展不同数据库的操作
  */
 interface IDbHelp {
-	public function setEntiy($entiy);
+	public function setEntiy(&$entiy);
 	public function getDbConn();
 	public function exec($sql, $data=[],$type=RelType::insert);
 	public function query($sql, $data=[]);

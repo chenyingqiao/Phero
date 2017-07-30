@@ -19,7 +19,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 23:23:05
+ * @Last Modified time: 2017-07-30 10:12:42
  */
 class SelectTest extends BaseTest
 {
@@ -46,6 +46,7 @@ class SelectTest extends BaseTest
 		$Parents=new Parents();
 		$result=$Parents->count();
 		$this->assertEquals($result, 10);
+		// echo $Parents->sql();
 		$this->timer(false,__METHOD__);
 	}
 
@@ -120,8 +121,9 @@ class SelectTest extends BaseTest
 			$this->whereEq("id",2)->whereOrLike("name","ddd_");
 			return $this;
 		})->fetchSql();
-		echo Mother::lastInc()->sql();
+		// echo Mother::lastInc()->sql();
 	}
+
 
 	/**
 	 * [testSelectJoin description]
@@ -229,7 +231,7 @@ class SelectTest extends BaseTest
 		$sql="";
 		$marry->sum("id")->group(Mother::FF("id"))->havingEq(Mother::FF("id"),1)->fetchSql($sql);
 		//$this->TablePrint($sql);
-		$this->assertEquals($sql,"select `Marry`.`sum(id) as sum_id`,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`mother`.`id`,`mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` as `mother` on `Marry`.`mid`=`mother`.`id`  group by `mother`.`id` having  `mother`.`id` = 1;");
+		$this->assertEquals($sql,"select sum(`Marry`.`id`) as sum_id,`Marry`.`id`,`Marry`.`pid`,`Marry`.`mid`,`parent`.`id`,`parent`.`name`,`mother`.`id`,`mother`.`name` from `Marry` inner join `Parent` as `parent` on `Marry`.`pid`=`parent`.`id`  inner join `Mother` as `mother` on `Marry`.`mid`=`mother`.`id`  group by `mother`.`id` having  `mother`.`id` = 1;");
 	}
 
 	/**
@@ -243,4 +245,27 @@ class SelectTest extends BaseTest
 		$this->assertEquals("select `children`.`id`,`children`.`name`,`children`.`pid` from `Children` as `children` where `children`.`name` is not null group by `children`.`pid` limit 10;",$sql);
 	}
 
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-07-30T09:14:12+0800
+	 * @return   [type]                   [description]
+	 */
+	public function simplegrouphaving()
+	{
+		Mother::Inc()->sum("id")->group("name")->havingEq("name","test1")->fetchSql();
+		// echo Mother::lastInc()->sql();
+	}
+
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-07-30T10:12:39+0800
+	 * @return   [type]                   [description]
+	 */
+	public function simplesort()
+	{
+		Mother::Inc()->order("id",OrderType::asc)->fetchSql();
+		echo Mother::lastInc()->sql();
+	}
 }

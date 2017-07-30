@@ -190,6 +190,11 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 		return $this->dumpSql;
 	}
 
+	public function setSql($value='')
+	{
+		$this->dumpSql=$value;
+	}
+
 	private $errormsg=false;
 	public function error()
 	{
