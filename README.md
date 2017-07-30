@@ -15,6 +15,9 @@
 - 命令行模型生成
 - 查询即时缓存（redis，mamcache）
 
+> 文档位于doc
+> 可以查看test中单元测试的例子
+
 ## 安装
  
 - composer 
