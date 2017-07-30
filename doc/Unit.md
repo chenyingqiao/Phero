@@ -88,8 +88,13 @@ lerko@lerko-PC:/var/www/html/Phero$ php UnitBuilder
 
 - 方式1
 
+```php
 $mother=new Mother();
+```
 
 - 方式2
+
+```php
 $mother=Mother::Inc();
 Mother::lastInc()==$mother;//lastInc会等于最近的那个Inc
+```

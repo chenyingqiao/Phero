@@ -475,3 +475,9 @@ delete from `Marry` where id = 1;
 delete from `Mother` where id = 1;
 delete from `Parent` where mid = 1;
 ```
+
+### 查询缓存
+
+```php
+$data=Parents::lastInc()->select(Cache::time(100));//查询结果缓存100秒
+```
