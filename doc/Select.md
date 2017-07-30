@@ -337,29 +337,47 @@ FROM
 ### 关联Unit实例
 
 ```php
-class Mother extends DbUnit
+class Marry extends DbUnit
 {
 	use Truncate;
 	/**
+	 * @Field[type=int]
 	 * @Primary
-	 * @Foreign[rel=info]
-	 * @Field[name=id,alias=mother_id,type=int]
 	 * @var [type]
 	 */
 	public $id;
 	/**
 	 * @Field
+	 * @Foreign[rel=parent]
 	 * @var [type]
 	 */
-	public $name;
+	public $pid;
+	/**
+	 * @Field
+	 * @Foreign[rel=mother|motherInfo]
+	 * @var [type]
+	 */
+	public $mid;
 
+	/**
+	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\Parents,key=id]
+	 * @var [type]
+	 */
+	public $parent;
+	/**
+	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\Mother,key=id]
+	 * @var [type]
+	 */
+	public $mother;
 	/**
 	 * @Relation[type=oo,class=PheroTest\DatabaseTest\Unit\MotherInfo,key=mid]
 	 * @var [type]
 	 */
-	public $info;
+	public $motherInfo;
 }
 ```
+
+Foreign的rel可以使用|隔开用来关联多个实体
 
 ### 关联Select
 
@@ -445,13 +463,15 @@ update `MotherInfo` set `mid`=12,`email`='relationupdate@qq.com' where `MotherIn
 ### 关联Delete
 
 ```php
-$Mother=new Mother;
-$Mother->id=12;
-$Mother->info=MotherInfo::Inc(["mid"=>12]);
-$Mother->relDelete();
+Marry::Inc([
+	"id"=>1,
+	"mid"=>1,
+	"pid"=>1
+])->relDelete();
 ```
 
 ```sql
-delete from `Mother` where id = 12;
-delete from `MotherInfo` where mid = 12;
+delete from `Marry` where id = 1;
+delete from `Mother` where id = 1;
+delete from `Parent` where mid = 1;
 ```

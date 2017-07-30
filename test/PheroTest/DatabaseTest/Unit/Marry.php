@@ -8,7 +8,7 @@ use Phero\Database\DbUnit;
  * @Author: lerko
  * @Date:   2017-05-31 11:54:57
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-30 11:14:18
+ * @Last Modified time: 2017-07-30 16:23:20
  */
 class Marry extends DbUnit
 {
@@ -27,7 +27,7 @@ class Marry extends DbUnit
 	public $pid;
 	/**
 	 * @Field
-	 * @Foreign[rel=mother]
+	 * @Foreign[rel=mother|motherInfo]
 	 * @var [type]
 	 */
 	public $mid;

@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-30 15:25:12
+ * @Last Modified time: 2017-07-30 16:20:23
  */
 
 namespace Phero\Database\Traits;
@@ -48,7 +48,13 @@ trait TRelation {
 		foreach ($properties as $key => $value) {
 			$foreign_resolve = $value->resolve(new Foreign());
 			if (!$foreign_resolve) {continue;}
-			$foreign[$foreign_resolve->rel] = $value->getName();
+			if(is_array($foreign_resolve->rel)){
+				foreach ($foreign_resolve->rel as $foreign_key => $foreign_value) {
+					$foreign[$foreign_value] = $value->getName();
+				}
+			}else{
+				$foreign[$foreign_resolve->rel] = $value->getName();
+			}
 		}
 		return $foreign;
 	}
