@@ -86,10 +86,10 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		$is_realtion = false;
 		if ($result&&$this->enableRelation) {
 			$realtion_effect = $this->exec_relation($this->entiy,$type);
-			if (isset($relation_data) && $relation_data > 0) {
+			if (isset($realtion_effect) && $realtion_effect > 0) {
 				return $result;
 			} else {
-				$this->error="关联表数据写入失败";
+				$this->error="关联表数据操作失败";
 				return 0;
 			}
 		}

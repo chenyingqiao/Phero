@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-03-13 13:36:29
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-30 10:48:50
+ * @Last Modified time: 2017-07-30 15:25:12
  */
 
 namespace Phero\Database\Traits;
@@ -68,7 +68,7 @@ trait TRelation {
 			$resolve = $value->resolve(new Relation());
 			if ($resolve) {
 				$property_name = $value->getName();
-				if ($relType==RelType::insert||$relType==RelType::update||$relType==RelType::delete) {
+				if ($relType!=RelType::select&&isset($entiy->$property_name)&&is_object($entiy->$property_name)) {
 				    //关联插入需要对关联的数据自动赋值
 				    $result_entiy=$entiy->$property_name;
 				    if(empty($result_entiy)){
@@ -121,15 +121,15 @@ trait TRelation {
 				}
 				$data = $entity_childer->select();
 				$entiy->$foreign_rel=$entity_childer;
-				foreach ($result as $key => &$value) {
-					$data_filter=array_filter($data,function($v)use($relation_node,$value,$foreign_key){
+				foreach ($result as $key => &$value_result) {
+					$data_filter=array_filter($data,function($v)use($relation_node,$value_result,$foreign_key){
 						$node_key=$relation_node->key;
-						return $v[$node_key]==$value[$foreign_key];
+						return $v[$node_key]==$value_result[$foreign_key];
 					});
 					if ($relation_node->type == Relation::OO) {
 						$data_filter=array_shift($data_filter);
 					}
-					$value[$foreign_rel]=$data_filter;
+					$value_result[$foreign_rel]=$data_filter;
 				}
 			}
 		}
@@ -144,7 +144,7 @@ trait TRelation {
 			$entiy=$entiy[0];
 		}
 		$relation = $this->getRelation($entiy,RelType::insert);
-		$effect = false;
+		$effect = true;
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
@@ -172,7 +172,7 @@ trait TRelation {
 	 */
 	public function relation_update($entiy) {
 		$relation = $this->getRelation($entiy,RelType::update);
-		$effect = false;
+		$effect = true;
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
@@ -200,21 +200,21 @@ trait TRelation {
 	 */
 	public function relation_delete($entiy) {
 		$relation = $this->getRelation($entiy,RelType::delete);
-		$effect = false;
+		$effect = true;
 		foreach ($relation as $key => $value) {
 			if (!is_object($value)) {
 				$relation_node = $value['relation'];
 				$entiy_node = $value['entiy'];
-				$foreign_key = $value['foreign'];
 				if (!isset($value['foreign'])) {
 					continue;
 				}
-				$entiy = $this->buildEntiyByNode($entiy, $value,RelType::delete);
+				$foreign_key = $value['foreign'];
+				$entiy_delete = $this->buildEntiyByNode($entiy, $value,RelType::delete);
 				//产生的实体类为空或者是对应的数据类是空的就直接进行下一个字段的检查
-				if (empty($entiy)) {
+				if (empty($entiy_delete)) {
 					continue;
 				}
-				$effect = $entiy->delete();
+				$effect = $entiy_delete->delete();
 			} else {
 				$effect = $value->delete();
 			}
@@ -309,7 +309,7 @@ trait TRelation {
 			{
 				$entiy = new $entiyClass();
 				//设置查询方式
-				$entiy->whereEq($relation_key, $entiy->$relation_key);
+				$entiy->whereEq($relation_key, $data->$rel);
 			}
 			break;
 		default:

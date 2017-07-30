@@ -93,9 +93,6 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return [type]                    [description]
 	 */
 	public function update() {
-		// if(!$this->checkSaveForUpdateOrDelete()){
-		// 	throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
-		// }
 		$result = $this->getModel()->update($this);
 		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
@@ -107,9 +104,6 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return [type]                    [description]
 	 */
 	public function delete() {
-		// if(!$this->checkSaveForUpdateOrDelete()){
-		// 	throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
-		// }
 		$result = $this->getModel()->delete($this);
 		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
@@ -121,9 +115,6 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	 * @return [type]                    [description]
 	 */
 	public function insert() {
-		// if(!$this->checkSaveForUpdateOrDelete()){
-		// 	throw new \Exception("You are using safe delete mode and you tried to delete a table without a WHERE that uses a KEY column To disable safe mode");
-		// }
 		$result = $this->getModel()->insert($this);
 		$this->dumpSql = $this->getModel()->getSql();
 		$this->unit_new(false);
@@ -179,11 +170,6 @@ class DbUnitBase implements \ArrayAccess,INodeMap {
 	}
 	public function commit() {
 		$this->getModel()->transaction(MysqlDbHelp::commit_transaction);
-	}
-
-	public function dumpSql() {
-		var_dump($this->dumpSql);
-		var_dump($this->error());
 	}
 
 	public function sql() {

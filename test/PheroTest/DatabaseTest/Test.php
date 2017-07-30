@@ -31,7 +31,7 @@ class Test extends TestCase {
         (new ParentInfo)->truncate();
         (new MotherInfo)->truncate();
         (new Children)->truncate();
-        for ($i=0; $i < 10; $i++) {
+        for ($i=0; $i < 4; $i++) {
             $parentsName="parent{$i}";
             $motherName="mother{$i}";
             $UnitsParent[]=new Parents(["name"=>$parentsName]);
