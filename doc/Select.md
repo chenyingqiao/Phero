@@ -325,6 +325,24 @@ FROM
     `Mother` AS `mother` ON `Marry`.`mid` = `mother`.`id`;
 ```
 
+## 事务
+
+### 提交事务
+
+```php
+Mother::Inc(["name"=>"kkk_transaction_commit"])->start();
+Mother::lastInc()->insert();
+Mother::lastInc()->commit();
+```
+
+### 回滚事务
+
+```php
+Mother::Inc(["name"=>"kkk_transaction_rollback"])->start();
+Mother::lastInc()->insert()；
+Mother::lastInc()->rollback();
+```
+
 ## 关联查询
 
 > 如果Unit实体已经使用@Relation以及@Foreign等注解标示了关联的Unit实体那么可以使用下面的方法进行
