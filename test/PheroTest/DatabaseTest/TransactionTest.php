@@ -5,7 +5,7 @@ namespace PheroTest\DatabaseTest;
  * @Author: lerko
  * @Date:   2017-07-11 19:39:04
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 19:20:40
+ * @Last Modified time: 2017-07-31 09:12:44
  */
 
 use PheroTest\DatabaseTest\BaseTest;
@@ -42,7 +42,7 @@ class Test extends BaseTest {
 		$data=Mother::Inc()->whereEq("name","kkk_transaction_rollback")->find();
 		$tabledata=Mother::Inc()->select();
 		$this->TablePrint($tabledata);
-		var_dump($data);
+		// var_dump($data);
 		$this->assertEmpty($data);
 	}
 

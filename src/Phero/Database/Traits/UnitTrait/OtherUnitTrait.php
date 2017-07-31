@@ -2,12 +2,13 @@
 
 namespace Phero\Database\Traits\UnitTrait;
 
+use Phero\Database\Db;
 use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-06-02 17:21:00
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 18:27:13
+ * @Last Modified time: 2017-07-31 08:31:35
  */
 
 trait OtherUnitTrait{
@@ -114,7 +115,7 @@ trait OtherUnitTrait{
 
 	public function getModel() {
 		if(empty($this->model)){
-			$this->model=new Model;
+			$this->model=Db::getModel();
 		}
 		return $this->model;
 	}

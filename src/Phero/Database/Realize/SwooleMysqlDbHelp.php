@@ -70,7 +70,7 @@ class SwooleMysqlDbHelp implements IDbHelp
         return $swoole_client;
     }
 
-    public function setEntiy($entiy)
+    public function setEntiy(&$entiy)
     {
         return $this;
     }

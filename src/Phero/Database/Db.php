@@ -10,7 +10,7 @@ use Phero\System\DI;
  * @Author: lerko
  * @Date:   2017-06-26 14:07:22
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 20:09:08
+ * @Last Modified time: 2017-07-31 08:30:24
  */
 class Db
 {
@@ -36,5 +36,13 @@ class Db
 		if(in_array($name,self::$dbHelp_fun)){
 			return call_user_func_array([self::$dbhelp,$name],$argument);
 		}
+	}
+
+	public static function getModel()
+	{
+		if(empty(self::$model)){
+			self::$model=new Model();
+		}
+		return self::$model;
 	}
 }

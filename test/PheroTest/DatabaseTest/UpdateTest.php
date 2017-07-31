@@ -8,8 +8,8 @@ use Phero\Database\Enum\FetchType;
 /**
  * @Author: lerko
  * @Date:   2017-06-06 10:12:49
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 12:14:52
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-31 08:17:59
  */
 class UpdateTest extends BaseTest
 {
@@ -20,13 +20,14 @@ class UpdateTest extends BaseTest
 	 * @DateTime 2017-06-07T09:14:06+0800
 	 */
 	public function DefaultUpdate(){
+		echo "updateTest\n";
 		$Mother=Mother::Inc();
 		$Mother->name="这个是更新之后的name";
 		$sql="";
 		Mother::lastInc()->whereEq("id",1)->fetchSql($sql,FetchType::update);
 		$data=Mother::Inc()->select();
 		$this->TablePrint($sql);
-		$this->assertEquals($sql, "update `Mother` set `name`='这个是更新之后的name' where `Mother`.`id` = 1;");
+		$this->assertEquals($sql, "update `Mother` as mother set `name`='这个是更新之后的name' where `mother`.`id` = 1;");
 	}
 
 	/**
@@ -42,6 +43,6 @@ class UpdateTest extends BaseTest
 		$sql="";
 		$data=Mother::lastInc()->fetchSql($sql,FetchType::update);
 		$this->TablePrint($sql);
-		$this->assertEquals($sql, "update `Mother` set `id`=1,`name`='这个是更新之后的name' where `Mother`.`id` = 1;");
+		$this->assertEquals($sql, "update `Mother` as mother set `id`=1,`name`='这个是更新之后的name' where `mother`.`id` = 1;");
 	}
 }

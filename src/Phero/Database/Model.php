@@ -36,13 +36,14 @@ class Model implements interfaces\IModel {
 		$this->inject();//执行注入解析
 		if(empty($this->help))
 			$this->help = new realize\MysqlDbHelp();
-		$this->IConstraitBuild = new realize\MysqlConstraitBuild();
+		// $IConstraitBuild = new realize\MysqlConstraitBuild();
 	}
 
 	public function insert($Entiy, $is_replace = false) {
-		$sql = $this->IConstraitBuild->buildInsertSql($Entiy, $is_replace);
+		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$sql = $IConstraitBuild->buildInsertSql($Entiy, $is_replace);
 		$this->help->setEntiy($Entiy);
-		$bindData=$this->IConstraitBuild->getBindData();
+		$bindData=$IConstraitBuild->getBindData();
 		$return = $this->help->exec($sql, $bindData);
 		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
 		return $return;
@@ -60,9 +61,10 @@ class Model implements interfaces\IModel {
 	 * @return [type]        [description]
 	 */
 	public function select($Entiy, $yield = false) {
-		$sql = $this->IConstraitBuild->buildSelectSql($Entiy);
+		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$sql = $IConstraitBuild->buildSelectSql($Entiy);
 		$this->help->setEntiy($Entiy);
-		$bindData=$this->IConstraitBuild->getBindData();
+		$bindData=$IConstraitBuild->getBindData();
 		if ($yield) {
 			$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $bindData);
 		} else {
@@ -75,9 +77,10 @@ class Model implements interfaces\IModel {
 		if(!$Entiy->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$sql = $this->IConstraitBuild->buildUpdataSql($Entiy);
+		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$sql = $IConstraitBuild->buildUpdataSql($Entiy);
 		$this->help->setEntiy($Entiy);
-		$bindData=$this->IConstraitBuild->getBindData();
+		$bindData=$IConstraitBuild->getBindData();
 		$return = $this->help->exec($sql, $bindData,RelType::update);
 		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
 		return $return;
@@ -86,9 +89,10 @@ class Model implements interfaces\IModel {
 		if(!$Entiy->checkSaveForUpdateOrDelete()){
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$sql = $this->IConstraitBuild->buildDeleteSql($Entiy);
+		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$sql = $IConstraitBuild->buildDeleteSql($Entiy);
 		$this->help->setEntiy($Entiy);
-		$bindData=$this->IConstraitBuild->getBindData();
+		$bindData=$IConstraitBuild->getBindData();
 		$effect_rows_num = $this->help->exec($sql, $bindData ,RelType::delete);
 		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
 		return $effect_rows_num;
@@ -160,8 +164,9 @@ class Model implements interfaces\IModel {
 				$method="buildInsertSql";
 				break;
 		}
-		$sql = $this->IConstraitBuild->$method($Entiy);
-		$bindData= $this->IConstraitBuild->getBindData();
+		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$sql = $IConstraitBuild->$method($Entiy);
+		$bindData= $IConstraitBuild->getBindData();
 		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
 		return $bindData;
 	}
