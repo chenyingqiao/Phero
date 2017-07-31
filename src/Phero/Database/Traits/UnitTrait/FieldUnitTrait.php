@@ -7,7 +7,7 @@ use Phero\Database\DbUnitBase;
  * @Author: lerko
  * @Date:   2017-06-02 16:59:28
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 22:29:52
+ * @Last Modified time: 2017-07-31 11:32:58
  */
 
 trait FieldUnitTrait{
@@ -44,14 +44,14 @@ trait FieldUnitTrait{
 	 */
 	protected function initField($values) {
 		if (is_array($values)) {
-			$setFiled = false;
-			$keys = array_keys($values);
-			//判断是否是数值key的数组
-			if (is_numeric($keys[0])) {
-				$setFiled = true;
-			}
+			// $setFiled = false;
+			// $keys = array_keys($values);
+			// //判断是否是数值key的数组
+			// if (is_numeric($keys[0])) {
+			// 	$setFiled = true;
+			// }
 			foreach ($values as $key => $value) {
-				if ($setFiled) {
+				if (is_numeric($key)) {
 					$this->$value = true;
 				} else {
 					$this->$key = $value;

@@ -14,7 +14,7 @@ use Phero\Database\Traits\TRelation;
  * @Author: ‘chenyingqiao’
  * @Date:   2017-06-04 17:00:10
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-30 15:23:57
+ * @Last Modified time: 2017-07-31 12:13:54
  */
 class RelationTest extends BaseTest
 {
@@ -37,7 +37,8 @@ class RelationTest extends BaseTest
 			]);
 		$Mother->relInsert();
 		$motherInfo=MotherInfo::Inc()->whereEq("email","00000000@qq.com")->find();
-		$this->TablePrint($motherInfo);
+		// $this->TablePrint($motherInfo);
+		// $this->TablePrint(Mother::Inc()->select());
 		$this->assertNotEmpty($motherInfo);
 		// var_dump($Mother->sql());
 		// var_dump($Mother->info->sql());
@@ -54,13 +55,13 @@ class RelationTest extends BaseTest
 	public function UpdateRelation(){
 		$Mother=new Mother;
 		$Mother->id=12;
-		$Mother->name="relation_test关联插入测试".rand();
+		$Mother->name="relation_test关联更新测试".rand();
 		$Mother->info=new MotherInfo([
 				"email"=>"relationupdate@qq.com"
 			]);
 		$Mother->relUpdate();
 		$data=MotherInfo::Inc()->whereEq("email","relationupdate@qq.com")->find();
-		$this->TablePrint($data);
+		// $this->TablePrint(MotherInfo::Inc()->select());
 		$this->assertNotEmpty($data);
 		// var_dump($Mother->sql());
 		// var_dump($Mother->info->sql());
@@ -78,7 +79,7 @@ class RelationTest extends BaseTest
 		$Mother->info=MotherInfo::Inc(["mid"=>12]);
 		$Mother->relDelete();
 		$data=MotherInfo::Inc()->whereEq("mid",12)->find();
-		$this->TablePrint($data);
+		// $this->TablePrint($data);
 		$this->assertEmpty($data);
 		// var_dump($Mother->sql());
 		// var_dump($Mother->info->sql());
@@ -119,13 +120,38 @@ class RelationTest extends BaseTest
 	public function selectRelationMatchRel()
 	{
 		$data=Marry::Inc()->relSelect();
-		var_dump($data);
+		// var_dump($data);
 		Marry::Inc([
 			"id"=>1,
 			"mid"=>1,
 			"pid"=>1
 		])->relDelete();
-		$this->TablePrint(Mother::Inc()->select());
-		$this->TablePrint(Parents::Inc()->select());
+		$this->assertEmpty(Mother::Inc(["id"=>1])->select());
+		$this->assertEmpty(Parents::Inc(["id"=>1])->select());
+		$this->assertEmpty(Marry::Inc(["id"=>1])->select());
+		$this->assertEmpty(MotherInfo::Inc(["id"=>1])->select());
+		// $this->TablePrint(MotherInfo::Inc()->select());
+		// $this->TablePrint(Parents::Inc()->select());
+	}
+
+
+	/**
+	 * @test
+	 * @Author   Lerko
+	 * @DateTime 2017-07-31T11:01:53+0800
+	 * @return   [type]                   [description]
+	 */
+	public function relationUpdateMany(){
+		$marry=new Marry;
+		$marry->id=2;
+		$marry->mid=3;
+		$marry->pid=3;
+		$marry->parent=Parents::Inc(["name"=>"this is update"]);
+		$marry->mother=Mother::Inc(["name"=>"this is update"]);
+		$marry->motherInfo=MotherInfo::Inc(["email"=>"this is update"]);
+		$marry->relUpdate();
+		$this->assertEquals(Mother::Inc(["id"=>3,"name"])->find("name"),"this is update");
+		$this->assertEquals(Parents::Inc(["id"=>3,"name"])->find("name"),"this is update");
+		$this->assertEquals(MotherInfo::Inc(["mid"=>3,"email"])->find("email"),"this is update");
 	}
 }
