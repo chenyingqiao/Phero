@@ -65,7 +65,8 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 		if($type==PdoWarehouse::write||empty($this->pdo['slave'])){
 			return $this->pdo['master'];
 		}elseif($type==PdoWarehouse::read){
-			return $this->pdo_hit->hit($this->pdo['slave']);
+			$pdo_result=&$this->pdo_hit->hit($this->pdo['slave']);
+			return $this->pdo['slave'][0];
 		}
 	}
 
@@ -220,11 +221,16 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return [type]          [description]
 	 */
 	private function sqlPrepare($sql,$pdo_type){
-		$pdo = $this->getPdo($pdo_type);
+		$pdo = &$this->getPdo($pdo_type);
 		if (is_string($sql)) {
 			try {
 				$backup_sql=$sql;
 				$sql = $pdo->prepare($sql);
+				if(!$sql){
+					$pdo_error_info=$pdo->errorInfo();
+					$this->error=$pdo->errorCode()." | $pdo_error_info[0]:$pdo_error_info[1]---$pdo_error_info[2]";
+					return 0;
+				}
 				$sql->sql=$backup_sql;//将字符串的sql存储起来
 			} catch (\PDOException $e) {
 				$this->error=$e->getMessage();

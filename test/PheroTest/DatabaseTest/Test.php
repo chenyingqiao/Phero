@@ -18,7 +18,6 @@ use Phero\System\DI;
 
 class Test extends TestCase {
     /**
-     * @test
      * @Author   Lerko
      * @DateTime 2017-07-26T15:41:32+0800
      * @return   [type]                   [description]
@@ -45,9 +44,23 @@ class Test extends TestCase {
         $Model=new Model();
         $Model->insert($UnitsParent);
         $Model->insert($UnitsMother);
+        var_dump($Model->getError());
+        var_dump($Model->getSql());
         $Model->insert($UnitsMarry);
         $Model->insert($UnitsParentInfo);
         $Model->insert($UnitsMotherInfo);
         $Model->insert($UnitsChildren);
+    }
+
+    /**
+     * @test
+     * @Author   Lerko
+     * @DateTime 2017-07-31T18:42:01+0800
+     */
+    public function MasterSalveTest(){
+        DI::inj(DI::config,"/home/lerko/Desktop/config.php");
+        Mother::Inc(["name"=>"test"])->insert();
+        $data=Mother::Inc()->select();
+        var_dump($data);
     }
 }

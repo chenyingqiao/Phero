@@ -3,7 +3,7 @@
  * @Author: lerko
  * @Date:   2017-05-27 18:12:52
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-29 15:55:41
+ * @Last Modified time: 2017-07-31 17:10:14
  */
 return [
 	"database" => [
@@ -13,18 +13,18 @@ return [
 			"password" => "lerko",
 		],
 		"attr"=>[],//pdo初始化的时候会进行赋值  比如长链接的配置
-		// "slave" => [
-		// 	[
-		// 		"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.3",
-		// 		"user" => "admin",
-		// 		"password" => "password",
-		// 	],
-		// 	[
-		// 		"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.4",
-		// 		"user" => "admin",
-		// 		"password" => "password",
-		// 	],
-		// ],
+		"slave" => [
+			[
+				"dsn" => "mysql:dbname=phero;host=192.168.31.29",
+				"user" => "lerko",
+				"password" => "lerko",
+			],
+			// [
+			// 	"dsn" => "mysql:dbname=kn_erp_db;host=172.17.0.4",
+			// 	"user" => "admin",
+			// 	"password" => "password",
+			// ],
+		],
 	],
 	"swoole"=>[
 		"worker_num"=>16,

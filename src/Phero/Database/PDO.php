@@ -7,6 +7,13 @@ namespace Phero\Database;
 class PDO extends \PDO {
 	protected $transactionCounter = 0;
 
+	public function __construct($dsn,$username=null,$password=null,$options=[]){
+		$this->dsn=$dsn;
+		$this->username=$username;
+		$this->password=$password;
+		parent::__construct($dsn,$username,$password,$options);
+	}
+
 	public function beginTransaction() {
 		if (!$this->transactionCounter++) {
 			return parent::beginTransaction();

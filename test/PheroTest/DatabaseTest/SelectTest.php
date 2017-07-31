@@ -19,7 +19,7 @@ use Phero\Database\Model;
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
  * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-31 11:37:54
+ * @Last Modified time: 2017-07-31 16:55:55
  */
 class SelectTest extends BaseTest
 {
@@ -52,6 +52,8 @@ class SelectTest extends BaseTest
 
 	public function testIntField(){
 		$data=Mother::Inc(["id"=>2,"name"])->select();
+		$this->TablePrint(Mother::Inc()->select());
+		var_dump($data);
 		$this->assertArrayHasKey("name",$data[0]);
 	}
 

@@ -61,19 +61,17 @@ class PdoWarehouse {
 			return;
 		}
 		//设置master
-		foreach ($pdo['master'] as $key => &$value) {
-			if(!$pdo['master']['alreay']){
-				$this->setPdoItem($value);
+		if(is_array($pdo["master"])){
+			foreach ($pdo['master'] as $key => &$value) {
+					$this->setPdoItem($value);
 			}
-			$pdo['master']['alreay']=true;
+		}else{
+			$this->setPdoItem($pdo["master"]);
 		}
 		//设置slave
 		if(isset($pdo['slave'])){
 			foreach($pdo['slave'] as $key=>$value){
-				if(!$pdo['slave']['alreay']){
 					$this->setPdoItem($value);
-				}
-				$pdo['slave']['alreay']=true;
 			}
 		}
 	}

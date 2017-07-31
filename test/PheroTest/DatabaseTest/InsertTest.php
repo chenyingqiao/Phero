@@ -11,8 +11,8 @@ use Phero\System\DI;
 /**
  * @Author: lerko
  * @Date:   2017-05-31 14:23:48
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-06-27 13:48:03
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-07-31 18:41:33
  */
 
 class InsertTest extends BaseTest
@@ -92,5 +92,9 @@ class InsertTest extends BaseTest
 	 * @return   [type]                   [description]
 	 */
 	public function InsertTransation(){
+	}
+
+	public function TestInsert(){
+		
 	}
 }
