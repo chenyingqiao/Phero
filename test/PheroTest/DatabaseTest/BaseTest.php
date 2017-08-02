@@ -16,8 +16,8 @@ use Webmozart\Console\UI\Component\Table;
 /**
  * @Author: lerko
  * @Date:   2017-05-31 15:53:30
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-26 15:44:01
+ * @Last Modified by:   ‘chenyingqiao’
+ * @Last Modified time: 2017-08-01 22:04:38
  */
 class BaseTest extends TestCase
 {
@@ -34,6 +34,7 @@ class BaseTest extends TestCase
 		Marry::Inc()->truncate();
 		MotherInfo::Inc()->truncate();
 		ParentInfo::Inc()->truncate();
+		Children::Inc()->truncate();
 		self::_createData();
 	}
 
@@ -49,6 +50,7 @@ class BaseTest extends TestCase
 		Marry::Inc()->truncate();
 		MotherInfo::Inc()->truncate();
 		ParentInfo::Inc()->truncate();
+		Children::Inc()->truncate();
 		self::TablePrint("清空数据库");
 	}
 

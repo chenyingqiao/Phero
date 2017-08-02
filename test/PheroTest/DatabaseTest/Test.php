@@ -39,7 +39,6 @@ class Test extends TestCase {
             $UnitsParentInfo[]=new ParentInfo(["pid"=>$i+1,"phone"=>"1506013{$i}03"]);
             $UnitsMotherInfo[]=new MotherInfo(["mid"=>$i+1,"email"=>"6143257{$i}@qq.com"]);
             $UnitsChildren[]=new Children(['name'=>"小明{$i}","marry_id"=>$i+1]);
-            $UnitsChildren[]=new Children(['name'=>"小黄{$i}","marry_id"=>$i+1]);
         }
         $Model=new Model();
         $Model->insert($UnitsParent);
