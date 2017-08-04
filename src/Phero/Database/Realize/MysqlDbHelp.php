@@ -128,7 +128,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	    $this->enableRelation=$this->getRelationIsEnable($this->entiy);
 		$data = $data == null ? [] : $data;
 		$Statement=$this->sqlPrepare($sql,PdoWarehouse::read);
-		if(!$Statement)yield 0;
+		if(!$Statement)yield null;
 		$this->sql_bind_execute($Statement, $data);
 		while ($result = $Statement->fetch($this->mode)) {
             yield $result;
