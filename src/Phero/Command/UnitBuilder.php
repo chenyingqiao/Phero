@@ -15,8 +15,8 @@ use Zend\Code\Generator\PropertyGenerator;
 /**
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
- * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-03 15:43:09
+ * @Last Modified by:   Administrator
+ * @Last Modified time: 2017-08-07 17:03:50
  */
 class UnitBuilder
 {
@@ -39,8 +39,8 @@ class UnitBuilder
 		$dbname=$input->prompt();
 
 
-		$input=$climate->input("输入数据库地址：(默认 localhost)");
-		$input->defaultTo('localhost');
+		$input=$climate->input("输入数据库地址：(默认 127.0.0.1)");
+		$input->defaultTo('127.0.0.1');
 		$host=$input->prompt();
 
 		$input=$climate->input("输入数据库用户名：(默认 root)");
