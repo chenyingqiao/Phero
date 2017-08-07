@@ -9,7 +9,7 @@
             "email": "614325722@QQ.COM"
         }
     ],
-    "version": "v1.0.1",
+    "version": "v1.0.3",
     "require": {
         "php": ">=5.3.0",
         "symfony/cache":"v3.3.5",
