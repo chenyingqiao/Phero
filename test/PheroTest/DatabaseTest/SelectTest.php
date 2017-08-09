@@ -18,8 +18,8 @@ use Phero\Database\Model;
 /**
  * @Author: lerko
  * @Date:   2017-05-27 16:14:54
- * @Last Modified by:   ‘chenyingqiao’
- * @Last Modified time: 2017-07-31 16:55:55
+ * @Last Modified by:   Administrator
+ * @Last Modified time: 2017-08-09 16:46:59
  */
 class SelectTest extends BaseTest
 {
@@ -274,5 +274,13 @@ class SelectTest extends BaseTest
 	{
 		Mother::Inc()->order("id",OrderType::asc)->fetchSql();
 		echo Mother::lastInc()->sql();
+	}
+
+	public function datasourceObj($value='')
+	{
+		DbUnit::Inc()->datasourse(Mother::Inc(),"mother","");
+		$sql="";
+		DbUnit::lastInc()->fetchSql($sql);
+		echo $sql;
 	}
 }

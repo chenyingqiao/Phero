@@ -71,6 +71,10 @@ class DataSourceConstrait implements interfaces\IConstrait {
 			if (!empty($jointype = $Entiy->getDatasourseJoinType())) {
 				$this->setJoinType($jointype);
 			}
+			if(is_object($value[0])){
+				$value[0]->fetchSql();
+				$value[0]="(".$value[0]->sql().")";
+			}
 			$this->setDatasourse($value[0], $value[1], $this->getTableOn($Entiy, $value[1], $value[2]));
 		}
 	}
