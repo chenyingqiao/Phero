@@ -98,3 +98,8 @@ $mother=new Mother();
 $mother=Mother::Inc();
 Mother::lastInc()==$mother;//lastInc会等于最近的那个Inc
 ```
+
+
+## 一些实用的Unit函数
+
+FF([字段名称])==>生成字段的全称，包括所属的表以及别名
