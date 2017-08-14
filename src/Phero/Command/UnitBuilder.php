@@ -16,7 +16,7 @@ use Zend\Code\Generator\PropertyGenerator;
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
  * @Last Modified by:   Administrator
- * @Last Modified time: 2017-08-07 17:03:50
+ * @Last Modified time: 2017-08-14 09:31:14
  */
 class UnitBuilder
 {
@@ -51,6 +51,10 @@ class UnitBuilder
 		$input->defaultTo('');
 		$password=$input->prompt();
 
+		$input=$climate->input("输入数据库密码：(默认为3306)");
+		$input->defaultTo('3306');
+		$port=$input->prompt();
+
 		$input=$climate->input("是否只生成某些表？(默认为全部，表名逗号隔开)");
 		$input->defaultTo('');
 		$tables_input=$input->prompt();
@@ -58,7 +62,7 @@ class UnitBuilder
 			$tables_input=explode(",",$tables_input);
 		}
 
-		DI::inj("pdo_instance",new \PDO("mysql:dbname={$dbname};host={$host}",$username,$password));
+		DI::inj("pdo_instance",new \PDO("mysql:dbname={$dbname};host={$host};port={$port}",$username,$password));
 		$DbHelp=new MysqlDbHelp();
 		$tables=$DbHelp->queryResultArray("show tables");
 		$tables_gen=[];
