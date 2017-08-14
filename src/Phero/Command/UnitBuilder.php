@@ -136,7 +136,7 @@ class UnitBuilder
 	 */
 	private function _createTableDocBlock(Table $tableNode,RelationEnable $relation=null){
 		$GeneratorData=[];
-		$description="[table={$tableNode->name},";
+		$description="[name={$tableNode->name},";
 		$alias=$tableNode->alias;
 		if(empty($alias)){$description.="]";}else{$description.="alias=$alias]";}
 		$GeneratorData['tags'][]=["name"=>"Table","description"=>$description];
