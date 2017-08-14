@@ -215,7 +215,8 @@ class UnitBuilder
 	}
 
 	private function base64_sp($string,$encode=true){
-		if($encode) return str_replace("=","_",base64_encode($string));
-		else return str_replace("_","=",base64_decode($string));
+		return strtolower($string);
+		// if($encode) return str_replace("=","_",base64_encode($string));
+		// else return str_replace("_","=",base64_decode($string));
 	}
 }
