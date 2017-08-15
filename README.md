@@ -103,3 +103,5 @@ $parent=new Parent([
 $parent->name="这个是直接赋值";
 $parent->insert();
 ```
+
+ parseUnit  executer  info  

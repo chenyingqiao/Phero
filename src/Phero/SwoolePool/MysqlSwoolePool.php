@@ -32,6 +32,7 @@ class MysqlSwoolePool
         $this->_swoole_server->on("Task",[$this,"_task"]);
         $this->_swoole_server->on("Finish",[$this,"_finish"]);
         $this->_swoole_server->start();
+
     }
 
     public function _receive($serv, $fd, $from_id, $data)
@@ -140,6 +141,7 @@ class MysqlSwoolePool
      */
     private function _get_swoole_server_by_config()
     {
+        $climate=new CLImate();
         $swoole_config=Config::config("swoole");
         $ip=isset($swoole_config["ip"])?$swoole_config["ip"]:"127.0.0.1";
         $port=isset($swoole_config["port"])?$swoole_config["port"]:54288;
@@ -148,6 +150,10 @@ class MysqlSwoolePool
             'worker_num' => isset($swoole_config["worker_num"])?$swoole_config["worker_num"]:2,
             'task_worker_num' => isset($swoole_config["pool_num"])?$swoole_config["pool_num"]:20,
         ]);
+        $climate->blue("连接池地址：{$ip}");
+        $climate->blue("连接池端口：{$port}");
+        $climate->blue("连接池worker：".isset($swoole_config["worker_num"])?$swoole_config["worker_num"]:2);
+        $climate->blue("连接池数量：".isset($swoole_config["pool_num"])?$swoole_config["pool_num"]:20);
         return $swoole_server;
     }
 }
