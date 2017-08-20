@@ -6,13 +6,13 @@
 
 支持下列特性:
 
-- swoole task数据库连接池
+- [swoole task数据库连接池](https://github.com/chenyingqiao/Phero/blob/master/doc/4%E8%BF%9E%E6%8E%A5%E6%B1%A0.md)
 - 数据库链接断线自动重连
-- 注解形式的Unit
-- 读写分离配置
-- 流畅的orm,支持复杂sql
+- [注解形式的Unit](https://github.com/chenyingqiao/Phero/blob/master/doc/3%E5%AE%9E%E4%BD%93.md)
+- [读写分离配置](https://github.com/chenyingqiao/Phero/blob/master/doc/2%E9%85%8D%E7%BD%AE.md)
+- [流畅的orm,支持复杂sql](https://github.com/chenyingqiao/Phero/blob/master/doc/5CURD.md)
 - 注解形式的模型关联
-- 命令行模型生成
+- [命令行模型生成](https://github.com/chenyingqiao/Phero/blob/master/doc/3%E5%AE%9E%E4%BD%93.md)
 - 查询即时缓存（redis，mamcache）
 
 > 文档位于doc
@@ -69,12 +69,45 @@ class Parents extends DbUnit
 +-------+-------------+------+-----+---------+----------------+
 ```
 
-### 简单的查询
+## 进行一些基础的查询
 
 ```php
 $parent=new Parent("name");# 你也可以这样获取Unit的实例  $parent=Parent::Inc();
 $parent->whereEq("id",2)->select(Cache::time(10));//Cache::time(10)表示缓存10秒
+
+select `mother`.`name` from `Mother` as `mother`;
 ```
+
+```php
+$Parents=new Parents();
+$Marry=new Marry();
+//#是会自动替换成使用本实体为子查询的父实体
+//或者使用Marry::FF("{字段名称}");也可以生成对应Unit的字段名String
+$Marry->whereEq("pid","#.`id`");
+$Parents->whereEq("id",1)
+    ->whereOrExists($Marry)->select();
+```
+
+关键字                         | 对应sql符号
+------------------------------|------------
+where{and/or}Eq               | =
+where{and/or}Neq              | \<\> (!=)
+where{and/or}In               | in
+where{and/or}Not_in           | not in
+where{and/or}Between          | between
+where{and/or}Like             | like
+where{and/or}Not_like         | not like
+where{and/or}Lt               | <
+where{and/or}Lr               | <=
+where{and/or}Gt               | >
+where{and/or}Ge               | >=
+where{and/or}Regexp           | regexp
+where{and/or}Isnotnull        | is not null
+where{and/or}Isnull           | is null
+where{and/or}Exists           | exists
+where{and/or}Not_exists       | not exists
+where{Lt/Lr/Gt/Ge}{and/or}All | all
+where{Lt/Lr/Gt/Ge}{and/or}Any | any
 
 ### 删除
 
@@ -103,5 +136,3 @@ $parent=new Parent([
 $parent->name="这个是直接赋值";
 $parent->insert();
 ```
-
- parseUnit  executer  info  
