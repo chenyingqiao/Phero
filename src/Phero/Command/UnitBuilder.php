@@ -21,7 +21,7 @@ use Zend\Code\Generator\PropertyGenerator;
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-08-20 22:24:13
+ * @Last Modified time: 2017-08-20 23:12:03
  */
 class UnitBuilder extends Command
 {
@@ -174,7 +174,7 @@ class UnitBuilder extends Command
 		$field=new Field();
 		$field->name=$name;
 		$field->type=$type;
-		$field->alias=$this->base64_sp($tablename.".".$name);
+		$field->alias=$this->base64_sp($tablename."_".$name);
 		return (new PropertyGenerator($name))->setDocBlock($this->_createPropertyDocBlock($field,$discription,$is_primary));
 	}
 
