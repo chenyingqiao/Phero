@@ -4,7 +4,7 @@
  * @Author: lerko
  * @Date:   2017-07-27 16:00:35
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-07-28 13:27:41
+ * @Last Modified time: 2017-08-20 12:43:22
  */
 
 namespace Phero\SwoolePool;
@@ -20,9 +20,10 @@ use Phero\System\Tool;
 class MysqlSwoolePool
 {
     private $_swoole_server;
-    public function __construct($config_path)
+    public function __construct($config_path=null)
     {
-        DI::inj("config",$config_path);
+        if($config_path!==null)
+            DI::inj("config",$config_path);
         $this->_swoole_server=$this->_get_swoole_server_by_config();
     }
 

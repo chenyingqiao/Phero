@@ -2,5 +2,8 @@
 <?php 
 require "vendor/autoload.php";
 use Phero\Command\UnitBuilder;
+use Symfony\Component\Console\Application;
+$application=new Application();
 $UnitBuilder=new UnitBuilder();
-$UnitBuilder->Builder();
+$application->add($UnitBuilder);
+$application->run();

@@ -8,6 +8,11 @@ use Phero\Map\Note\Field;
 use Phero\Map\Note\RelationEnable;
 use Phero\Map\Note\Table;
 use Phero\System\DI;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\Console\Config\DefaultApplicationConfig;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -15,52 +20,39 @@ use Zend\Code\Generator\PropertyGenerator;
 /**
  * @Author: lerko
  * @Date:   2017-06-19 20:02:38
- * @Last Modified by:   Administrator
- * @Last Modified time: 2017-08-14 09:31:14
+ * @Last Modified by:   lerko
+ * @Last Modified time: 2017-08-20 22:24:13
  */
-class UnitBuilder
+class UnitBuilder extends Command
 {
-	public function Builder()
-	{
+	protected function configure(){
+		$this->setName("builder")
+			->setDescription("从创建unit实体")
+			->addOption("u", null, InputOption::VALUE_OPTIONAL, "数据库链接的用户名 默认使用root", "root")
+			->addOption("p", null, InputOption::VALUE_OPTIONAL, "数据库链接的密码 默认为空", "")
+			->addOption("port", null, InputOption::VALUE_OPTIONAL, "数据库的端口", "3306")
+			->addOption("dir", null, InputOption::VALUE_REQUIRED, "生成的位置")
+			->addOption("namespace", null, InputOption::VALUE_REQUIRED, "用户生成Unit的命名空间")
+			->addOption("db", null, InputOption::VALUE_REQUIRED, "生成unit对应的数据库")
+			->addOption("h", null, InputOption::VALUE_REQUIRED, "数据库的远程地址",'127.0.0.1')
+			->addArgument("tables",InputArgument::IS_ARRAY|InputArgument::OPTIONAL,"需要单独生成的表的名称",[]);
+	}
+	protected function execute(InputInterface $input, OutputInterface $output){
 		$climate=new CLImate;
 		$climate->bold()->backgroundBlue()->border();
 
-		$input = $climate->input('请输入生成文件的位置：');
-		$fileFloder = $input->prompt();
+		$fileFloder = $input->getOption("dir");
 		if(!is_dir($fileFloder)){
 			mkdir(iconv("UTF-8", "GBK", $fileFloder),0777,true);
 		}
 
-		$input=$climate->input("输入统一的命名空间：");
-		$namespace=$input->prompt();
-		$namespace=$this->replaceSp($namespace);
-
-		$input=$climate->input("输入数据库名称：");
-		$dbname=$input->prompt();
-
-
-		$input=$climate->input("输入数据库地址：(默认 127.0.0.1)");
-		$input->defaultTo('127.0.0.1');
-		$host=$input->prompt();
-
-		$input=$climate->input("输入数据库用户名：(默认 root)");
-		$input->defaultTo('root');
-		$username=$input->prompt();
-
-		$input=$climate->input("输入数据库密码：(默认为空)");
-		$input->defaultTo('');
-		$password=$input->prompt();
-
-		$input=$climate->input("输入数据库密码：(默认为3306)");
-		$input->defaultTo('3306');
-		$port=$input->prompt();
-
-		$input=$climate->input("是否只生成某些表？(默认为全部，表名逗号隔开)");
-		$input->defaultTo('');
-		$tables_input=$input->prompt();
-		if(!empty($tables_input)){
-			$tables_input=explode(",",$tables_input);
-		}
+		$namespace=$input->getOption("namespace");
+		$dbname=$input->getOption("db");
+		$host=$input->getOption("h");
+		$username=$input->getOption("u");
+		$password=$input->getOption("p");
+		$port=$input->getOption("port");
+		$tables_input=$input->getArgument("tables");
 
 		DI::inj("pdo_instance",new \PDO("mysql:dbname={$dbname};host={$host};port={$port}",$username,$password));
 		$DbHelp=new MysqlDbHelp();
