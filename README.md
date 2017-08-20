@@ -71,6 +71,8 @@ class Parents extends DbUnit
 
 ## 进行一些基础的查询
 
+### 单表
+
 ```php
 $parent=new Parent("name");# 你也可以这样获取Unit的实例  $parent=Parent::Inc();
 $parent->whereEq("id",2)->select(Cache::time(10));//Cache::time(10)表示缓存10秒
@@ -78,6 +80,7 @@ $parent->whereEq("id",2)->select(Cache::time(10));//Cache::time(10)表示缓存1
 select `mother`.`name` from `Mother` as `mother`;
 ```
 
+### 子查询
 ```php
 $Parents=new Parents();
 $Marry=new Marry();
@@ -86,6 +89,23 @@ $Marry=new Marry();
 $Marry->whereEq("pid","#.`id`");
 $Parents->whereEq("id",1)
     ->whereOrExists($Marry)->select();
+```
+
+```sql
+SELECT
+    `parent`.`id`, `parent`.`name`
+FROM
+    `Parent` AS `parent`
+WHERE
+    `parent`.`id` = 1
+        OR EXISTS(
+            SELECT
+                `Marry`.`id`, `Marry`.`pid`, `Marry`.`mid`
+            FROM
+                `Marry`
+            WHERE
+                `Marry`.`pid` = `parent`.`id`
+        );
 ```
 
 关键字                         | 对应sql符号
