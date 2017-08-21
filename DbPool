@@ -1,5 +1,0 @@
-<?php
-require "vendor/autoload.php";
-use Phero\SwoolePool\MysqlSwoolePool;
-
-(new MysqlSwoolePool())->start();

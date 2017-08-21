@@ -4,7 +4,7 @@
  * @Author: lerko
  * @Date:   2017-07-27 16:00:35
  * @Last Modified by:   lerko
- * @Last Modified time: 2017-08-20 12:43:22
+ * @Last Modified time: 2017-08-21 22:41:49
  */
 
 namespace Phero\SwoolePool;
@@ -15,16 +15,31 @@ use Phero\Database\Realize\SwooleMysqlDbHelp;
 use Phero\System\Config;
 use Phero\System\DI;
 use Phero\System\Tool;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 
-class MysqlSwoolePool
+class MysqlSwoolePool extends Command
 {
     private $_swoole_server;
-    public function __construct($config_path=null)
+    public function __construct()
     {
-        if($config_path!==null)
-            DI::inj("config",$config_path);
+        parent::__construct();
+    }
+
+    protected function configure(){
+        $this->setName("pool")
+            ->setDescription("开始数据库连接池")
+            ->addOption("config", null, InputOption::VALUE_REQUIRED, "配置文件的位置");
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output){
+        $config_path=$input->getOption("config");
+        DI::inj("config",$config_path);
         $this->_swoole_server=$this->_get_swoole_server_by_config();
+        $this->start();
     }
 
     public function start()
@@ -33,7 +48,6 @@ class MysqlSwoolePool
         $this->_swoole_server->on("Task",[$this,"_task"]);
         $this->_swoole_server->on("Finish",[$this,"_finish"]);
         $this->_swoole_server->start();
-
     }
 
     public function _receive($serv, $fd, $from_id, $data)

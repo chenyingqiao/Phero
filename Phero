@@ -6,4 +6,5 @@ use Symfony\Component\Console\Application;
 $application=new Application();
 $UnitBuilder=new UnitBuilder();
 $application->add($UnitBuilder);
+$application->add(new Phero\SwoolePool\MysqlSwoolePool);
 $application->run();
