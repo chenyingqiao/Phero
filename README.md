@@ -4,6 +4,8 @@
 
 <h1>这是一个兴趣使然的ORM（手动斜眼笑）</h1>
 
+*V1.0.3*
+
 支持下列特性:
 
 - [swoole task数据库连接池](https://github.com/chenyingqiao/Phero/blob/master/doc/4%E8%BF%9E%E6%8E%A5%E6%B1%A0.md)
