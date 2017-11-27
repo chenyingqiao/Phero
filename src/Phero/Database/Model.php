@@ -4,6 +4,7 @@ namespace Phero\Database;
 use Phero\Database\Enum\FetchType;
 use Phero\Database\Enum\RelType;
 use Phero\Database\Interfaces as interfaces;
+use Phero\Database\Interfaces\IDbHelp;
 use Phero\Database\Realize as realize;
 use Phero\System\Tool;
 use Phero\System\Traits\TInject;
@@ -30,22 +31,23 @@ class Model implements interfaces\IModel {
 
 	protected $IConstraitBuild;
 
-	private $sql, $error=false;
+	private $sql, $error = false;
 
-	public function __construct() {
-		$this->inject();//执行注入解析
-		if(empty($this->help))
-			$this->help = new realize\MysqlDbHelp();
-		// $IConstraitBuild = new realize\MysqlConstraitBuild();
+	public function __construct($db_connect = "database") {
+		$this->inject(); //执行注入解析
+		if (empty($this->help)) {
+			$this->help = new realize\MysqlDbHelp($db_connect);
+		}
+
 	}
 
 	public function insert($Entiy, $is_replace = false) {
-		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$IConstraitBuild = new realize\MysqlConstraitBuild();
 		$sql = $IConstraitBuild->buildInsertSql($Entiy, $is_replace);
 		$this->help->setEntiy($Entiy);
-		$bindData=$IConstraitBuild->getBindData();
+		$bindData = $IConstraitBuild->getBindData();
 		$return = $this->help->exec($sql, $bindData);
-		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
+		$this->sql = Tool::getInstance()->showQuery($sql, $bindData);
 		return $return;
 	}
 	/**
@@ -61,40 +63,40 @@ class Model implements interfaces\IModel {
 	 * @return [type]        [description]
 	 */
 	public function select($Entiy, $yield = false) {
-		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$IConstraitBuild = new realize\MysqlConstraitBuild();
 		$sql = $IConstraitBuild->buildSelectSql($Entiy);
 		$this->help->setEntiy($Entiy);
-		$bindData=$IConstraitBuild->getBindData();
+		$bindData = $IConstraitBuild->getBindData();
 		if ($yield) {
 			$data = $this->help->setFetchMode($this->mode, $this->classname)->query($sql, $bindData);
 		} else {
 			$data = $this->help->setFetchMode($this->mode, $this->classname)->queryResultArray($sql, $bindData);
 		}
-		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
+		$this->sql = Tool::getInstance()->showQuery($sql, $bindData);
 		return $data;
 	}
 	public function update($Entiy) {
-		if(!$Entiy->checkSaveForUpdateOrDelete()){
+		if (!$Entiy->checkSaveForUpdateOrDelete()) {
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$IConstraitBuild = new realize\MysqlConstraitBuild();
 		$sql = $IConstraitBuild->buildUpdataSql($Entiy);
 		$this->help->setEntiy($Entiy);
-		$bindData=$IConstraitBuild->getBindData();
-		$return = $this->help->exec($sql, $bindData,RelType::update);
-		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
+		$bindData = $IConstraitBuild->getBindData();
+		$return = $this->help->exec($sql, $bindData, RelType::update);
+		$this->sql = Tool::getInstance()->showQuery($sql, $bindData);
 		return $return;
 	}
 	public function delete($Entiy) {
-		if(!$Entiy->checkSaveForUpdateOrDelete()){
+		if (!$Entiy->checkSaveForUpdateOrDelete()) {
 			throw new \Exception("You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column To disable safe mode");
 		}
-		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$IConstraitBuild = new realize\MysqlConstraitBuild();
 		$sql = $IConstraitBuild->buildDeleteSql($Entiy);
 		$this->help->setEntiy($Entiy);
-		$bindData=$IConstraitBuild->getBindData();
-		$effect_rows_num = $this->help->exec($sql, $bindData ,RelType::delete);
-		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
+		$bindData = $IConstraitBuild->getBindData();
+		$effect_rows_num = $this->help->exec($sql, $bindData, RelType::delete);
+		$this->sql = Tool::getInstance()->showQuery($sql, $bindData);
 		return $effect_rows_num;
 	}
 
@@ -148,26 +150,26 @@ class Model implements interfaces\IModel {
 	 * @param $Entiy 实体类
 	 * @return array 返回sql对应的bindValue数据
 	 */
-	public function fetchSql($Entiy,$type=FetchType::select) {
+	public function fetchSql($Entiy, $type = FetchType::select) {
 		// TODO: Implement fetchSql() method.
 		switch ($type) {
-			case FetchType::select:
-				$method="buildSelectSql";
-				break;
-			case FetchType::update:
-				$method="buildUpdataSql";
-				break;
-			case FetchType::delete:
-				$method="buildDeleteSql";
-				break;
-			case FetchType::insert:
-				$method="buildInsertSql";
-				break;
+		case FetchType::select:
+			$method = "buildSelectSql";
+			break;
+		case FetchType::update:
+			$method = "buildUpdataSql";
+			break;
+		case FetchType::delete:
+			$method = "buildDeleteSql";
+			break;
+		case FetchType::insert:
+			$method = "buildInsertSql";
+			break;
 		}
-		$IConstraitBuild=new realize\MysqlConstraitBuild();
+		$IConstraitBuild = new realize\MysqlConstraitBuild();
 		$sql = $IConstraitBuild->$method($Entiy);
-		$bindData= $IConstraitBuild->getBindData();
-		$this->sql = Tool::getInstance()->showQuery($sql,$bindData);
+		$bindData = $IConstraitBuild->getBindData();
+		$this->sql = Tool::getInstance()->showQuery($sql, $bindData);
 		return $bindData;
 	}
 }

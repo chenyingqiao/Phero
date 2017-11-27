@@ -41,9 +41,18 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 */
 	protected $pdo_hit;
 
-	public function __construct() {
+	private $db_connect;
+
+	/**
+	 * 实例化dbhelp
+	 * @Author   Lerko
+	 * @DateTime 2017-11-27T21:35:03+0800
+	 * @param    string                   $db_connect 链接对象
+	 */
+	public function __construct($db_connect="database") {
 		$this->inject();
-		$this->pdo = PdoWarehouse::getInstance()->getPdo();
+		$this->db_connect=$db_connect;
+		$this->pdo = PdoWarehouse::getInstance()->getPdo($db_connect);
 		$fetch_mode=Config::config("fetch_mode");
 		$this->mode = Tool::getInstance()->getConfigMode($fetch_mode);
 		if(!isset($this->pdo_hit)){
@@ -275,7 +284,7 @@ class MysqlDbHelp implements interfaces\IDbHelp {
 	 * @return   [type]                   [description]
 	 */
 	private function reConnect(){
-		$this->pdo = PdoWarehouse::getInstance()->getPdo();
+		$this->pdo = PdoWarehouse::getInstance()->getPdo($this->db_connect);
 	}
 
 	public function transaction($type)

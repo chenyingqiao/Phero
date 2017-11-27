@@ -42,8 +42,11 @@ class PdoWarehouse {
 	}
 
 	//根据数据
-	public function getPdo() {
-		$database_config = Config::config("database");
+	public function getPdo($db_connect="database") {
+		$database_config = Config::config($db_connect);
+		if(!$database_config){
+			throw new \Exception("没有数据库配置项目");
+		}
 		//注入后解析
 		$this->inject();
 		if (empty($this->pdo_hit)) {
